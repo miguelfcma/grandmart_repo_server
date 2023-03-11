@@ -73,16 +73,28 @@ export const updateCategoria = async (req, res) => {
   }
 };
 
+
 export const deleteCategoria = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const categoria = await Categoria.findByPk(req.params.id);
-    //Verifica existencia
+    const categoria = await Categoria.findByPk(id);
     if (!categoria) {
-      return res.status(404).json({ message: "No se encontró la categoría" });
+      return res.status(404).json({ message: 'No se encontró la categoría' });
     }
-    //realiza la eliminacion
-    await categoria.destroy();
-    res.status(200).json({ message: "La categoría fue eliminada con éxito" });
+
+    const categoriasHijo = await Categoria.findOne({
+      where: { id_parent: id },
+    });
+    if (categoriasHijo) {
+      return res.status(400).json({ message: 'No se puede eliminar la categoría porque tiene subcategorías' });
+    }
+
+    await Categoria.destroy({
+      where: { id },
+    });
+
+    return res.status(204).send();
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
