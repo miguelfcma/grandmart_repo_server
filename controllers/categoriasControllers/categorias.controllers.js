@@ -56,7 +56,7 @@ export const updateCategoria = async (req, res) => {
     //Verifica existencia
     const categoria = await Categoria.findByPk(req.params.id);
     if (!categoria) {
-      return res.status(404).json({ message: "No se encontró la categoría" });
+      return res.status(404).json({ message: "NO SE ENCONTROO¿¿ esa basura" });
     }
     // Actualiza la categoría con los nuevos valores
     const updateCategoria = await categoria.update({
