@@ -1,5 +1,6 @@
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
-
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
 // Obtener todos los usuarios
 export const getUsuarios = async (req, res) => {
   try {
@@ -20,7 +21,7 @@ export const getUsuario = async (req, res) => {
   try {
     const usuario = await Usuario.findByPk(req.params.id);
     if (!usuario) {
-      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
     res.status(200).json(usuario);
   } catch (error) {
@@ -49,6 +50,7 @@ export const createUsuario = async (req, res) => {
     });
 
     // Si el usuario no existe, crea el registro
+    const hashedPassword = bcrypt.hashSync(password, 10);
     if (!existenciaUsuario) {
       const newUsuario = await Usuario.create({
         nombre,
@@ -58,12 +60,12 @@ export const createUsuario = async (req, res) => {
         sexo,
         fechaNacimiento,
         telefono,
-        password,
+        password: hashedPassword,
         tipoUsuario,
       });
       res.status(201).json({ message: "Usuario creado correctamente" });
     } else {
-      // Si el usuario ya existe, devolver un mensaje de error
+      // Si el usuario ya existe, devolver un message de error
       return res
         .status(400)
         .json({ message: "El email ya ha sido vinculado a otro perfil!" });
@@ -90,7 +92,7 @@ export const updateUsuario = async (req, res) => {
   try {
     const usuario = await Usuario.findByPk(req.params.id);
     if (!usuario) {
-      res.status(404).json({ mensaje: "Usuario no encontrado" });
+      res.status(404).json({ message: "Usuario no encontrado" });
     }
     // Actualiza el registro usuario con los nuevos valores
     const updateUsuario = await usuario.update({
@@ -119,15 +121,16 @@ export const deleteUsuario = async (req, res) => {
     const usuario = await Usuario.findByPk(req.params.id);
     //Verifica existencia
     if (!usuario) {
-      res.status(404).json({ mensaje: "Usuario no encontrado" });
+      res.status(404).json({ message: "Usuario no encontrado" });
     }
     await usuario.destroy();
-    res.status(200).json({ mensaje: "Usuario eliminado correctamente" });
+    res.status(200).json({ message: "Usuario eliminado correctamente" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
   }
 };
+
 export const getUsuarioLogin = async (req, res) => {
   try {
     console.log(req.body);
@@ -140,19 +143,27 @@ export const getUsuarioLogin = async (req, res) => {
     });
     // IF USUARIO == NULL
     if (!usuario) {
-      return res.status(400).json({ mensaje: "Credenciales de inicio de sesión incorrectas" });
+      return res
+        .status(400)
+        .json({ message: "Credenciales de inicio de sesión incorrectas" });
     }
 
     // Verificar la contraseña
-    // Encripta La contraseña 
-    //const contrasenaValida = await bcrypt.compare(password, usuario.password);
-    if (password != usuario.password) {
-      return res.status(400).json({ mensaje: "Credenciales de inicio de sesión incorrectas" });
+    // Desencripta la contraseña y compara
+    const contrasenaValida = bcrypt.compareSync(password, usuario.password);
+    if (!contrasenaValida) {
+      return res
+        .status(400)
+        .json({ message: "Credenciales de inicio de sesión incorrectas" });
     }
 
-    // Si se encontró el usuario y la contraseña es válida, incluir el atributo "tipoUsuario" en la respuesta
+    // Crear el token de sesión
+    const token = jwt.sign({ userId: usuario.id }, 'secreto', { expiresIn: '1h' });
+
+    // Si se encontró el usuario y la contraseña es válida, incluir el token y el atributo "tipoUsuario" en la respuesta
     return res.status(200).json({
-      mensaje: "Inicio de sesión exitoso",
+      message: "Inicio de sesión exitoso",
+      token,
       usuario: {
         id: usuario.id,
         email: usuario.email,
@@ -161,6 +172,8 @@ export const getUsuarioLogin = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ mensaje: "Ha ocurrido un error en el servidor" });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

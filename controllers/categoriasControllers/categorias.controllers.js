@@ -35,18 +35,19 @@ export const createCategoria = async (req, res) => {
     if (existingCategoria) {
       return res.status(400).json({ message: "La categoría ya existe" });
     }
-    const existingCategoriaPadre = await Categoria.findOne({ where: { id_parent } });
+    const existingCategoriaPadre = await Categoria.findOne({
+      where: { id_parent },
+    });
     if (!existingCategoriaPadre) {
       return res.status(400).json({ message: "La categoria padre no existe" });
     }
     const newCategoria = await Categoria.create({ nombre, id_parent });
 
-    res.status(200).json(newCategoria);
+    res.status(201).json({ message: "Categoría creada correctamente" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 export const updateCategoria = async (req, res) => {
   const { nombre, id_parent } = req.body;
@@ -84,10 +85,7 @@ export const updateCategoria = async (req, res) => {
     });
 
     // Enviar una respuesta exitosa
-    res.status(200).json({
-      message: "Categoría actualizada correctamente",
-      categoria: updateCategoria,
-    });
+    res.status(200).json({ message: "Categoría actualizada correctamente" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -127,7 +125,7 @@ export const deleteCategoria = async (req, res) => {
     await Categoria.destroy({
       where: { id },
     });
-
+    res.status(200).json({ message: "categoría eliminada correctamente" });
     return res.status(204).send();
   } catch (error) {
     return res.status(500).json({ message: error.message });
