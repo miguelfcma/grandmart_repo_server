@@ -9,6 +9,7 @@ export const getCategoria = async (req, res) => {
     }
     res.json(categoria);
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -22,6 +23,7 @@ export const getCategorias = async (req, res) => {
     }
     res.status(200).json(categorias);
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -35,16 +37,22 @@ export const createCategoria = async (req, res) => {
     if (existingCategoria) {
       return res.status(400).json({ message: "La categoría ya existe" });
     }
-    const existingCategoriaPadre = await Categoria.findOne({
-      where: { id_parent },
-    });
-    if (!existingCategoriaPadre) {
-      return res.status(400).json({ message: "La categoria padre no existe" });
+    if (id_parent) {
+      const existingCategoriaPadre = await Categoria.findOne({
+        where: { id_parent },
+      });
+
+      if (!existingCategoriaPadre) {
+        return res
+          .status(400)
+          .json({ message: "La categoria padre no existe" });
+      }
     }
     const newCategoria = await Categoria.create({ nombre, id_parent });
 
     res.status(201).json({ message: "Categoría creada correctamente" });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -87,9 +95,11 @@ export const updateCategoria = async (req, res) => {
     // Enviar una respuesta exitosa
     res.status(200).json({ message: "Categoría actualizada correctamente" });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: error.message });
   }
 };
+
 export const deleteCategoria = async (req, res) => {
   const { id } = req.params;
 
@@ -100,24 +110,16 @@ export const deleteCategoria = async (req, res) => {
       return res.status(404).json({ message: "No se encontró la categoría" });
     }
 
-    // Verifica si la categoría tiene subcategorías
-    const categoriasHijo = await Categoria.findOne({
-      where: { id_parent: id },
-    });
-    if (categoriasHijo) {
-      return res.status(400).json({
-        message: "No se puede eliminar la categoría porque tiene subcategorías",
-      });
-    }
-
-    // Verifica si la categoría es el padre de otra categoría
+    // Verifica si la categoría tiene subcategorías o es el padre de otras categorías
     const categoriasHijas = await Categoria.findAll({
       where: { id_parent: id },
     });
     if (categoriasHijas.length > 0) {
       return res.status(400).json({
         message:
-          "No se puede eliminar la categoría porque es el padre de otras categorías",
+          "No se puede eliminar la categoría porque " +
+          (categoriasHijas[0].id_parent === id ? "es el padre" : "tiene") +
+          " subcategorías",
       });
     }
 
@@ -125,9 +127,13 @@ export const deleteCategoria = async (req, res) => {
     await Categoria.destroy({
       where: { id },
     });
-    res.status(200).json({ message: "categoría eliminada correctamente" });
-    return res.status(204).send();
+    
+    // Envía una respuesta HTTP vacía con un estado de "sin contenido"
+    res.status(204).send();
+
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: error.message });
   }
 };
+
