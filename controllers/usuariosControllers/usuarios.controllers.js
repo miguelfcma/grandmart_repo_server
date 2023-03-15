@@ -166,6 +166,9 @@ export const getUsuarioLogin = async (req, res) => {
       token,
       usuario: {
         id: usuario.id,
+        nombre: usuario.nombre,
+        apellidoPaterno: usuario.apellidoPaterno,
+        apellidoMaterno: usuario.apellidoMaterno,
         email: usuario.email,
         tipoUsuario: usuario.tipoUsuario,
       },

@@ -4,30 +4,33 @@ import { Op } from "sequelize";
 export const getProducto = async (req, res) => {
   try {
     const producto = await Producto.findByPk(req.params.id);
-    //Verificación de existencia
     if (!producto) {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
-    res.json(producto);
+    return res.status(200).json(producto);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ocurrió un error al obtener el producto." });
   }
 };
 
 export const getProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll();
-    //Validación de existencia
     if (productos.length === 0) {
       return res.status(404).json({ message: "No se encontraron productos" });
     }
-    res.json(productos);
+    return res.status(200).json(productos);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ocurrió un error al obtener los productos." });
   }
 };
 
 export const createProducto = async (req, res) => {
+  console.log(req.body)
   const {
     nombre,
     precio,
@@ -40,6 +43,7 @@ export const createProducto = async (req, res) => {
     id_categoria,
     id_usuario,
   } = req.body;
+ 
   try {
     const existenciaProducto = await Producto.findOne({
       where: {
@@ -49,7 +53,7 @@ export const createProducto = async (req, res) => {
     if (existenciaProducto) {
       return res
         .status(400)
-        .json({ message: "Este producto ya esta registrado en su cuenta" });
+        .json({ message: "Este producto ya está registrado en su cuenta." });
     }
     const newProducto = await Producto.create({
       nombre,
@@ -63,9 +67,17 @@ export const createProducto = async (req, res) => {
       id_categoria,
       id_usuario,
     });
-    res.json(newProducto);
+    return res
+      .status(201)
+      .json({
+        message: "Producto creado exitosamente.",
+        producto: newProducto,
+      });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ocurrió un error al crear el producto." });
   }
 };
 
@@ -81,14 +93,12 @@ export const updateProducto = async (req, res) => {
     estado,
     id_categoria,
     id_usuario,
-  } = req.body; // Obtiene los nuevos valores desde el cuerpo de la solicitud
+  } = req.body;
   try {
-    //Verifica existencia
     const producto = await Producto.findByPk(req.params.id);
     if (!producto) {
       return res.status(404).json({ message: "No se encontró el producto" });
     }
-    // Actualiza la categoría con los nuevos valores
     const updateProducto = await producto.update({
       nombre,
       precio,
@@ -101,26 +111,29 @@ export const updateProducto = async (req, res) => {
       id_categoria,
       id_usuario,
     });
-
-    // Envía una respuesta exitosa
-    res
+    return res
       .status(200)
-      .json({ updateProducto, message: "Producto actualizado correctamente" });
+      .json({
+        message: "Producto actualizado exitosamente.",
+        producto: updateProducto,
+      });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ocurrió un error al actualizar el producto." });
   }
 };
 
 export const deleteProducto = async (req, res) => {
   try {
-    //Verifica existencia
     const producto = await Producto.findByPk(req.params.id);
     if (!producto) {
       return res.status(404).json({ message: "No se encontró el producto" });
     }
-    //realiza la eliminacion
     await producto.destroy();
-    res.json({ message: "El producto fue eliminado con éxito" });
+    return res
+      .status(200)
+      .json({ message: "El producto fue eliminado exitosamente." });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

@@ -39,7 +39,7 @@ export const createCategoria = async (req, res) => {
     }
     if (id_parent) {
       const existingCategoriaPadre = await Categoria.findOne({
-        where: { id_parent },
+        where: { id: id_parent},
       });
 
       if (!existingCategoriaPadre) {
