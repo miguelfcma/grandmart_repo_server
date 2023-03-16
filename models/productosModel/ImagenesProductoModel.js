@@ -10,12 +10,14 @@ export const ImagenProducto = sequelizeDB.define(
         autoIncrement: true,
         allowNull: false,
       },
-      titulo: {
-        type: DataTypes.TEXT,
+      url: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
-      contenido: { type: DataTypes.BLOB, allowNull: false },
-      extension: { type: DataTypes.STRING(4), allowNull: false },
+      id_producto: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+      },
      
     },
     { timestamps: true }

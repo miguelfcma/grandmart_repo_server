@@ -5,6 +5,7 @@ import productoRoutes from "./routes/productosRoutes/productos.routes.js";
 import usuariosRoutes from "./routes/usuariosRoutes/usuarios.routes.js";
 import imagenUsuariosRoutes from "./routes/usuariosRoutes/imagenUsuario.routes.js";
 import categoriaRoutes from "./routes/categoriasRoutes/categorias.routes.js";
+import imagenesProductosRoutes from "./routes/productosRoutes/imgProductos.routes.js"
 import morgan from "morgan";
 import path from "path";
 //  INITIALIZATIONS
@@ -29,6 +30,7 @@ app.use(categoriaRoutes);
 app.use(imagenUsuariosRoutes);
 app.use(productoRoutes);
 app.use(serviciosRoutes);
+app.use(imagenesProductosRoutes);
 
 //  STATIC FILES
 
