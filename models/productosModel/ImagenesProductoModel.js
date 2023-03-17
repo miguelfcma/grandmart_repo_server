@@ -18,6 +18,10 @@ export const ImagenProducto = sequelizeDB.define(
         type: DataTypes.BIGINT(20).UNSIGNED,
         allowNull: false,
       },
+      es_portada: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
      
     },
     { timestamps: true }
