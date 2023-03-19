@@ -2,7 +2,7 @@ import { ImagenProducto } from "../../models/productosModel/ImagenesProductoMode
 
 export const createImgProducto = async (req, res) => {
   const { url, id_producto, es_portada } = req.body;
-
+console.log(req.body)
   try {
     const newImgProducto = await ImagenProducto.create({ url, id_producto, es_portada });
 
@@ -32,6 +32,7 @@ export const getImgProducto = async (req, res) => {
   }
 };
 
+
 export const deleteImgProducto = async (req, res) => {
   const { id } = req.params;
 
@@ -50,12 +51,28 @@ export const deleteImgProducto = async (req, res) => {
   }
 };
 
-export const getImagenes = async (req, res) => {
+export const getImagenesProduct = async (req, res) => {
   const { id_producto } = req.params;
 
   try {
     const imagenesProducto = await ImagenProducto.findAll({
       where: { id_producto: id_producto, es_portada: false },
+    });
+
+    res.status(200).json(imagenesProducto);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllImagenesProduct = async (req, res) => {
+  const { id_producto } = req.params;
+
+  try {
+    const imagenesProducto = await ImagenProducto.findAll({
+      where: { id_producto: id_producto },
+      attributes: ['url'],
     });
 
     res.status(200).json(imagenesProducto);

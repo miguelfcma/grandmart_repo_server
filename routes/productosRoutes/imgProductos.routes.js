@@ -4,9 +4,10 @@ import {
   createImgProducto,
   getImgProducto,
   getPortada,
-  getImagenes,
+  getImagenesProduct,
   deleteImgProducto,
   updateImgProducto,
+  getAllImagenesProduct
 } from "../../controllers/productosControllers/imagenesProducto.controller.js";
 
 const router = Router();
@@ -18,15 +19,16 @@ router.post("/product-images", createImgProducto);
 router.get("/product-images/:id", getImgProducto);
 
 // Ruta para obtener la imagen de portada de un producto por su ID
-router.get("/product-images/portada/:id", getPortada);
+router.get("/product-images/portada/:id_producto", getPortada);
 
-// Ruta para obtener todas las imágenes de un producto por su ID
-router.get("/product-images/producto/:id", getImagenes);
+// Ruta para obtener todas las imágenes de un producto por su ID deprudcto
+router.get("/product-images/producto/:id_producto", getImagenesProduct);
 
 // Ruta para eliminar una imagen de producto por su ID
 router.delete("/product-images/:id", deleteImgProducto);
 
-// Ruta para actualizar una imagen de producto por su ID
 router.put("/product-images/:id", updateImgProducto);
+//
+router.get("/product-images-all/producto/:id_producto", getAllImagenesProduct);
 
 export default router;
