@@ -14,10 +14,11 @@ export const getProducto = async (req, res) => {
       .json({ message: "Ocurrió un error al obtener el producto." });
   }
 };
-
 export const getProductos = async (req, res) => {
   try {
-    const productos = await Producto.findAll();
+    const productos = await Producto.findAll({
+      attributes: ['id','nombre', 'precio', 'stock', 'descripcion', 'marca', 'modelo', 'color', 'estado'],
+    });
     if (productos.length === 0) {
       return res.status(404).json({ message: "No se encontraron productos" });
     }
@@ -28,6 +29,7 @@ export const getProductos = async (req, res) => {
       .json({ message: "Ocurrió un error al obtener los productos." });
   }
 };
+
 
 export const createProducto = async (req, res) => {
   console.log(req.body)
