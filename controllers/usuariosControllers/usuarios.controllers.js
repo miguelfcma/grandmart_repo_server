@@ -133,7 +133,7 @@ export const deleteUsuario = async (req, res) => {
 
 export const getUsuarioLogin = async (req, res) => {
   try {
-    console.log(req.body);
+   
 
     const { email, password } = req.body;
 
