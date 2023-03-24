@@ -1,10 +1,22 @@
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 // Obtener todos los usuarios
 export const getUsuarios = async (req, res) => {
   try {
-    const usuarios = await Usuario.findAll();
+    const usuarios = await Usuario.findAll({
+      attributes: [
+        "id",
+        "nombre",
+        "apellidoPaterno",
+        "apellidoMaterno",
+        "email",
+        "sexo",
+        "fechaNacimiento",
+        "telefono",
+        "tipoUsuario",
+      ],
+    });
     //Validación de existencia
     if (usuarios.length === 0) {
       return res.status(404).json({ message: "No se encontraron usuarios" });
@@ -82,11 +94,11 @@ export const updateUsuario = async (req, res) => {
     nombre,
     apellidoPaterno,
     apellidoMaterno,
-    email,
+    
     sexo,
     fechaNacimiento,
     telefono,
-    password,
+
     tipoUsuario,
   } = req.body;
   try {
@@ -99,11 +111,11 @@ export const updateUsuario = async (req, res) => {
       nombre,
       apellidoPaterno,
       apellidoMaterno,
-      email,
+    
       sexo,
       fechaNacimiento,
       telefono,
-      password,
+
       tipoUsuario,
     });
 
@@ -133,8 +145,6 @@ export const deleteUsuario = async (req, res) => {
 
 export const getUsuarioLogin = async (req, res) => {
   try {
-   
-
     const { email, password } = req.body;
 
     // Buscar un usuario con el email recibido
@@ -158,7 +168,9 @@ export const getUsuarioLogin = async (req, res) => {
     }
 
     // Crear el token de sesión
-    const token = jwt.sign({ userId: usuario.id }, 'secreto', { expiresIn: '1h' });
+    const token = jwt.sign({ userId: usuario.id }, "secreto", {
+      expiresIn: "1h",
+    });
 
     // Si se encontró el usuario y la contraseña es válida, incluir el token y el atributo "tipoUsuario" en la respuesta
     return res.status(200).json({
