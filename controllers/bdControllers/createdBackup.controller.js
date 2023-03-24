@@ -6,7 +6,7 @@ import {
   DB_PORT,
 } from "../../config.js"; // Importar constantes de configuración de la base de datos desde un archivo de configuración externo
 import { exec } from "child_process"; // Importar la función exec desde el módulo child_process para ejecutar comandos del sistema operativo
-import { v4 as uuidv4 } from "uuid"; // Importar la función v4 (también conocida como uuidv4) desde el módulo uuid para generar identificadores únicos
+
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import bcrypt from "bcryptjs";
 
@@ -33,7 +33,7 @@ export async function createBackup(req, res) {
         .status(400)
         .json({ message: "Credenciales de inicio de sesión incorrectas" });
     }
-    const filename = "backup-" + uuidv4(); // Generar un nombre de archivo único utilizando la función uuidv4
+    const filename = "backup-grandmart" 
     let command = `"C:\\xampp\\mysql\\bin\\mysqldump" -h ${DB_HOST} -u ${DB_USER}`; // Comenzar a construir el comando para realizar una copia de seguridad de la base de datos utilizando mysqldump
     if (DB_PASSWORD) {
       command += ` -p${DB_PASSWORD}`; // Si se proporciona una contraseña para la base de datos, agregarla al comando
