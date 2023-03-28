@@ -14,10 +14,11 @@ export const getProducto = async (req, res) => {
       .json({ message: "Ocurrió un error al obtener el producto." });
   }
 };
+
 export const getProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll({
-      attributes: ['id','nombre', 'precio', 'stock', 'descripcion', 'marca', 'modelo', 'color', 'estado'],
+      attributes: ['id','nombre', 'precio', 'stock', 'descripcion', 'marca', 'modelo', 'color', 'estado', 'id_categoria', 'id_usuario'],
     });
     if (productos.length === 0) {
       return res.status(404).json({ message: "No se encontraron productos" });

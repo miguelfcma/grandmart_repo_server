@@ -25,7 +25,10 @@ export const Producto = sequelizeDB.define(
     marca: { type: DataTypes.STRING(60), allowNull: false },
     modelo: { type: DataTypes.STRING(60), allowNull: false },
     color: { type: DataTypes.STRING(50), allowNull: false },
-    estado: { type: DataTypes.STRING(50), allowNull: false },
+    estado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
     id_categoria: {
       type: DataTypes.BIGINT(20).UNSIGNED,
       primaryKey: false,
