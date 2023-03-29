@@ -10,20 +10,8 @@ export const ImagenUsuario = sequelizeDB.define(
       autoIncrement: true,
       allowNull: false,
     },
-    nombre: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    ruta: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    tipo_archivo: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
-    tamano_archivo: {
-      type: DataTypes.INTEGER,
+    url: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     id_usuario: {

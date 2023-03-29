@@ -1,78 +1,138 @@
 import { ImagenUsuario } from "../../models/usuariosModel/ImagenesUsuarios.js";
-import path from "path";
-import { Console } from "console";
-// Crear una nueva imagen de usuario
-export const createImagenUsuario = async (req, res) => {
-  try {
-    // Obtenemos los datos de la imagen subida desde el objeto req.file
-    const { filename, mimetype, size, path: filePath } = req.file;
 
-    // Obtenemos el id del usuario desde el objeto req.body
-    //const { id } = req.body;
-    const id = 34;
-    // Creamos un nuevo objeto ImagenUsuario con los datos de la imagen y el id del usuario
-    const nuevaImagen = await ImagenUsuario.create({
-      nombre: filename,
-      ruta: filePath,
-      tipo_archivo: mimetype,
-      tamano_archivo: size,
-      id_usuario: id,
+export const createImgUsuario = async (req, res) => {
+  const { url, id_usuario } = req.body;
+
+  try {
+    const newImgUsuario = await ImagenUsuario.create({ url, id_usuario });
+
+    res.status(201).json({ message: "Avatar de usuario creado correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getImgUsuario = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const imagenUsuario = await ImagenUsuario.findOne({
+      where: { id_usuario: id },
     });
 
-    res.status(201).json({ mensaje: "Imagen creada", imagen: nuevaImagen });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ mensaje: "Error al crear la imagen" });
-  }
-};
-
-// Obtener todas las imágenes de usuario
-export const getImagenesUsuario = async (req, res) => {
-  try {
-    const imagenes = await ImagenUsuario.findAll();
-    if (imagenes.length === 0) {
-      return res.status(404).json({ message: "No se encontraron imagenes" });
+    if (imagenUsuario) {
+      res.status(200).json(imagenUsuario);
+    } else {
+      res.status(404).json({ message: "Avatar de usuario no encontrado" });
     }
-    res.status(200).json(imagenes);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ mensaje: "Error al obtener las imágenes" });
+    console.error(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Obtener una imagen de usuario por ID
-export const getImagenUsuarioById = async (req, res) => {
+export const deleteImgUsuario = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const imagen = await ImagenUsuario.findByPk(req.params.id);
+    const imagenUsuario = await ImagenUsuario.findByPk(id);
 
-    //Construir la ruta completa de la imagen en el servidor
-    const rutaImagen = path.join(
-      path.dirname(new URL(import.meta.url).pathname).substring(4),
-      "..",
-      "..",
-      imagen.ruta
-    );
-    console.log(rutaImagen);
-    res.sendFile(rutaImagen, { root: "/" });
+    if (imagenUsuario) {
+      await imagenUsuario.destroy();
+      res.status(200).json({ message: "Avatar de usuario eliminado correctamente" });
+    } else {
+      res.status(404).json({ message: "Avatar de usuario no encontrado" });
+    }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ mensaje: "Error al obtener la imagen" });
+    console.error(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Actualizar una imagen de usuario por ID
-export const updateImagenUsuarioById = async (req, res) => {
+export const updateImgUsuario = async (req, res) => {
+  const { id } = req.params;
+  const { url, id_usuario } = req.body;
+
   try {
-    const { nombre, ruta, tipo_archivo, tamano_archivo, id_usuario } = req.body;
-    const imagenActualizada = await ImagenUsuario.update(
-      { nombre, ruta, tipo_archivo, tamano_archivo, id_usuario },
-      { where: { id: req.params.id } }
-    );
-    res
-      .status(200)
-      .json({ mensaje: "Imagen actualizada", imagen: imagenActualizada });
+    const imagenUsuario = await ImagenUsuario.findByPk(id);
+
+    if (imagenUsuario) {
+      imagenUsuario.url = url || imagenUsuario.url;
+      imagenUsuario.id_usuario = id_usuario || imagenUsuario.id_usuario;
+
+      await imagenUsuario.save();
+
+      res.status(200).json({ message: "Imagen de usuario actualizada correctamente" });
+    } else {
+      res.status(404).json({ message: "Imagen de usuario no encontrada" });
+    }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ mensaje: "Error al actualizar la imagen" });
+    console.error(error);
+    res.status(500).json({ message: error.message });
   }
 };
+
+export const getImgUsuarioByUserId = async (req, res) => {
+  const { id_usuario } = req.params;
+
+  try {
+    const imagenUsuario = await ImagenUsuario.findOne({
+      where: { id_usuario },
+    });
+
+    if (imagenUsuario) {
+      res.status(200).json(imagenUsuario);
+    } else {
+      res.status(404).json({ message: "Avatar de usuario no encontrado" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteImgUsuarioByUserId = async (req, res) => {
+  const { id_usuario } = req.params;
+
+  try {
+    const imagenUsuario = await ImagenUsuario.findOne({
+      where: { id_usuario },
+    });
+
+    if (imagenUsuario) {
+      await imagenUsuario.destroy();
+      res.status(200).json({ message: "Avatar de usuario eliminado correctamente" });
+    } else {
+      res.status(404).json({ message: "Avatar de usuario no encontrado" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateImgUsuarioByUserId = async (req, res) => {
+  const { id_usuario } = req.params;
+  const { url } = req.body;
+
+  try {
+    const imagenUsuario = await ImagenUsuario.findOne({
+      where: { id_usuario },
+    });
+
+    if (imagenUsuario) {
+      imagenUsuario.url = url || imagenUsuario.url;
+
+      await imagenUsuario.save();
+
+      res.status(200).json({ message: "Imagen de usuario actualizada correctamente" });
+    } else {
+      res.status(404).json({ message: "Imagen de usuario no encontrada" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+

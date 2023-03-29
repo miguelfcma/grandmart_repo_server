@@ -19,6 +19,10 @@ export const ReviewProducto = sequelizeDB.define(
       allowNull: false,
     },
     calificacion: { type: DataTypes.SMALLINT(6), allowNull: false },
+    id_producto: {
+      type: DataTypes.BIGINT(20).UNSIGNED,
+      allowNull: false,
+    },
   },
   { timestamps: true }
 );

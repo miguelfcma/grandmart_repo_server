@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+
+
 import serviciosRoutes from "./routes/serviciosRoutes/servicios.routes.js";
 import productoRoutes from "./routes/productosRoutes/productos.routes.js";
 import usuariosRoutes from "./routes/usuariosRoutes/usuarios.routes.js";
@@ -7,7 +9,7 @@ import imagenUsuariosRoutes from "./routes/usuariosRoutes/imagenUsuario.routes.j
 import categoriaRoutes from "./routes/categoriasRoutes/categorias.routes.js";
 import imagenesProductosRoutes from "./routes/productosRoutes/imgProductos.routes.js"
 import imagenesServiciosRoutes from "./routes/serviciosRoutes/imgServicios.routes.js"
-
+import domicilioUsuarioRoutes from "./routes/usuariosRoutes/domicilioUsuario.routes.js"
 
 import bdRoutes from "./routes/bdRoutes/bdRoutes.routes.js"
 import morgan from "morgan";
@@ -36,6 +38,7 @@ app.use(productoRoutes);
 app.use(serviciosRoutes);
 app.use(imagenesProductosRoutes);
 app.use(imagenesServiciosRoutes);
+app.use(domicilioUsuarioRoutes);
 app.use(bdRoutes)
 //  STATIC FILES
 
