@@ -13,65 +13,6 @@ export const createImgUsuario = async (req, res) => {
   }
 };
 
-export const getImgUsuario = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const imagenUsuario = await ImagenUsuario.findOne({
-      where: { id_usuario: id },
-    });
-
-    if (imagenUsuario) {
-      res.status(200).json(imagenUsuario);
-    } else {
-      res.status(404).json({ message: "Avatar de usuario no encontrado" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const deleteImgUsuario = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const imagenUsuario = await ImagenUsuario.findByPk(id);
-
-    if (imagenUsuario) {
-      await imagenUsuario.destroy();
-      res.status(200).json({ message: "Avatar de usuario eliminado correctamente" });
-    } else {
-      res.status(404).json({ message: "Avatar de usuario no encontrado" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const updateImgUsuario = async (req, res) => {
-  const { id } = req.params;
-  const { url, id_usuario } = req.body;
-
-  try {
-    const imagenUsuario = await ImagenUsuario.findByPk(id);
-
-    if (imagenUsuario) {
-      imagenUsuario.url = url || imagenUsuario.url;
-      imagenUsuario.id_usuario = id_usuario || imagenUsuario.id_usuario;
-
-      await imagenUsuario.save();
-
-      res.status(200).json({ message: "Imagen de usuario actualizada correctamente" });
-    } else {
-      res.status(404).json({ message: "Imagen de usuario no encontrada" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
-  }
-};
 
 export const getImgUsuarioByUserId = async (req, res) => {
   const { id_usuario } = req.params;
