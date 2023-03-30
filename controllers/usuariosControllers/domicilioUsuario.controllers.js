@@ -1,4 +1,5 @@
 import { DomicilioUsuario } from "../../models/usuariosModel/DomicilioUsuarioModel.js";
+
 export const createDomicilioUsuario = async (req, res) => {
   try {
     const data = req.body;
@@ -9,14 +10,12 @@ export const createDomicilioUsuario = async (req, res) => {
     });
 
     if (domicilioUsuarioExistente) {
-      return res
-        .status(400)
-        .json({ error: "Este usuario ya tiene una dirección registrada." });
+      return res.status(400).json({ error: "Este usuario ya tiene una dirección registrada." });
     }
 
     // Crear una nueva dirección
     const domicilioUsuario = await DomicilioUsuario.create(data);
-    res.status(201).json(domicilioUsuario);
+    res.status(201).json({ message: "Dirección de usuario creada exitosamente.", data: domicilioUsuario });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -26,7 +25,7 @@ export const deleteDomicilioUsuarioByUserId = async (req, res) => {
   try {
     const { id_usuario } = req.params;
     await DomicilioUsuario.destroy({ where: { id_usuario } });
-    res.status(204).end();
+    res.status(204).json({ message: "Dirección de usuario eliminada exitosamente." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -40,7 +39,7 @@ export const updateDomicilioUsuarioByUserId = async (req, res) => {
     const updatedDomicilioUsuario = await DomicilioUsuario.findOne({
       where: { id_usuario },
     });
-    res.status(200).json(updatedDomicilioUsuario);
+    res.status(200).json({ message: "Dirección de usuario actualizada exitosamente.", data: updatedDomicilioUsuario });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -52,7 +51,8 @@ export const getDomicilioUsuarioByUserId = async (req, res) => {
     const domicilioUsuario = await DomicilioUsuario.findOne({
       where: { id_usuario },
     });
-    res.status(200).json(domicilioUsuario);
+
+    res.status(200).json({ message: "Dirección de usuario obtenida exitosamente.", data: domicilioUsuario });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
