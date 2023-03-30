@@ -95,7 +95,6 @@ export const updateProducto = async (req, res) => {
     color,
     estado,
     id_categoria,
-    id_usuario,
   } = req.body;
   try {
     const producto = await Producto.findByPk(req.params.id);
@@ -112,7 +111,6 @@ export const updateProducto = async (req, res) => {
       color,
       estado,
       id_categoria,
-      id_usuario,
     });
     return res
       .status(200)
