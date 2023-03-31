@@ -11,6 +11,7 @@ import imagenesProductosRoutes from "./routes/productosRoutes/imgProductos.route
 import imagenesServiciosRoutes from "./routes/serviciosRoutes/imgServicios.routes.js"
 import domicilioUsuarioRoutes from "./routes/usuariosRoutes/domicilioUsuario.routes.js"
 
+import recoveryPassRoutes from "./routes/RecoveryPassRoutes/recoveryPass.routes.js"
 import bdRoutes from "./routes/bdRoutes/bdRoutes.routes.js"
 import morgan from "morgan";
 import path from "path";
@@ -39,6 +40,8 @@ app.use(serviciosRoutes);
 app.use(imagenesProductosRoutes);
 app.use(imagenesServiciosRoutes);
 app.use(domicilioUsuarioRoutes);
+app.use(recoveryPassRoutes);
+
 app.use(bdRoutes)
 //  STATIC FILES
 
