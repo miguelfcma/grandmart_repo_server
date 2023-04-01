@@ -47,7 +47,7 @@ export const sendEmail = async (req, res) => {
       // Enviar correo electrónico con el transportador definido
       let info = await transporter.sendMail({
         from: '"Tu Nombre" <grandmarthtd@gmail.com>',
-        to: "miguelangelfloca@gmail.com",
+        to: email,
         subject: "Recuperación de contraseña GRANDMART",
         text: "Contenido del correo electrónico en texto plano",
         html: `<p>Tu nueva contraseña es: ${newPassword}</p>`,
