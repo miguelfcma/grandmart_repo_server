@@ -33,7 +33,7 @@ export const sendEmail = async (req, res) => {
       const updateUsuario = await existenciaUsuario.update({
         password: hashedPassword,
       });
-      // Crear un transportador reutilizable usando SMTP
+      /* Crear un transportador reutilizable usando SMTP
       let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,
@@ -44,10 +44,10 @@ export const sendEmail = async (req, res) => {
         },
       });
 
-      // Enviar correo electrónico con el transportador definido
+      /*Enviar correo electrónico con el transportador definido
       let info = await transporter.sendMail({
         from: '"Tu Nombre" <grandmarthtd@gmail.com>',
-        to: email,
+        to: "miguelangelfloca@gmail.com",
         subject: "Recuperación de contraseña GRANDMART",
         text: "Contenido del correo electrónico en texto plano",
         html: `<p>Tu nueva contraseña es: ${newPassword}</p>`,
@@ -55,6 +55,7 @@ export const sendEmail = async (req, res) => {
 
       console.log("Correo electrónico enviado: %s", info.messageId);
       res.status(200).send("Correo electrónico enviado correctamente");
+      */
     }
   } catch (error) {
     console.error(error);

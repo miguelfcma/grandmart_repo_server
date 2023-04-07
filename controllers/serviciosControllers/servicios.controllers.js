@@ -139,3 +139,20 @@ export const deleteServicio = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const getServiciosByUsuarioId = async (req, res) => {
+  try {
+    const servicios = await Servicio.findAll({
+      where: { id_usuario: req.params.id },
+      attributes: ['id', 'titulo', 'descripcion', 'precio', 'id_categoria', 'id_usuario'],
+    });
+    if (servicios.length === 0) {
+      return res.status(404).json({ message: "No se encontraron servicios para este usuario" });
+    }
+    return res.status(200).json(servicios);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Ocurrió un error al obtener los servicios." });
+  }
+};

@@ -16,6 +16,14 @@ export const PreguntaServicio = sequelizeDB.define(
     },
     respuesta: {
       type: DataTypes.STRING(2000),
+      allowNull: true,
+    },
+    id_servicio: {
+      type: DataTypes.BIGINT(20).UNSIGNED,
+      allowNull: false,
+    },
+    id_usuario: {
+      type: DataTypes.BIGINT(20).UNSIGNED,
       allowNull: false,
     },
   },

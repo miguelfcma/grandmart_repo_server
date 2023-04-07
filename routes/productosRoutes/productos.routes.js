@@ -6,6 +6,7 @@ import {
   createProducto,
   updateProducto,
   deleteProducto,
+  getProductosByUser
 } from "../../controllers/productosControllers/productos.controller.js";
 
 const router = Router();
@@ -20,6 +21,7 @@ router.put("/productos/:id", updateProducto);
 
 router.delete("/productos/:id", deleteProducto);
 
+router.get('/productos/user/:id_usuario', getProductosByUser); 
 
 
 export default router;

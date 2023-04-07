@@ -1,95 +1,86 @@
-import { pool } from "../../database/db.js";
+import { MensajeBuzon } from "../../models/buzonModel/BuzonModel.js";
 
-export const getProductos = async (req, res) => {
+// Get all messages
+export const getAllMensajes = async (req, res) => {
   try {
-    const [result] = await pool.query("SELECT * FROM categorias");
-    if (result.length === 0) {
-      return res.status(404).json({ message: "No hay productos disponibles" });
-    }
-    res.json(result);
+    const mensajes = await MensajeBuzon.findAll();
+    res.json(mensajes);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const getProducto = async (req, res) => {
+// Get a message by ID
+export const getMensajeById = async (req, res) => {
   try {
-    const [result] = await pool.query(
-      "SELECT * FROM productos WHERE id_producto = ?",
-      [req.params.id]
-    );
-    if (result.length === 0) {
-      return res.status(404).json({ message: "Producto no encontrado" });
+    const mensaje = await MensajeBuzon.findByPk(req.params.id);
+    if (mensaje) {
+      res.json(mensaje);
+    } else {
+      res.status(404).json({ message: "Mensaje no encontrado" });
     }
-    res.json(result[0]);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const createProducto = async (req, res) => {
+// Create a new message
+export const createMensaje = async (req, res) => {
   try {
-    const {
-      nombre,
-      precio,
-      stock,
+    const { motivo, descripcion, id_usuario } = req.body;
+    const mensaje = await MensajeBuzon.create({
+      motivo,
       descripcion,
-      marca,
-      modelo,
-      color,
-      estado,
-      id_categoria,
       id_usuario,
-    } = req.body;
-    const result = await pool.query(
-      "INSERT INTO productos(nombre, precio, stock, descripcion, marca, modelo, color, estado, categorias_id_categoria, usuarios_id_usuario) VALUES(?,?,?,?,?,?,?,?,?,?)",
-      [
-        nombre,
-        precio,
-        stock,
-        descripcion,
-        marca,
-        modelo,
-        color,
-        estado,
-        id_categoria,
-        id_usuario,
-      ]
-    );
-
-    res.json({
-      nombre,
     });
+    res.json(mensaje);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const updateProducto = async (req, res) => {
+// Update a message by ID
+export const updateMensaje = async (req, res) => {
   try {
-    const [result] = await pool.query(
-      "UPDATE productos SET ? WHERE id_producto = ?",
-      [req.body, req.params.id]
-    );
-    res.json(result);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-export const deleteProducto = async (req, res) => {
-  try {
-    const [result] = await pool.query(
-      "DELETE FROM productos WHERE id_producto = ?",
-      [req.params.id]
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Producto no econtrado" });
+    const mensaje = await MensajeBuzon.findByPk(req.params.id);
+    if (mensaje) {
+      const { motivo, descripcion, id_usuario } = req.body;
+      await mensaje.update({
+        motivo,
+        descripcion,
+        id_usuario,
+      });
+      res.json(mensaje);
+    } else {
+      res.status(404).json({ message: "Mensaje no encontrado" });
     }
-
-    return res.sendStatus(204);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Delete a message by ID
+export const deleteMensaje = async (req, res) => {
+  try {
+    const mensaje = await MensajeBuzon.findByPk(req.params.id);
+    if (mensaje) {
+      await mensaje.destroy();
+      res.json({ message: "Mensaje eliminado correctamente" });
+    } else {
+      res.status(404).json({ message: "Mensaje no encontrado" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// Get all messages by user ID
+export const getMensajesByUserId = async (req, res) => {
+  try {
+    const mensajes = await MensajeBuzon.findAll({
+      where: { id_usuario: req.params.id },
+    });
+    res.json(mensajes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

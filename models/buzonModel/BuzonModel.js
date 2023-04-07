@@ -10,14 +10,23 @@ export const MensajeBuzon = sequelizeDB.define(
         autoIncrement: true,
         allowNull: false,
       },
-      titulo: {
+      motivo: {
         type: DataTypes.STRING(150),
         allowNull: false,
       },
-      mensaje: {
+      descripcion: {
         type: DataTypes.STRING(1500),
         allowNull: false,
       },
+      fecha: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      id_usuario: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+      }
     },
     { timestamps: true }
   );
