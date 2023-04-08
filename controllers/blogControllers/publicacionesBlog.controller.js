@@ -1,4 +1,5 @@
 import { PublicacionBlog } from "../../models/blogModel/PublicacionesBlogModel.js";
+import {Usuario} from "../../models/usuariosModel/UsuarioModel.js"
 
 // Función para crear una nueva publicación
 export const createPublicacion = async (req, res) => {
@@ -20,7 +21,13 @@ export const createPublicacion = async (req, res) => {
 export const getPublicaciones = async (req, res) => {
   try {
     const publicaciones = await PublicacionBlog.findAll();
-    res.status(200).json(publicaciones);
+
+    const publicacionesConUsuario = await Promise.all(publicaciones.map(async publicacion => {
+      const usuario = await Usuario.findByPk(publicacion.id_usuario, { attributes: ['id', 'nombre'] });
+      return { ...publicacion.toJSON(), usuario };
+    }));
+
+    res.status(200).json(publicacionesConUsuario);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al obtener las publicaciones" });
