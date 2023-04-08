@@ -1,4 +1,8 @@
 import { Producto } from "../../models/productosModel/ProductoModel.js";
+import { Categoria } from "../../models/categoriasModel/CategoriaModel.js";
+import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
+
+
 import { Op } from "sequelize";
 
 export const getProducto = async (req, res) => {
@@ -15,21 +19,29 @@ export const getProducto = async (req, res) => {
   }
 };
 
+
 export const getProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll({
-      attributes: ['id','nombre', 'precio', 'stock', 'descripcion', 'marca', 'modelo', 'color', 'estado', 'id_categoria', 'id_usuario'],
+      attributes: ['id', 'nombre', 'precio', 'stock', 'descripcion', 'marca', 'modelo', 'color', 'estado', 'id_categoria', 'id_usuario'],
     });
     if (productos.length === 0) {
       return res.status(404).json({ message: "No se encontraron productos" });
     }
-    return res.status(200).json(productos);
+
+    const productosConCategoriaYUsuario = await Promise.all(productos.map(async producto => {
+      const categoria = await Categoria.findByPk(producto.id_categoria, { attributes: ['id', 'nombre'] });
+      const usuario = await Usuario.findByPk(producto.id_usuario, { attributes: ['id', 'nombre'] });
+      return { ...producto.toJSON(), categoria, usuario };
+    }));
+
+    return res.status(200).json(productosConCategoriaYUsuario);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Ocurrió un error al obtener los productos." });
+    console.error(error);
+    return res.status(500).json({ message: "Ocurrió un error al obtener los productos." });
   }
 };
+
 
 
 export const createProducto = async (req, res) => {
