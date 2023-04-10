@@ -1,4 +1,5 @@
 import { ComentarioBlog } from "../../models/blogModel/ComentariosBlogModel.js";
+import {Usuario} from "../../models/usuariosModel/UsuarioModel.js"
 
 // Función para crear un nuevo comentario
 export async function createComentario(req, res) {
@@ -19,11 +20,26 @@ export async function createComentario(req, res) {
 // Función para obtener los comentarios por id de publicación
 export async function getComentariosPorIdPublicacion(req, res) {
     const { id_publicacionBlog } = req.params;
+    console.log(id_publicacionBlog)
     try {
+      if(!id_publicacionBlog){
+        res.status(404).json({ mensaje: "Error el id es indefinido" });
+      }
+
+
       const comentarios = await ComentarioBlog.findAll({
         where: { id_publicacionBlog: id_publicacionBlog },
       });
-      res.status(200).json(comentarios);
+
+
+      const comentarioConUsuario = await Promise.all(comentarios.map(async comentario => {
+        const usuario = await Usuario.findByPk(comentario.id_usuario, { attributes: ['id', 'nombre'] });
+        return { ...comentario.toJSON(), usuario };
+      }));
+      
+
+
+      res.status(200).json(comentarioConUsuario);
     } catch (error) {
       console.error(error);
       res.status(500).json({ mensaje: "Error al obtener los comentarios" });

@@ -12,7 +12,7 @@ const router = Router();
 
 // Definir las rutas para las diferentes funciones del controlador de comentarios
 router.post("/blog-comentarios", createComentario);
-router.get("/blog-comentarios/:idPublicacion", getComentariosPorIdPublicacion);
+router.get("/blog-comentarios/:id_publicacionBlog", getComentariosPorIdPublicacion);
 router.delete("/blog-comentarios/:idUsuario", deleteComentarioPorIdUsuario);
 router.put("/blog-comentarios/:idUsuario", updateComentarioPorIdUsuario);
 
