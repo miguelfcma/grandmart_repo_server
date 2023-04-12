@@ -81,10 +81,10 @@ export const updatePublicacionPorIdUsuario = async (req, res) => {
 // Función para eliminar una publicación por su id y el id del usuario
 export const deletePublicacionPorIdUsuario = async (req, res) => {
   try {
-    const id = req.params.id;
     const id_usuario = req.params.id_usuario;
+    const id_publicacionBlog = req.query.id;
     const numRows = await PublicacionBlog.destroy({
-      where: { id, id_usuario },
+      where: { id_publicacionBlog, id_usuario },
     });
     if (numRows > 0) {
       res.status(204).send();
