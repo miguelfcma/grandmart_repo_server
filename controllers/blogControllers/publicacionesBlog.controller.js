@@ -3,8 +3,6 @@ import {Usuario} from "../../models/usuariosModel/UsuarioModel.js"
 
 // Función para crear una nueva publicación
 export const createPublicacion = async (req, res) => {
-
-  console.log(req.body)
   try {
     const { titulo, descripcion, id_usuario } = req.body;
     const publicacion = await PublicacionBlog.create({
