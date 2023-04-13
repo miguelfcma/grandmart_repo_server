@@ -15,6 +15,10 @@ export const ImagenBlog = sequelizeDB.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    es_portada: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
     id_publicacionBlog: {
       type: DataTypes.BIGINT(20).UNSIGNED,
       allowNull: false,

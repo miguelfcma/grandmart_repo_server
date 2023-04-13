@@ -14,14 +14,33 @@ export const createImagen = async (req, res) => {
   }
 };
 
-
+export const createImagenes = async (imagenes) => {
+  try {
+    const results = await Promise.all(imagenes.map(async (imagen) => {
+      const es_portada = imagen.es_portada ? true : false;
+      const imagenBlog = await ImagenBlog.create({
+        url: imagen.url,
+        id_publicacionBlog: imagen.id_publicacionBlog,
+        es_portada,
+      });
+      return imagenBlog;
+    }));
+    return { status: 201, message: "Imágenes creadas correctamente", data: results };
+  } catch (error) {
+    console.error(error);
+    throw { status: 500, message: "Error al crear las imágenes", error: error };
+  }
+}
 
 // Función para obtener las imágenes por id de publicación
 export const getImagenesPorIdPublicacion = async (req, res) => {
+  console.log("webos en salsa verde")
+  console.log(req.params.id_publicacionBlog)
+  console.log("webos en salsa verde")
   try {
     const imagenes = await ImagenBlog.findAll({
       where: {
-        id_publicacionBlog: req.params.id,
+        id_publicacionBlog: req.params.id_publicacionBlog,
       },
     });
     res.status(200).json(imagenes);
@@ -66,5 +85,21 @@ export const deleteImagenPorIdPublicacion = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al eliminar la imagen" });
+  }
+};
+
+// Función para obtener la imagen de portada por id de publicación
+export const getImagenPortadaPorIdPublicacion = async (req, res) => {
+  try {
+    const imagen = await ImagenBlog.findOne({
+      where: {
+        id_publicacionBlog: req.params.id_publicacionBlog,
+        es_portada: true,
+      },
+    });
+    res.status(200).json(imagen);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al obtener la imagen de portada" });
   }
 };

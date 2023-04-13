@@ -14,6 +14,10 @@ export const ImagenUsuario = sequelizeDB.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    es_portada: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
     id_usuario: {
       type: DataTypes.BIGINT(20).UNSIGNED,
       autoIncrement: false,
