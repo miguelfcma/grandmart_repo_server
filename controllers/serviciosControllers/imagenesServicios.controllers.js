@@ -18,23 +18,33 @@ export const createImgServicio = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-export const getImgServicio = async (req, res) => {
-  const { id } = req.params;
-
+export const createImagenes = async (req, res) => {
+ 
+  const id_servicio = req.body.id_servicio;
+  const imagenes = req.body.imagenes;
   try {
-    const imagenServicio = await ImagenServicio.findOne({
-      where: { id_servicio: id, es_portada: true },
-    });
+    const results = await Promise.all(
+      imagenes.map(async (imagen, index) => {
+        const es_portada = index === 0 ? true : false;
+        const imagenServicio = await ImagenServicio.create({
+          url: imagen,
+          id_servicio,
+          es_portada,
+        });
+        return imagenServicio;
+      })
+    );
 
-    if (imagenServicio) {
-      res.status(200).json(imagenServicio);
-    } else {
-      res.status(404).json({ message: "Imagen de servicio no encontrada" });
-    }
+    res.status(201).json({
+      message: "Imágenes creadas correctamente",
+      data: results,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: "Error al crear las imágenes",
+      error: error,
+    });
   }
 };
 
@@ -58,34 +68,17 @@ export const deleteImgServicio = async (req, res) => {
   }
 };
 
-export const getImagenesServicio = async (req, res) => {
-  const { id_servicio } = req.params;
-
+export const getImagenesPorIdServicio = async (req, res) => {
   try {
-    const imagenesServicio = await ImagenServicio.findAll({
-      where: { id_servicio: id_servicio, es_portada: false },
+    const imagenes = await ImagenServicio.findAll({
+      where: {
+        id_servicio: req.params.id_servicio,
+      },
     });
-
-    res.status(200).json(imagenesServicio);
+    res.status(200).json(imagenes);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const getAllImagenesServicio = async (req, res) => {
-  const { id_servicio } = req.params;
-
-  try {
-    const imagenesServicio = await ImagenServicio.findAll({
-      where: { id_servicio: id_servicio },
-      attributes: ["url"],
-    });
-
-    res.status(200).json(imagenesServicio);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error al obtener las imágenes" });
   }
 };
 
