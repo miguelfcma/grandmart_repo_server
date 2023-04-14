@@ -4,7 +4,7 @@ import { PreguntaProducto } from "../../models/productosModel/PreguntasProductoM
 export const crearPregunta = async (req, res) => {
   try {
     const { pregunta, id_producto, id_usuario } = req.body;
-    const nuevaPregunta = await ProductoPregunta.create({
+    const nuevaPregunta = await PreguntaProducto.create({
       pregunta,
       id_producto,
       id_usuario,
@@ -21,7 +21,7 @@ export const crearRespuesta = async (req, res) => {
   try {
     const { id } = req.params;
     const { respuesta } = req.body;
-    const pregunta = await ProductoPregunta.findOne({ where: { id } });
+    const pregunta = await PreguntaProducto.findOne({ where: { id } });
     pregunta.respuesta = respuesta;
     await pregunta.save();
     res.status(200).json(pregunta);
@@ -35,7 +35,7 @@ export const crearRespuesta = async (req, res) => {
 export const getPreguntasByIdProducto = async (req, res) => {
   try {
     const { id_producto } = req.params;
-    const preguntas = await ProductoPregunta.findAll({ where: { id_producto } });
+    const preguntas = await PreguntaProducto.findAll({ where: { id_producto } });
     res.status(200).json(preguntas);
   } catch (error) {
     console.error(error);
@@ -47,7 +47,7 @@ export const getPreguntasByIdProducto = async (req, res) => {
 export const eliminarPregunta = async (req, res) => {
   try {
     const { id } = req.params;
-    const pregunta = await ProductoPregunta.findOne({ where: { id } });
+    const pregunta = await PreguntaProducto.findOne({ where: { id } });
     if (!pregunta) {
       return res.status(404).send('Pregunta no encontrada');
     }
@@ -64,7 +64,7 @@ export const actualizarPregunta = async (req, res) => {
   try {
     const { id } = req.params;
     const { pregunta, id_producto, id_usuario } = req.body;
-    const preguntaActualizada = await ProductoPregunta.update(
+    const preguntaActualizada = await PreguntaProducto.update(
       { pregunta, id_producto, id_usuario },
       { where: { id } }
     );
