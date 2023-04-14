@@ -1,5 +1,6 @@
 import { PreguntaProducto } from "../../models/productosModel/PreguntasProductoModel.js";
-
+import { Producto } from "../../models/productosModel/ProductoModel.js";
+import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 // Crear una nueva pregunta
 export const crearPregunta = async (req, res) => {
   try {
@@ -36,7 +37,18 @@ export const getPreguntasByIdProducto = async (req, res) => {
   try {
     const { id_producto } = req.params;
     const preguntas = await PreguntaProducto.findAll({ where: { id_producto } });
-    res.status(200).json(preguntas);
+
+    if (preguntas.length === 0) {
+      return res.status(404).json({ message: "No se encontraron preguntas" });
+    }
+    const preguntasConUsuarioYProducto = await Promise.all(preguntas.map(async pregunta => {
+      const producto = await Producto.findByPk(pregunta.id_producto, { attributes: ['id', 'nombre'] });
+      const usuario = await Usuario.findByPk(pregunta.id_usuario, { attributes: ['id', 'nombre'] });
+      return { ...pregunta.toJSON(), producto, usuario };
+    }));
+
+
+    res.status(200).json(preguntasConUsuarioYProducto);
   } catch (error) {
     console.error(error);
     res.status(500).send('Error interno del servidor');
