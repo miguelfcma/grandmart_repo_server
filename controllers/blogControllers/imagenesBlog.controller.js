@@ -15,7 +15,6 @@ export const createImagen = async (req, res) => {
 };
 
 export const createImagenes = async (req, res) => {
-
   const id_publicacionBlog = req.body.id_publicacionBlog;
   const imagenes = req.body.imagenes;
   try {
@@ -30,14 +29,17 @@ export const createImagenes = async (req, res) => {
         return imagenBlog;
       })
     );
-    return {
-      status: 201,
+
+    res.status(201).json({
       message: "Imágenes creadas correctamente",
       data: results,
-    };
+    });
   } catch (error) {
     console.error(error);
-    throw { status: 500, message: "Error al crear las imágenes", error: error };
+    res.status(500).json({
+      message: "Error al crear las imágenes",
+      error: error,
+    });
   }
 };
 
