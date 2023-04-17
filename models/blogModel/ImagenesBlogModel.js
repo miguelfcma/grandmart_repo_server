@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
 
 export const ImagenBlog = sequelizeDB.define(
-  "imagenesBlog",
+  "imagenesBlogs",
 
   {
     id: {

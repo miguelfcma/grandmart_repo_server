@@ -1,9 +1,7 @@
-//Creacion del modelo de productos
-
-//importamos los  tipos de datos que sequelize tiene para poder definir los atributos de cada modelo
 import { DataTypes } from "sequelize";
 //importamos la conexiion con la base de datos
 import { sequelizeDB } from "../../database/db.js";
+import { DetalleOrden } from "../ordenesModel/OrdenDetallesModel.js";
 
 
 export const Producto = sequelizeDB.define(

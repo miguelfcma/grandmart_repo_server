@@ -1,8 +1,6 @@
 import express from "express";
 import cors from "cors";
 
-
-
 // Rutas de usuarios
 import usuariosRoutes from "./routes/usuariosRoutes/usuarios.routes.js";
 import imagenUsuariosRoutes from "./routes/usuariosRoutes/imagenUsuario.routes.js";
@@ -26,7 +24,7 @@ import reviewsServiciosRoutes from "./routes/serviciosRoutes/reviewsServicio.rou
 // Rutas de blog
 import publicacionBlogRoutes from "./routes/blogRoutes/publicacionBlog.routes.js";
 import comentarioBlogRoutes from "./routes/blogRoutes/comentarioBlog.routes.js";
-import imagenBlogRoutes from  "./routes/blogRoutes/imagenBlog.routes.js";
+import imagenBlogRoutes from "./routes/blogRoutes/imagenBlog.routes.js";
 
 // Rutas de buzon
 import buzonRoutes from "./routes/buzonRoutes/buzon.routes.js";
@@ -37,6 +35,13 @@ import recoveryPassRoutes from "./routes/RecoveryPassRoutes/recoveryPass.routes.
 // Rutas de la base de datos
 import bdRoutes from "./routes/bdRoutes/bdRoutes.routes.js";
 
+//Rutas de carrito de productos
+import carritoProductosRoutes from "./routes/productosRoutes/carritoProductos.routes.js";
+//Rutas de favoritos
+import favoritosProductosRoutes from "./routes/productosRoutes/favoritosProductos.routes.js";
+
+//ordenes
+import ordenesRoutes from "./routes/ordenesRoutes/ordenes.routes.js"
 
 import morgan from "morgan";
 import path from "path";
@@ -87,18 +92,16 @@ app.use(buzonRoutes);
 //Rutas de Recuperacion de contraseña
 app.use(recoveryPassRoutes);
 
+//Rutas de carrito de productos
+app.use(carritoProductosRoutes);
+//Rutas de favoritos
+app.use(favoritosProductosRoutes);
 // Rutas de la base de datos
-app.use(bdRoutes)
+app.use(bdRoutes);
 
+//ordenes
 
-
-
-
-
-
-
-
-
+app.use(ordenesRoutes);
 
 //  STATIC FILES
 

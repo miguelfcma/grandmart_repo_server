@@ -1,8 +1,9 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
-
-export const MensajeBuzon = sequelizeDB.define(
-  "mensajeBuzons",
+import { Orden } from "./OrdenModel.js";
+// Modelo de Detalle de Orden
+export const DetalleOrden = sequelizeDB.define(
+  "orden_detalles",
   {
     id: {
       type: DataTypes.BIGINT(20).UNSIGNED,
@@ -10,26 +11,24 @@ export const MensajeBuzon = sequelizeDB.define(
       autoIncrement: true,
       allowNull: false,
     },
-    motivo: {
-      type: DataTypes.STRING(150),
+    cantidad: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
+    precio_unitario: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    id_producto: {
+      type: DataTypes.BIGINT(20).UNSIGNED,
       allowNull: false,
     },
-    descripcion: {
-      type: DataTypes.STRING(1500),
-      allowNull: false,
-    },
-    fecha: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    id_usuario: {
+    id_orden: {
       type: DataTypes.BIGINT(20).UNSIGNED,
       allowNull: false,
     },
   },
-  {
-    timestamps: true,
-    freezeTableName: true, // se desactiva la pluralización del nombre de la tabla
-  }
+  { timestamps: true }
 );
