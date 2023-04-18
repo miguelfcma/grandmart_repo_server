@@ -1,9 +1,10 @@
 import { Carrito_compra_detalles } from "../../models/productosModel/CarritoCompraDetallesModel.js";
 import { Carritos_compras } from "../../models/productosModel/CarritoComprasModel.js";
+import { Producto } from "../../models/productosModel/ProductoModel.js";
 
 export const agregarProductoAlCarrito = async (req, res) => {
   try {
-    const { id_producto, cantidad, id_usuario } = req.body;
+    const { id_producto, id_usuario } = req.body;
 
     // Buscar el carrito de compras del usuario
     let carrito = await Carritos_compras.findOne({
@@ -19,36 +20,59 @@ export const agregarProductoAlCarrito = async (req, res) => {
     }
 
     // Buscar si el producto ya está en el carrito de compras
-    const detalle = await Carrito_compra_detalles.findOne({
+    let detalle = await Carrito_compra_detalles.findOne({
       where: { id_carrito_compra: carrito.id, id_producto: id_producto },
     });
 
+    // Verificar si hay suficiente stock de producto
+    const producto = await Producto.findOne({ where: { id: id_producto } });
+    if (!producto) {
+      return res.status(404).json({ mensaje: "No se encontró el producto" });
+    }
+
     if (detalle) {
       // Si el producto ya está en el carrito, se actualiza la cantidad
-      detalle.cantidad += cantidad;
-      await detalle.save();
+      if (producto.stock >= detalle.cantidad + 1) {
+        detalle.cantidad += 1;
+        await detalle.save();
+      } else {
+        return res
+          .status(400)
+          .json({ mensaje: "No hay suficiente stock del producto" });
+      }
     } else {
       // Si el producto no está en el carrito, se agrega como un nuevo detalle
-      await Carrito_compra_detalles.create({
-        id_carrito_compra: carrito.id,
-        id_producto: id_producto,
-        cantidad: cantidad,
-      });
+      if (producto.stock >= 1) {
+        detalle = await Carrito_compra_detalles.create({
+          id_carrito_compra: carrito.id,
+          id_producto: id_producto,
+          cantidad: 1,
+        });
+      } else {
+        return res
+          .status(400)
+          .json({ mensaje: "No hay suficiente stock del producto" });
+      }
     }
 
     // Actualizar el total del carrito de compras
     const detalles = await Carrito_compra_detalles.findAll({
       where: { id_carrito_compra: carrito.id },
     });
-    const total = detalles.reduce(
-      (total, detalle) => total + detalle.cantidad * detalle.precio,
-      0
-    );
-    carrito.total = total;
+
     await carrito.save();
 
-    // Devolver el carrito de compras actualizado
-    res.status(200).json(carrito);
+    // Buscar el producto correspondiente al detalle del carrito de compras
+    const productoDetalles = await Producto.findByPk(detalle.id_producto, {
+      attributes: ["id", "nombre", "precio"],
+    });
+
+    const respuesta = {
+      mensaje: "Producto agregado",
+      detalle: { ...detalle.toJSON(), producto: productoDetalles }, // Combinar el detalle del carrito de compras con el producto encontrado
+    };
+
+    return res.status(200).json(respuesta);
   } catch (error) {
     console.error(error);
 
@@ -61,7 +85,7 @@ export const agregarProductoAlCarrito = async (req, res) => {
 export const actualizarCantidadProductoEnCarrito = async (req, res) => {
   try {
     const id_producto = req.params.id_producto;
-    const { cantidad, id_usuario } = req.body;
+    const { id_usuario, accion } = req.body; // Eliminar el parámetro 'cantidad'
 
     // Buscar el carrito de compras del usuario
     const carrito = await Carritos_compras.findOne({ where: { id_usuario } });
@@ -72,33 +96,58 @@ export const actualizarCantidadProductoEnCarrito = async (req, res) => {
         .json({ mensaje: "No se encontró el carrito de compras del usuario" });
     }
 
-    // Buscar el detalle del carrito de compras correspondiente al producto
-    const detalleCarrito = await Carrito_compra_detalles.findOne({
-      where: { id_carrito_compra: carrito.id, id_producto },
+    // Buscar el detalle del producto en el carrito de compras
+    const detalle = await Carrito_compra_detalles.findOne({
+      where: { id_carrito_compra: carrito.id, id_producto: id_producto },
     });
 
-    if (!detalleCarrito) {
+    if (!detalle) {
       return res.status(404).json({
         mensaje: "No se encontró el producto en el carrito de compras",
       });
     }
 
-    // Actualizar la cantidad del detalle y el total del carrito de compras
-    detalleCarrito.cantidad = cantidad;
-    await detalleCarrito.save();
+    // Verificar si hay suficiente stock de producto
+    const producto = await Producto.findOne({ where: { id: id_producto } });
+    if (!producto) {
+      return res.status(404).json({ mensaje: "No se encontró el producto" });
+    }
 
+    // Actualizar la cantidad del producto en el carrito de compras
+    if (accion === "incrementar") {
+      if (detalle.cantidad + 1 > producto.stock) {
+        return res
+          .status(400)
+          .json({ mensaje: "No hay suficiente stock del producto" });
+      }
+      detalle.cantidad += 1;
+    } else if (accion === "decrementar") {
+      if (detalle.cantidad - 1 < 1) {
+        return res.status(400).json({ mensaje: "La cantidad mínima es 1" });
+      }
+      detalle.cantidad -= 1;
+    } else {
+      return res.status(400).json({ mensaje: "Acción inválida" });
+    }
 
-    await carrito.save();
+    await detalle.save();
+    // Buscar el producto correspondiente al detalle del carrito de compras
+    const productoDetalles = await Producto.findByPk(detalle.id_producto, {
+      attributes: ["id", "nombre", "precio"],
+    });
 
-    // Devolver una respuesta con el detalle del carrito actualizado
-    return res
-      .status(200)
-      .json({ mensaje: "Cantidad del producto actualizada", detalleCarrito });
+    const respuesta = {
+      mensaje: "Cantidad de producto actualizada",
+      detalle: { ...detalle.toJSON(), producto: productoDetalles }, // Combinar el detalle del carrito de compras con el producto encontrado
+    };
+
+    return res.status(200).json(respuesta);
   } catch (error) {
     console.error(error);
-    console.log(error);
-    return res.status(500).json({
-      mensaje: "Ocurrió un error al actualizar la cantidad del producto",
+
+    res.status(500).json({
+      mensaje:
+        "Error al actualizar la cantidad del producto en el carrito de compras",
     });
   }
 };
@@ -121,9 +170,18 @@ export const obtenerCarritoDeCompras = async (req, res) => {
       where: { id_carrito_compra: carrito.id },
     });
 
+    const detallesCarritoConProducto = await Promise.all(
+      detallesCarrito.map(async (datalle) => {
+        const producto = await Producto.findByPk(datalle.id_producto, {
+          attributes: ["id", "nombre", "precio"],
+        });
+        return { ...datalle.toJSON(), producto };
+      })
+    );
+
     const respuesta = {
       carrito,
-      detalles: detallesCarrito,
+      detalleCarrito: detallesCarritoConProducto,
     };
 
     return res.status(200).json(respuesta);
@@ -177,7 +235,21 @@ export const eliminarProductoDelCarrito = async (req, res) => {
     await carrito.save();
 
     // Devolver una respuesta con el detalle del carrito actualizado
-    return res.json(detallesCarrito);
+    const detallesCarritoConProducto = await Promise.all(
+      detallesCarrito.map(async (datalle) => {
+        const producto = await Producto.findByPk(datalle.id_producto, {
+          attributes: ["id", "nombre", "precio"],
+        });
+        return { ...datalle.toJSON(), producto };
+      })
+    );
+
+    const respuesta = {
+      mensaje: "Producto eliminado del carrito",
+      detalleCarrito: detallesCarritoConProducto,
+    };
+
+    return res.status(200).json(respuesta);
   } catch (error) {
     console.error(error);
     console.log(error);
