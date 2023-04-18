@@ -195,9 +195,11 @@ export const obtenerCarritoDeCompras = async (req, res) => {
 };
 
 export const eliminarProductoDelCarrito = async (req, res) => {
+
   try {
     const id_producto = req.params.id_producto;
-    const id_usuario = req.body.id_usuario; // Se asume que el usuario está autenticado y su id se encuentra en el token
+    const id_usuario = req.query.id_usuario;
+
 
     // Buscar el carrito de compras del usuario
     const carrito = await Carritos_compras.findOne({ where: { id_usuario } });
@@ -259,7 +261,7 @@ export const eliminarProductoDelCarrito = async (req, res) => {
 
 export const vaciarCarrito = async (req, res) => {
   try {
-    const id_usuario = req.body.id_usuario; // Se asume que el usuario está autenticado y su id se encuentra en el token
+    const id_usuario = req.params.id_usuario; // Se asume que el usuario está autenticado y su id se encuentra en el token
 
     // Buscar el carrito de compras del usuario
     const carrito = await Carritos_compras.findOne({ where: { id_usuario } });
