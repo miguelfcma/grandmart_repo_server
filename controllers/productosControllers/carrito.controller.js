@@ -198,7 +198,7 @@ export const eliminarProductoDelCarrito = async (req, res) => {
 
   try {
     const id_producto = req.params.id_producto;
-    const id_usuario = req.query.id_usuario;
+    const id_usuario = req.body.id_usuario;
 
 
     // Buscar el carrito de compras del usuario
@@ -227,14 +227,6 @@ export const eliminarProductoDelCarrito = async (req, res) => {
     const detallesCarrito = await Carrito_compra_detalles.findAll({
       where: { id_carrito_compra: carrito.id },
     });
-    let totalCarrito = 0;
-
-    detallesCarrito.forEach((detalle) => {
-      totalCarrito += detalle.cantidad * detalle.precio_unitario;
-    });
-
-    carrito.total = totalCarrito;
-    await carrito.save();
 
     // Devolver una respuesta con el detalle del carrito actualizado
     const detallesCarritoConProducto = await Promise.all(
@@ -254,7 +246,6 @@ export const eliminarProductoDelCarrito = async (req, res) => {
     return res.status(200).json(respuesta);
   } catch (error) {
     console.error(error);
-    console.log(error);
     return res.status(500).json({ mensaje: "Error en el servidor" });
   }
 };

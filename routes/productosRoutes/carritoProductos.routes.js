@@ -16,7 +16,7 @@ router.put('/carrito/:id_producto',  actualizarCantidadProductoEnCarrito);
 router.get('/carrito/:id_usuario',  obtenerCarritoDeCompras);
 
 // Rutas para eliminar productos del carrito
-router.delete('/carrito/:id_producto',  eliminarProductoDelCarrito);
+router.post('/carrito/eliminar-producto/:id_producto',  eliminarProductoDelCarrito);
 
 router.delete("/carrito/vaciar/:id_usuario", vaciarCarrito);
 
