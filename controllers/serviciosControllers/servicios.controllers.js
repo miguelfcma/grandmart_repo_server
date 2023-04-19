@@ -143,7 +143,7 @@ export const deleteServicio = async (req, res) => {
 export const getServiciosByUsuarioId = async (req, res) => {
   try {
     const servicios = await Servicio.findAll({
-      where: { id_usuario: req.params.id },
+      where: { id_usuario: req.params.id_usuario },
       attributes: ['id', 'titulo', 'descripcion', 'precio', 'id_categoria', 'id_usuario'],
     });
     if (servicios.length === 0) {

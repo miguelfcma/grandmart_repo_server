@@ -20,6 +20,6 @@ router.put("/servicios/:id", updateServicio);
 
 router.delete("/servicios/:id", deleteServicio);
 
-router.delete("/servicios/user/:id_usuario", getServiciosByUsuarioId);
+router.get("/servicios/user/:id_usuario", getServiciosByUsuarioId);
 
 export default router;
