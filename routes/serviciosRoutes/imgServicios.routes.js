@@ -4,7 +4,7 @@ import {
   createImgServicio,
   createImagenes,
   deleteImgServicio,
-  getImagenesPorIdServicio,
+  getAllImagenesPorIdServicio,
   getPortada,
   updateImgServicio,
 } from "../../controllers/serviciosControllers/imagenesServicios.controllers.js";
@@ -12,9 +12,9 @@ import {
 const router = Router();
 
 // Rutas para las imágenes de servicio
-router.post("/servicio-imagenes/", createImgServicio);
+router.post("/servicio-images/", createImgServicio);
 router.post("/servicio-imagenes/multiple", createImagenes);
-router.get("/servicio-imagenes/:id_servicio", getImagenesPorIdServicio);
+router.get("/servicio-images/todas/:id_servicio", getAllImagenesPorIdServicio);
 router.get("/servicio-imagenes/portada/:id_servicio", getPortada);
 router.put("/servicio-imagenes/:id", updateImgServicio);
 router.delete("/servicio-imagenes/:id", deleteImgServicio);

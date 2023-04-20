@@ -68,7 +68,7 @@ export const deleteImgServicio = async (req, res) => {
   }
 };
 
-export const getImagenesPorIdServicio = async (req, res) => {
+export const getAllImagenesPorIdServicio = async (req, res) => {
   try {
     const imagenes = await ImagenServicio.findAll({
       where: {
