@@ -4,7 +4,8 @@ import {
   obtenerOrdenesUsuario,
   actualizarEstadoOrden,
   obtenerDetalleOrden,
-  obtenerTodasLasOrdenes
+  obtenerTodasLasOrdenes,
+  obtenerDireccionEnvioOrden
 } from "../../controllers/ordenesControllers/ordenes.controllers.js";
 
 const router = Router();
@@ -15,5 +16,5 @@ router.get("/ordenes-all/", obtenerTodasLasOrdenes);
 router.get("/ordenes/:id_usuario", obtenerOrdenesUsuario);
 router.put("/ordenes/:id_orden", actualizarEstadoOrden);
 router.get("/ordenes/detalles/:id_orden", obtenerDetalleOrden);
-
+router.get("/ordenes/direccion/:id_orden", obtenerDireccionEnvioOrden)
 export default router;

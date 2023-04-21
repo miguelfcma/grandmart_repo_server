@@ -41,8 +41,7 @@ export const obtenerTodasLasOrdenes = async (req, res) => {
 };
 
 export const obtenerDireccionEnvioOrden = async (req, res) => {
-  const { id_orden } = req.params.id_orden; // Obtener el id de orden desde el cuerpo de la solicitud
-
+  const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
   try {
     // Buscar la dirección de envío en base al ID de orden
     const direccion_envio = await DireccionEnvio.findOne({
