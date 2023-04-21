@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
-import { Orden } from "./OrdenModel.js";
+
 // Modelo de Detalle de Orden
 export const DetalleOrden = sequelizeDB.define(
   "orden_detalles",

@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
-import { DetalleOrden } from "./OrdenDetallesModel.js";
 
 export const Orden = sequelizeDB.define(
   "ordenes",
@@ -17,7 +16,7 @@ export const Orden = sequelizeDB.define(
       defaultValue: 0,
     },
     estado_orden: {
-      type: DataTypes.ENUM("pendiente", "en proceso", "enviado", "entregado"),
+      type: DataTypes.ENUM("pendiente", "en proceso", "enviado", "entregado","cancelado"),
       allowNull: false,
       defaultValue: "pendiente",
     },

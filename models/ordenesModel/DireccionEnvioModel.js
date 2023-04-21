@@ -1,8 +1,9 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
+ 
 
-export const DomicilioUsuario = sequelizeDB.define(
-  "domicilioUsuario",
+export const DireccionEnvio = sequelizeDB.define(
+  "direccion_envios",
   {
     id: {
       type: DataTypes.BIGINT(20).UNSIGNED,
@@ -10,7 +11,7 @@ export const DomicilioUsuario = sequelizeDB.define(
       autoIncrement: true,
       allowNull: false,
     },
-    id_usuario: {
+    id_orden: { // Corrección: Se agrega la columna id_orden
       type: DataTypes.BIGINT(20).UNSIGNED,
       allowNull: false,
     },

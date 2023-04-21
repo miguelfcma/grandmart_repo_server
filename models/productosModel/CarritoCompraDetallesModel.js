@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
-import { Producto } from "./ProductoModel.js";
 
 export const Carrito_compra_detalles  = sequelizeDB.define(
   "carrito_compra_detalles",

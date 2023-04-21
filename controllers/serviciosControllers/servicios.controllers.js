@@ -9,7 +9,16 @@ export const getServicio = async (req, res) => {
     if (!servicio) {
       return res.status(404).json({ message: "Servicio no encontrado" });
     }
-    return res.status(200).json(servicio);
+
+    const servicioConCategoriaYUsuario = await Promise.all(servicio.map(async servicio => {
+      const categoria = await Categoria.findByPk(servicio.id_categoria, { attributes: ['id', 'nombre'] });
+      const usuario = await Usuario.findByPk(servicio.id_usuario, { attributes: ['id', 'nombre'] });
+      return { ...servicio.toJSON(), categoria, usuario };
+    }));
+
+
+
+    return res.status(200).json(servicioConCategoriaYUsuario);
   } catch (error) {
     return res
       .status(500)
@@ -25,7 +34,15 @@ export const getServicios = async (req, res) => {
     if (servicios.length === 0) {
       return res.status(404).json({ message: "No se encontraron servicios" });
     }
-    return res.status(200).json(servicios);
+
+    const serviciosConCategoriaYUsuario = await Promise.all(servicios.map(async servicio => {
+      const categoria = await Categoria.findByPk(servicio.id_categoria, { attributes: ['id', 'nombre'] });
+      const usuario = await Usuario.findByPk(servicio.id_usuario, { attributes: ['id', 'nombre'] });
+      return { ...servicio.toJSON(), categoria, usuario };
+    }));
+
+    
+    return res.status(200).json(serviciosConCategoriaYUsuario);
   } catch (error) {
     return res
       .status(500)
