@@ -24,6 +24,10 @@ export const Orden = sequelizeDB.define(
       type: DataTypes.BIGINT(20).UNSIGNED,
       allowNull: false,
     },
+    fechaEntrega: {  // Atributo agregado
+      type: DataTypes.DATE,
+      allowNull: true, // Cambiar a false si la fecha de entrega es obligatoria
+    },
   },
   { timestamps: true }
 );
