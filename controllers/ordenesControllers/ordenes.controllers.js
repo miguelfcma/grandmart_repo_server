@@ -65,18 +65,24 @@ export const obtenerDireccionEnvioOrden = async (req, res) => {
     // Verificar si se encontró la dirección de envío
     if (direccion_envio) {
       // Enviar la dirección de envío como respuesta con un mensaje de éxito y código de estado 200
-      return res.status(200).json({ message: "Dirección de envío encontrada", direccion_envio });
+      return res
+        .status(200)
+        .json({ message: "Dirección de envío encontrada", direccion_envio });
     } else {
       // Si no se encontró la dirección de envío, enviar una respuesta de error con código de estado 404
-      return res.status(404).json({ error: "No se encontró la dirección de envío para la orden proporcionada" });
+      return res.status(404).json({
+        error:
+          "No se encontró la dirección de envío para la orden proporcionada",
+      });
     }
   } catch (error) {
     console.error("Error al obtener la dirección de envío de la orden:", error);
     // Enviar una respuesta de error con código de estado 500
-    return res.status(500).json({ error: "Error al obtener la dirección de envío de la orden" });
+    return res
+      .status(500)
+      .json({ error: "Error al obtener la dirección de envío de la orden" });
   }
 };
-
 
 // Función para crear una nueva orden
 export const crearOrden = async (req, res) => {
@@ -220,6 +226,9 @@ export const actualizarEstadoOrden = async (req, res) => {
 
     // Actualizar el estado de la orden
     orden.estado_orden = estado_orden;
+    if (estado_orden === "entregado") {
+      orden.fechaEntrega = new Date(); // Registrar la fecha de entrega como la fecha y hora actuales
+    }
     await orden.save();
 
     return res.status(200).json(orden);
@@ -266,5 +275,32 @@ export const obtenerDetalleOrden = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Error al obtener los detalles de la orden" });
+  }
+};
+
+export const obtenerPedidosPorUsuario = async (req, res) => {
+  const { id_usuario } = req.params;
+  try {
+    const detallesOrden = await DetalleOrden.findAll();
+    const detallesOrdenConProducto = await Promise.all(
+      detallesOrden.map(async (detalle) => {
+        const orden = await Orden.findByPk(detalle.id_orden); // Obtener la orden relacionada
+        const producto = await Producto.findByPk(detalle.id_producto, {
+          attributes: ["id", "nombre", "precio", "id_usuario"],
+        });
+        return { ...detalle.toJSON(), producto, orden };
+      })
+    );
+    const detallesOrdenFiltrados = detallesOrdenConProducto.filter(detalles => detalles.orden.id_usuario === parseInt(id_usuario));
+
+    const respuesta = {
+      message: "ProductosPedidos encontrados",
+      productosPedidos: detallesOrdenFiltrados,
+    };
+
+    return res.status(200).json(respuesta);
+  } catch (error) {
+    console.error("Error al obtener productosPedidos:", error);
+    return res.status(500).json({ error: "Error al obtener productosPedidos" });
   }
 };

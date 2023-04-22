@@ -86,3 +86,38 @@ export const actualizarPregunta = async (req, res) => {
     res.status(500).send('Error interno del servidor');
   }
 };
+
+// Obtener productos del usuario con preguntas asociadas
+export const getProductosConPreguntasByUsuarioId = async (req, res) => {
+  try {
+    const { id_usuario } = req.params;
+
+    // Buscar productos del usuario por su ID de usuario
+    const productos = await Producto.findAll({ where: { id_usuario } });
+
+    if (productos.length === 0) {
+      return res.status(404).json({ message: "No se encontraron productos para el usuario especificado" });
+    }
+
+    const productosConPreguntas = await Promise.all(productos.map(async producto => {
+      // Buscar preguntas asociadas al producto
+      const preguntas = await PreguntaProducto.findAll({ where: { id_producto: producto.id } });
+
+      if (preguntas.length > 0) {
+        // Si el producto tiene preguntas asociadas, agregarlas como propiedad al objeto de producto
+        return { ...producto.toJSON(), preguntas };
+      } else {
+        // Si el producto no tiene preguntas asociadas, devolver null
+        return null;
+      }
+    }));
+
+    // Filtrar los productos nulos (que no tienen preguntas asociadas)
+    const productosConPreguntasFiltrados = productosConPreguntas.filter(producto => producto !== null);
+
+    res.status(200).json(productosConPreguntasFiltrados);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error interno del servidor');
+  }
+};

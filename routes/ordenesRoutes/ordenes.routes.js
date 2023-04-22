@@ -5,7 +5,8 @@ import {
   actualizarEstadoOrden,
   obtenerDetalleOrden,
   obtenerTodasLasOrdenes,
-  obtenerDireccionEnvioOrden
+  obtenerDireccionEnvioOrden,
+  obtenerPedidosPorUsuario
 } from "../../controllers/ordenesControllers/ordenes.controllers.js";
 
 const router = Router();
@@ -13,8 +14,10 @@ const router = Router();
 // Rutas para agregar productos al carrito
 router.post("/ordenes", crearOrden);
 router.get("/ordenes-all/", obtenerTodasLasOrdenes);
-router.get("/ordenes/:id_usuario", obtenerOrdenesUsuario);
+router.get("/ordenes/usuario/:id_usuario", obtenerOrdenesUsuario);
 router.put("/ordenes/:id_orden", actualizarEstadoOrden);
 router.get("/ordenes/detalles/:id_orden", obtenerDetalleOrden);
 router.get("/ordenes/direccion/:id_orden", obtenerDireccionEnvioOrden)
+router.get("/ordenes/pedidos/:id_usuario", obtenerPedidosPorUsuario)
+
 export default router;
