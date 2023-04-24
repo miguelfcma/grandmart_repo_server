@@ -1,5 +1,5 @@
 import { FavoritosProductos } from "../../models/productosModel/FavoritoProductoModel.js";
-
+import { Producto } from "../../models/productosModel/ProductoModel.js";
 export const obtenerFavoritos = async (req, res) => {
   const { id_usuario } = req.params;
   try {
@@ -12,19 +12,28 @@ export const obtenerFavoritos = async (req, res) => {
         message: "No se encontraron favoritos para el usuario especificado",
       });
     }
-
+    const favoritosConProducto = await Promise.all(
+      favoritos.map(async (favorito) => {
+        const producto = await Producto.findByPk(favorito.id_producto, {
+          attributes: ["id", "nombre", "precio", "id_usuario"],
+        });
+        return { ...favorito.toJSON(), producto };
+      })
+    );
     res
       .status(200)
-      .json({ message: "Favoritos obtenidos correctamente", data: favoritos });
+      .json({ message: "Favoritos obtenidos correctamente", data: favoritosConProducto });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al obtener favoritos", error });
   }
 };
 
+
 export const agregarProductoAFavoritos = async (req, res) => {
   const { id_usuario } = req.params;
-  const { id_producto } = req.body;
+  const { id_producto } = req.body.data;
+  console.log(id_usuario,id_producto )
 
   try {
     const favoritoExistente = await FavoritosProductos.findOne({
@@ -50,8 +59,8 @@ export const agregarProductoAFavoritos = async (req, res) => {
 
 export const eliminarProductoFavorito = async (req, res) => {
   const { id_usuario } = req.params;
-  const { id_producto } = req.body;
-
+  const { id_producto } = req.body.data;
+console.log("webos")
   try {
     const favorito = await FavoritosProductos.findOne({
       where: { id_producto: id_producto, id_usuario: id_usuario },
