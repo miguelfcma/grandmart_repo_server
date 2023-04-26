@@ -4,7 +4,7 @@ import { restoreBackup } from "../../controllers/bdControllers/restoredBackup.co
 import { verificarToken } from "../../controllers/tokenController/authMiddleware.js";
 const router = Router();
 
-router.post('/backup-bd', verificarToken, createBackup);
+router.post('/backup-bd', createBackup);
 router.post('/restore-bd', restoreBackup); 
 
 export default router;

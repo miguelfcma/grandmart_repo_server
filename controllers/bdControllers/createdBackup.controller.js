@@ -1,58 +1,91 @@
-import {
-  DB_HOST,
-  DB_USER,
-  DB_PASSWORD,
-  DB_NAME,
-  DB_PORT,
-} from "../../config.js"; // Importar constantes de configuración de la base de datos desde un archivo de configuración externo
-import { exec } from "child_process"; // Importar la función exec desde el módulo child_process para ejecutar comandos del sistema operativo
-
-import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
-import bcrypt from "bcryptjs";
+import { Sequelize } from "sequelize";
+import { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } from "../../config.js";
+import fs from "fs";
 
 export async function createBackup(req, res) {
   try {
-    const { email, password } = req.body;
-    // Buscar un usuario con el email recibido
-    console.log(email+"  "+password)
-    const usuario = await Usuario.findOne({
-      where: { email },
+    console.log("Iniciando creación de respaldo...");
+
+    const createDatabaseQuery = `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;\n\n`;
+    const useDatabaseQuery = `USE \`${DB_NAME}\`;\n\n`;
+
+    const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+      host: DB_HOST,
+      dialect: "mysql",
     });
-    // IF USUARIO == NULL
-    if (!usuario) {
-      return res
-        .status(400)
-        .json({ message: "Credenciales de inicio de sesión incorrectas" });
+
+    await sequelize.authenticate(); // Verificar la conexión a la base de datos
+    console.log("Conexión a la base de datos establecida.");
+
+    const filename = "backup-grandmart";
+
+    // Obtener la lista de tablas
+    const tables = await sequelize.query("SHOW TABLES", {
+      type: sequelize.QueryTypes.SHOWTABLES,
+    });
+
+    let backup = "";
+    backup += createDatabaseQuery;
+    backup += useDatabaseQuery;
+    // Generar la estructura de cada tabla
+    for (const table of tables) {
+      // Agregar DROP TABLE IF EXISTS
+      backup += `DROP TABLE IF EXISTS \`${table}\`;\n`;
+
+      // Obtener la estructura de la tabla
+      const [createTable] = await sequelize.query(
+        `SHOW CREATE TABLE \`${table}\``,
+        {
+          type: sequelize.QueryTypes.SHOWCREATE,
+        }
+      );
+      backup += createTable[0]["Create Table"] + ";\n\n";
     }
 
-    // Verificar la contraseña
-    // Desencripta la contraseña y compara
-    const contrasenaValida = bcrypt.compareSync(password, usuario.password);
-    if (!contrasenaValida) {
-      return res
-        .status(400)
-        .json({ message: "Credenciales de inicio de sesión incorrectas" });
-    }
-    const filename = "backup-grandmart" 
-    let command = `"C:\\xampp\\mysql\\bin\\mysqldump" -h ${DB_HOST} -u ${DB_USER}`; // Comenzar a construir el comando para realizar una copia de seguridad de la base de datos utilizando mysqldump
-    if (DB_PASSWORD) {
-      command += ` -p${DB_PASSWORD}`; // Si se proporciona una contraseña para la base de datos, agregarla al comando
-    }
-    command += ` ${DB_NAME} > "C:\\backups_grandmart\\${filename}.sql"`; // Completar el comando especificando el nombre de la base de datos y la ruta donde se guardará la copia de seguridad
-    exec(command, (error, stdout, stderr) => {
-      // Ejecutar el comando utilizando la función exec
-      if (error) {
-        // Si ocurre un error al ejecutar el comando
-        console.error(`exec error: ${error}`); // Registrar el error en la consola
-        res.status(500).send(`Error: ${error}`); // Enviar una respuesta con un código de estado 500 y un mensaje de error
-        return;
+    // Generar los datos de cada tabla
+    for (const table of tables) {
+      // Obtener los datos de la tabla
+      const rows = await sequelize.query(`SELECT * FROM \`${table}\``, {
+        type: sequelize.QueryTypes.SELECT,
+      });
+
+      console.log(rows);
+      if (typeof rows !== "undefined") {
+        if (rows.length > 0) {
+          // Validar si rows tiene al menos un registro
+          const keys = Object.keys(rows[0]); // Obtener las keys de la primera fila
+          console.log(keys);
+          const values = rows.map(
+            (row) =>
+              `(${keys.map((key) => sequelize.escape(row[key])).join(", ")})`
+          );
+          console.log(values);
+          backup += `INSERT INTO \`${table}\` (\`${keys.join(
+            "`, `"
+          )}\`) VALUES\n${values.join(",\n")};\n\n`;
+        } else {
+          console.log(`No se encontraron registros en la tabla ${table}`);
+        }
+      } else {
+        console.log(`undefined`);
       }
-      res.setHeader("Content-Type", "application/sql"); // Establecer el encabezado Content-Type de la respuesta como application/sql
-      res.sendFile(`C:\\backups_grandmart\\${filename}.sql`); // Enviar el archivo de copia de seguridad como respuesta
-    });
+    }
+
+    // Guardar el archivo SQL
+    fs.writeFileSync(`${filename}.sql`, backup);
+
+    console.log("Respaldo creado exitosamente.");
+
+    res.setHeader("Content-Type", "application/sql");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${filename}.sql`
+    );
+    fs.createReadStream(`${filename}.sql`).pipe(res);
+
+    await sequelize.close();
   } catch (error) {
-    // Si ocurre un error en cualquier otro lugar del código
-    console.error(error); // Registrar el error en la consola
-    res.status(500).send(`Error: ${error}`); // Enviar una respuesta con un código de estado 500 y un mensaje de error
+    console.error(error);
+    res.status(500).send(`Error: ${error}`);
   }
 }
