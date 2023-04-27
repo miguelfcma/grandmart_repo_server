@@ -23,7 +23,7 @@ export const verificarToken = (req, res, next) => {
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'Token JWT inválido' });
+    return res.status(401).json({ message: 'Token JWT inválido' });
   }
 };
 

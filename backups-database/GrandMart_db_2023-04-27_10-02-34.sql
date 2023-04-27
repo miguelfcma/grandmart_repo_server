@@ -15,7 +15,7 @@ CREATE TABLE `carrito_compra_detalles` (
   KEY `carrito_compra_detalles_FK_1` (`id_carrito_compra`),
   CONSTRAINT `carrito_compra_detalles_FK` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`),
   CONSTRAINT `carrito_compra_detalles_FK_1` FOREIGN KEY (`id_carrito_compra`) REFERENCES `carritos_compras` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `carritos_compras`;
 CREATE TABLE `carritos_compras` (
@@ -27,7 +27,7 @@ CREATE TABLE `carritos_compras` (
   PRIMARY KEY (`id`),
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `carritos_compras_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `categorias`;
 CREATE TABLE `categorias` (
@@ -90,7 +90,7 @@ CREATE TABLE `direccion_envios` (
   PRIMARY KEY (`id`),
   KEY `direccion_envios_FK` (`id_orden`),
   CONSTRAINT `direccion_envios_FK` FOREIGN KEY (`id_orden`) REFERENCES `ordenes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `domiciliousuarios`;
 CREATE TABLE `domiciliousuarios` (
@@ -142,7 +142,7 @@ CREATE TABLE `favoritosproductos` (
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `favoritosproductos_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `favoritosproductos_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `imagenesblogs`;
 CREATE TABLE `imagenesblogs` (
@@ -224,7 +224,7 @@ CREATE TABLE `orden_detalles` (
   KEY `orden_detalles_FK_1` (`id_orden`),
   CONSTRAINT `orden_detalles_FK` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`),
   CONSTRAINT `orden_detalles_FK_1` FOREIGN KEY (`id_orden`) REFERENCES `ordenes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `ordenes`;
 CREATE TABLE `ordenes` (
@@ -238,7 +238,7 @@ CREATE TABLE `ordenes` (
   PRIMARY KEY (`id`),
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `ordenes_ibfk_3` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `preguntasproductos`;
 CREATE TABLE `preguntasproductos` (
@@ -254,7 +254,7 @@ CREATE TABLE `preguntasproductos` (
   KEY `preguntasproductos_FK` (`id_usuario`),
   CONSTRAINT `preguntasproductos_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`),
   CONSTRAINT `preguntasproductos_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `preguntasservicios`;
 CREATE TABLE `preguntasservicios` (
@@ -390,10 +390,13 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `carrito_compra_detalles` (`id`, `id_producto`, `id_carrito_compra`, `cantidad`, `createdAt`, `updatedAt`) VALUES
 (60, 85, 6, 1, '2023-04-19 19:27:03', '2023-04-19 19:27:03'),
-(61, 92, 6, 1, '2023-04-19 19:27:08', '2023-04-19 19:27:08');
+(61, 92, 6, 1, '2023-04-19 19:27:08', '2023-04-19 19:27:08'),
+(66, 85, 9, 2, '2023-04-26 19:37:28', '2023-04-27 13:22:25'),
+(70, 87, 9, 1, '2023-04-27 13:22:37', '2023-04-27 13:22:37');
 
 INSERT INTO `carritos_compras` (`id`, `fecha_creacion`, `id_usuario`, `createdAt`, `updatedAt`) VALUES
-(6, '2023-04-19', 76, '2023-04-19 19:27:03', '2023-04-19 19:27:03');
+(6, '2023-04-19', 76, '2023-04-19 19:27:03', '2023-04-19 19:27:03'),
+(9, '2023-04-26', 74, '2023-04-26 19:37:28', '2023-04-26 19:37:28');
 
 INSERT INTO `categorias` (`id`, `nombre`, `id_parent`, `createdAt`, `updatedAt`) VALUES
 (25, 'Tecnología', NULL, '2023-03-15 17:36:07', '2023-03-16 09:39:15'),
@@ -434,12 +437,14 @@ INSERT INTO `comentariosblogs` (`id`, `comentario`, `createdAt`, `updatedAt`, `i
 INSERT INTO `direccion_envios` (`id`, `estado`, `descripcion`, `nombre_ine`, `calle2`, `calle`, `postal`, `colonia`, `numeroInterior`, `calle1`, `municipio_alcaldia`, `numeroExterior`, `createdAt`, `updatedAt`, `id_orden`) VALUES
 (7, 'estado', 'descripcion', 'ine', 'calle 2', 'calle', 'postal', 'colonia', 'numero int', 'calle 1', 'municipio', 'numero ex', '2023-04-24 18:01:11', '2023-04-24 18:01:11', 37),
 (8, 'estado', 'descripcion', 'ine', 'calle 2', 'calle', 'postal', 'colonia', 'numero int', 'calle 1', 'municipio', 'numero ex', '2023-04-24 18:11:52', '2023-04-24 18:11:52', 38),
-(9, 'erg', 'erger', 'egrerg', 'gre', 'erg', 'regrge', 'reg', 'erg', 'erg', 'erg', 'erg', '2023-04-25 23:28:11', '2023-04-25 23:28:11', 39);
+(9, 'erg', 'erger', 'egrerg', 'gre', 'erg', 'regrge', 'reg', 'erg', 'erg', 'erg', 'erg', '2023-04-25 23:28:11', '2023-04-25 23:28:11', 39),
+(10, 'erg', 'erger', 'egrerg', 'gre', 'erg', 'regrge', 'reg', 'erg', 'erg', 'erg', 'erg', '2023-04-26 19:38:04', '2023-04-26 19:38:04', 40),
+(11, 'wer', 'wer', 'ewrewr', 'wr', 'wer', 'wer', '', 'ewr', 'wer', 'er', 'wer', '2023-04-26 21:33:24', '2023-04-26 21:33:24', 41);
 
 INSERT INTO `domiciliousuarios` (`id`, `nombre_ine`, `postal`, `estado`, `municipio_alcaldia`, `colonia`, `calle`, `numeroExterior`, `numeroInterior`, `calle1`, `calle2`, `descripcion`, `createdAt`, `updatedAt`, `id_usuario`) VALUES
 (16, 'oaijsidjasiodj', 'daskmd', 'dspjkdqjk', 'sapjs', 'k', 'xpksk', 'p', 'kwk', 'xpokspk', 'dasd', 'ada', '2023-03-30 20:17:18', '2023-03-30 20:17:18', NULL),
 (18, 'ewrewr', 'wer', 'wer', 'er', '', 'wer', 'wer', 'ewr', 'wer', 'wr', 'wer', '2023-04-01 15:44:58', '2023-04-01 15:45:04', 65),
-(20, 'egrerg', 'regrge', 'erg', 'erg', 'reg', 'erg', 'erg', 'erg', 'erg', 'gre', 'erger', '2023-04-25 23:27:59', '2023-04-25 23:27:59', 74);
+(20, 'egrerg', 'regrgedawd', 'erg', 'erg', 'reg', 'erg', 'erg', 'erg', 'erg', 'gre', 'erger', '2023-04-25 23:27:59', '2023-04-26 21:32:50', 74);
 
 INSERT INTO `favoritosproductos` (`id`, `createdAt`, `updatedAt`, `id_producto`, `id_usuario`) VALUES
 (2, '2023-04-16 11:04:13', '2023-04-16 11:04:13', 88, 77),
@@ -450,7 +455,11 @@ INSERT INTO `favoritosproductos` (`id`, `createdAt`, `updatedAt`, `id_producto`,
 (7, '2023-04-18 21:17:13', '2023-04-18 21:17:13', 93, 77),
 (19, '2023-04-24 18:10:09', '2023-04-24 18:10:09', 85, 76),
 (20, '2023-04-24 18:10:11', '2023-04-24 18:10:11', 86, 76),
-(21, '2023-04-24 18:10:13', '2023-04-24 18:10:13', 88, 76);
+(21, '2023-04-24 18:10:13', '2023-04-24 18:10:13', 88, 76),
+(22, '2023-04-26 22:07:46', '2023-04-26 22:07:46', 86, 74),
+(23, '2023-04-26 22:07:48', '2023-04-26 22:07:48', 85, 74),
+(24, '2023-04-26 22:07:50', '2023-04-26 22:07:50', 88, 74),
+(25, '2023-04-27 13:22:36', '2023-04-27 13:22:36', 87, 74);
 
 INSERT INTO `imagenesblogs` (`id`, `url`, `es_portada`, `id_publicacionBlog`, `createdAt`, `updatedAt`) VALUES
 (41, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/blog%2Fc295489b-8b3f-47f9-a746-88a23dc55e4a_2ffbbe7b-c9c7-4285-bd9d-28be9b58d60e?alt=media&token=0c3ed254-d92f-4734-b663-c4da34f81796', 1, 78, '2023-04-24 17:57:02', '2023-04-24 17:57:02');
@@ -507,17 +516,24 @@ INSERT INTO `orden_detalles` (`id`, `cantidad`, `precio_unitario`, `id_producto`
 (42, 2, '60.00', 91, 38, '2023-04-24 18:11:52', '2023-04-24 18:11:52'),
 (43, 1, '50.00', 85, 39, '2023-04-25 23:28:11', '2023-04-25 23:28:11'),
 (44, 1, '50.00', 88, 39, '2023-04-25 23:28:11', '2023-04-25 23:28:11'),
-(45, 1, '60.00', 91, 39, '2023-04-25 23:28:11', '2023-04-25 23:28:11');
+(45, 1, '60.00', 91, 39, '2023-04-25 23:28:11', '2023-04-25 23:28:11'),
+(46, 17, '50.00', 85, 40, '2023-04-26 19:38:04', '2023-04-26 19:38:04'),
+(47, 1, '150.00', 86, 40, '2023-04-26 19:38:04', '2023-04-26 19:38:04'),
+(48, 1, '50.00', 85, 41, '2023-04-26 21:33:24', '2023-04-26 21:33:24'),
+(49, 1, '150.00', 86, 41, '2023-04-26 21:33:24', '2023-04-26 21:33:24');
 
 INSERT INTO `ordenes` (`id`, `total`, `estado_orden`, `id_usuario`, `fechaEntrega`, `createdAt`, `updatedAt`) VALUES
 (37, '350.00', 'enviado', 74, NULL, '2023-04-24 18:01:11', '2023-04-24 18:02:33'),
 (38, '470.00', 'pendiente', 74, NULL, '2023-04-24 18:11:52', '2023-04-24 18:11:52'),
-(39, '160.00', 'pendiente', 74, NULL, '2023-04-25 23:28:11', '2023-04-25 23:28:11');
+(39, '160.00', 'pendiente', 74, NULL, '2023-04-25 23:28:11', '2023-04-25 23:28:11'),
+(40, '1000.00', 'pendiente', 74, NULL, '2023-04-26 19:38:04', '2023-04-26 19:38:04'),
+(41, '200.00', 'pendiente', 65, NULL, '2023-04-26 21:33:24', '2023-04-26 21:33:24');
 
 INSERT INTO `preguntasproductos` (`id`, `pregunta`, `respuesta`, `createdAt`, `updatedAt`, `id_producto`, `id_usuario`) VALUES
 (1, 'asdsd', '', '2023-04-22 20:47:17', '2023-04-23 12:18:48', 84, 74),
 (2, 'lo tienes verde?', 'si lo tenemos', '2023-04-22 21:52:07', '2023-04-24 18:05:05', 85, 74),
-(3, 'hola esta disponible aun?', 'sdsdsdsd', '2023-04-22 22:23:21', '2023-04-22 22:23:21', 85, 74);
+(3, 'hola esta disponible aun?', 'sdsdsdsd', '2023-04-22 22:23:21', '2023-04-22 22:23:21', 85, 74),
+(4, 'Hola aun lo tienes en verde?', NULL, '2023-04-27 13:23:07', '2023-04-27 13:23:07', 86, 74);
 
 INSERT INTO `productos` (`id`, `nombre`, `precio`, `stock`, `descripcion`, `marca`, `modelo`, `color`, `estado`, `id_categoria`, `id_usuario`, `createdAt`, `updatedAt`) VALUES
 (84, 'Audífonos Amplificadores de Sonido', 100, 50, 'Los Audífonos Amplificadores de Sonido están diseñados especialmente para adultos mayores que tienen problemas de audición. Estos audífonos proporcionan una calidad de sonido clara y nítida, permitiendo una mejor audición y comunicación. Además, son cómodos de usar y fáciles de ajustar según las necesidades del usuario.', ' Amplifon', 'X Mini', 'Beige', 1, 64, 74, '2023-04-11 15:16:39', '2023-04-11 15:16:39'),

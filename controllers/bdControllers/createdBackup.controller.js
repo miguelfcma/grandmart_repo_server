@@ -1,9 +1,41 @@
 import { Sequelize } from "sequelize";
 import { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } from "../../config.js";
+import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
+import bcrypt from "bcryptjs";
 import fs from "fs";
 
 export async function createBackup(req, res) {
   try {
+
+    const { email, password } = req.body;
+
+    // Buscar un usuario con el email recibido
+    const usuario = await Usuario.findOne({
+      where: { email },
+    });
+    // IF USUARIO == NULL
+    if (!usuario) {
+      return res
+        .status(400)
+        .json({ message: "Credenciales de inicio de sesión incorrectas" });
+    }
+
+    // Verificar la contraseña
+    // Desencripta la contraseña y compara
+    const contrasenaValida = bcrypt.compareSync(password, usuario.password);
+    if (!contrasenaValida) {
+      return res
+        .status(400)
+        .json({ message: "Credenciales de inicio de sesión incorrectas" });
+    }
+
+
+
+
+
+
+
+   
     console.log("Iniciando creación de respaldo...");
 
     const createDatabaseQuery = `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;\n\n`;
@@ -17,7 +49,21 @@ export async function createBackup(req, res) {
     await sequelize.authenticate(); // Verificar la conexión a la base de datos
     console.log("Conexión a la base de datos establecida.");
 
-    const filename = "backup-grandmart";
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    const dateFormatted = `${year}-${month.toString().padStart(2, "0")}-${day
+      .toString()
+      .padStart(2, "0")}`; // Formato: AAAA-MM-DD
+    const timeFormatted = `${hours.toString().padStart(2, "0")}-${minutes
+      .toString()
+      .padStart(2, "0")}-${seconds.toString().padStart(2, "0")}`; // Formato: HH-MM-SS
+    const filename = `GrandMart_db_${dateFormatted}_${timeFormatted}`;
 
     // Obtener la lista de tablas
     const tables = await sequelize.query("SHOW TABLES", {
@@ -72,18 +118,12 @@ export async function createBackup(req, res) {
     }
 
     // Guardar el archivo SQL
-    fs.writeFileSync(`${filename}.sql`, backup);
+    fs.writeFileSync(`backups-database/${filename}.sql`, backup);
 
     console.log("Respaldo creado exitosamente.");
-
-    res.setHeader("Content-Type", "application/sql");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=${filename}.sql`
-    );
-    fs.createReadStream(`${filename}.sql`).pipe(res);
-
     await sequelize.close();
+
+    res.status(200).send({message: "Archivo SQL creado exitosamente."});
   } catch (error) {
     console.error(error);
     res.status(500).send(`Error: ${error}`);
