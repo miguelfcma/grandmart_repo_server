@@ -5,6 +5,7 @@ import {
   getReviewsByProductId,
   updateReviewById,
   getAvgRatingByProductId,
+  getReviewByUserAndProduct,
 } from "../../controllers/productosControllers/reviewsProducto.controller.js";
 
 const router = express.Router();
@@ -22,5 +23,10 @@ router.put("/producto-review/:id", updateReviewById);
 
 // Obtener el promedio de calificación de un producto por su id
 router.get("/producto-review/:id_producto/avg-rating", getAvgRatingByProductId);
+
+router.get(
+  "/producto-review/user/:id_usuario/product/:id_producto",
+  getReviewByUserAndProduct
+);
 
 export default router;

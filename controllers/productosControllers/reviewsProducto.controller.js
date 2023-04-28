@@ -4,8 +4,15 @@ import { ReviewProducto } from '../../models/productosModel/ReviewsProductosMode
 export const createReview = async (req, res) => {
   const { titulo, comentario, calificacion, id_producto, id_usuario } = req.body;
   try {
+    // Verificar si el usuario ya ha dejado una revisión para el producto
+    const existingReview = await ReviewProducto.findOne({ where: { id_usuario, id_producto } });
+    if (existingReview) {
+      return res.status(400).json({ message: 'El usuario ya ha dejado una revisión para este producto' });
+    }
+
+    // Crear una nueva revisión
     const newReview = await ReviewProducto.create({ titulo, comentario, calificacion, id_producto, id_usuario });
-    res.json(newReview);
+    res.status(201).json({ message: 'La revisión ha sido creada correctamente', review: newReview });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Error en el servidor' });
@@ -20,7 +27,7 @@ export const deleteReviewById = async (req, res) => {
     if (deletedReview === 0) {
       return res.status(404).json({ message: 'Review no encontrada' });
     }
-    res.json({ message: 'Review eliminada correctamente' });
+    res.status(200).json({ message: 'La revisión ha sido eliminada correctamente' });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Error en el servidor' });
@@ -32,7 +39,7 @@ export const getReviewsByProductId = async (req, res) => {
   const { id_producto } = req.params;
   try {
     const reviews = await ReviewProducto.findAll({ where: { id_producto } });
-    res.json(reviews);
+    res.status(200).json({ message: 'Las revisiones han sido obtenidas correctamente', reviews });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Error en el servidor' });
@@ -48,12 +55,13 @@ export const updateReviewById = async (req, res) => {
     if (updatedRowsCount === 0) {
       return res.status(404).json({ message: 'Review no encontrada' });
     }
-    res.json(updatedRows[0]);
+    res.status(200).json({ message: 'La revisión ha sido actualizada correctamente', review: updatedRows[0] });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
+
 
 // Obtener el promedio de calificación de un producto por su id
 export const getAvgRatingByProductId = async (req, res) => {
@@ -69,3 +77,19 @@ export const getAvgRatingByProductId = async (req, res) => {
       res.status(500).json({ message: 'Error en el servidor' });
     }
   };
+
+  // Obtener una review específica por id_usuario e id_producto
+export const getReviewByUserAndProduct = async (req, res) => {
+  const { id_usuario, id_producto } = req.params;
+  try {
+    const review = await ReviewProducto.findOne({ where: { id_usuario, id_producto } });
+    if (review) {
+      res.status(200).json({ message: 'Review encontrada', review });
+    } else {
+      res.status(404).json({ message: 'Review no encontrada' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+};
