@@ -13,6 +13,35 @@ console.log(req.body)
   }
 };
 
+export const createImagenes = async (req, res) => {
+ 
+  const id_producto = req.body.id_producto;
+  const imagenes = req.body.imagenes;
+  try {
+    const results = await Promise.all(
+      imagenes.map(async (imagen, index) => {
+        const es_portada = index === 0 ? true : false;
+        const imagenProducto = await ImagenProducto.create({
+          url: imagen,
+          id_producto,
+          es_portada,
+        });
+        return imagenProducto;
+      })
+    );
+
+    res.status(201).json({
+      message: "Imágenes creadas correctamente",
+      data: results,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error al crear las imágenes",
+      error: error,
+    });
+  }
+};
 
 export const getGaleriaImagenesByProductId = async (req, res) => {
   const { id_producto } = req.params;
