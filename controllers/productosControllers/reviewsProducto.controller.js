@@ -1,4 +1,5 @@
 import { ReviewProducto } from '../../models/productosModel/ReviewsProductosModel.js';
+import sequelize from 'sequelize';
 
 // Crear una nueva review de un producto
 export const createReview = async (req, res) => {
@@ -34,17 +35,21 @@ export const deleteReviewById = async (req, res) => {
   }
 };
 
-// Obtener todas las reviews de un producto por su id
 export const getReviewsByProductId = async (req, res) => {
   const { id_producto } = req.params;
   try {
     const reviews = await ReviewProducto.findAll({ where: { id_producto } });
-    res.status(200).json({ message: 'Las revisiones han sido obtenidas correctamente', reviews });
+    if (reviews.length === 0) {
+      res.status(404).json({ message: 'No se encontraron revisiones para este producto' });
+    } else {
+      res.status(200).json({ message: 'Las revisiones han sido obtenidas correctamente', reviews });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
+
 
 // Actualizar una review de un producto por su id
 export const updateReviewById = async (req, res) => {
@@ -65,18 +70,23 @@ export const updateReviewById = async (req, res) => {
 
 // Obtener el promedio de calificación de un producto por su id
 export const getAvgRatingByProductId = async (req, res) => {
-    const { id_producto } = req.params;
-    try {
-      const avgRating = await ReviewProducto.findOne({
-        attributes: [[sequelize.fn('AVG', sequelize.col('calificacion')), 'avgRating']],
-        where: { id_producto },
-      });
+  const { id_producto } = req.params;
+  try {
+    const avgRating = await ReviewProducto.findOne({
+      attributes: [[sequelize.fn('AVG', sequelize.col('calificacion')), 'avgRating']],
+      where: { id_producto },
+    });
+    if (avgRating && avgRating.dataValues.avgRating) {
       res.json(avgRating);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Error en el servidor' });
+    } else {
+      res.status(404).json({ message: 'No hay reviews para este producto' });
     }
-  };
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+};
+
 
   // Obtener una review específica por id_usuario e id_producto
 export const getReviewByUserAndProduct = async (req, res) => {
