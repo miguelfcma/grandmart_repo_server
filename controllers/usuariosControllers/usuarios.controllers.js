@@ -143,6 +143,37 @@ export const deleteUsuario = async (req, res) => {
   }
 };
 
+export const getContrasenaUsuarioByUserId = async (req, res) => {
+  try {
+    const { id_usuario } = req.params;
+    const usuarios = await Usuario.findOne({
+      where: { id: id_usuario},
+    });
+
+    console.log(usuarios.password); // Imprimir el valor de password en la consola
+
+    res.status(200).json({ message: "Contrasena de usuario obtenida exitosamente.", data: usuarios });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+export const updateContrasenaUsuarioByUserId = async (req, res) => {
+
+  try {
+    const { id_usuario } = req.params;
+    const data = req.body;
+    await Usuario.update(data, { where: {id: id_usuario } });
+    const updatedContrasenaUsuario = await Usuario.findOne({
+      where: { id_usuario },
+    });
+    res.status(200).json({ message: "Contraseña de usuario actualizada exitosamente.", data: updatedContrasenaUsuario });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getUsuarioLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
