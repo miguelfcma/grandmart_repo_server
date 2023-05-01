@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import {
-  getProducto,
+  getProductoById,
   getProductos,
   createProducto,
   updateProducto,
@@ -13,7 +13,7 @@ const router = Router();
 
 router.get("/productos", getProductos);
 
-router.get("/productos/:id", getProducto);
+router.get("/productos/:id_producto", getProductoById);
 
 router.post("/productos", createProducto);
 

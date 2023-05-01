@@ -5,19 +5,27 @@ import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 
 import { Op } from "sequelize";
 
-export const getProducto = async (req, res) => {
+export const getProductoById = async (req, res) => {
   try {
-    const producto = await Producto.findByPk(req.params.id);
+    const { id_producto } = req.params;
+    const producto = await Producto.findByPk(id_producto);
     if (!producto) {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
-    return res.status(200).json(producto);
+    
+    const categoria = await Categoria.findByPk(producto.id_categoria, { attributes: ['id', 'nombre'] });
+    const usuario = await Usuario.findByPk(producto.id_usuario, { attributes: ['id', 'nombre'] });
+
+    const productoConCategoriaYUsuario = { ...producto.toJSON(), categoria, usuario };
+
+    return res.status(200).json(productoConCategoriaYUsuario);
   } catch (error) {
     return res
       .status(500)
       .json({ message: "Ocurrió un error al obtener el producto." });
   }
 };
+
 
 
 export const getProductos = async (req, res) => {
