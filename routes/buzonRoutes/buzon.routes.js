@@ -1,31 +1,27 @@
 import { Router } from "express";
 import {
-  getAllMensajes,
-  getMensajeById,
-  createMensaje,
-  updateMensaje,
-  deleteMensaje,
-  getMensajesByUserId
-} from "../../controllers/buzonControllers/buzon.controllers.js";
+  getAllDenuncias,
+  getDenunciaById,
+  createDenuncia,
+  deleteDenuncia,
+  getDenunciasByUserId
+} from "../../controllers/buzonDenunciasControllers/buzonDenuncias.controller.js";
 
 const router = Router();
 
 // Ruta para obtener todos los mensajes
-router.get("/buzon-mensajes", getAllMensajes);
+router.get("/buzon-denuncias", getAllDenuncias);
 
 // Ruta para obtener un mensaje por su ID
-router.get("/buzon-mensajes/:id", getMensajeById);
+router.get("/buzon-denuncias/:id", getDenunciaById);
 
 // Ruta para crear un nuevo mensaje
-router.post("/buzon-mensajes", createMensaje);
-
-// Ruta para actualizar un mensaje por su ID
-router.put("/buzon-mensajes/:id", updateMensaje);
+router.post("/buzon-denuncias", createDenuncia);
 
 // Ruta para eliminar un mensaje por su ID
-router.delete("/buzon-mensajes/:id", deleteMensaje);
+router.delete("/buzon-denuncias/:id", deleteDenuncia);
 
 // Ruta para obtener todos los mensajes por el ID del usuario
-router.get("/buzon-mensajes/usuario/:id", getMensajesByUserId);
+router.get("/buzon-denuncias/usuario/:id", getDenunciasByUserId);
 
 export default router;

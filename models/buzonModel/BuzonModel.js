@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
 
-export const MensajeBuzon = sequelizeDB.define(
-  "mensajeBuzons",
+export const DenunciaBuzon = sequelizeDB.define(
+  "denunciaBuzons",
   {
     id: {
       type: DataTypes.BIGINT(20).UNSIGNED,
