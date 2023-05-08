@@ -27,13 +27,15 @@ export const getDenunciaById = async (req, res) => {
 // Crear una nueva denuncia
 export const createDenuncia = async (req, res) => {
   try {
-    const { motivo, descripcion, id_usuario } = req.body;
+    const { motivo, descripcion, id_usuario, id_producto } = req.body;
+    console.log(req.body)
     const denuncia = await DenunciaBuzon.create({
       motivo,
       descripcion,
       id_usuario,
+      id_producto
     });
-    res.json(denuncia);
+    res.status(201).json(denuncia);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

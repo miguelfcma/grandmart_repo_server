@@ -27,6 +27,10 @@ export const DenunciaBuzon = sequelizeDB.define(
       type: DataTypes.BIGINT(20).UNSIGNED,
       allowNull: false,
     },
+    id_producto: {
+      type: DataTypes.BIGINT(20).UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     timestamps: true,

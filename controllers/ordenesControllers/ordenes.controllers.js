@@ -291,7 +291,9 @@ export const obtenerPedidosPorUsuario = async (req, res) => {
         return { ...detalle.toJSON(), producto, orden };
       })
     );
-    const detallesOrdenFiltrados = detallesOrdenConProducto.filter(detalles => detalles.orden.id_usuario === parseInt(id_usuario));
+    const detallesOrdenFiltrados = detallesOrdenConProducto.filter(
+      (detalles) => detalles.orden.id_usuario === parseInt(id_usuario)
+    );
 
     const respuesta = {
       message: "ProductosPedidos encontrados",
@@ -304,3 +306,35 @@ export const obtenerPedidosPorUsuario = async (req, res) => {
     return res.status(500).json({ error: "Error al obtener productosPedidos" });
   }
 };
+
+
+export const verificacionDireccionEnvio = async (req, res) => {
+  const { id_usuario } = req.params;
+
+  if (!id_usuario) {
+    return res.status(400).json({
+      error: "Falta el parámetro 'id_usuario' en la solicitud",
+    });
+  }
+
+  try {
+    const direccion_envio = await DomicilioUsuario.findOne({
+      where: { id_usuario }
+    });
+
+    if (!direccion_envio) {
+      return res.status(400).json({
+        error: "El usuario no tiene una dirección de envío registrada",
+      });
+    }
+
+    return res.status(200).json({
+      message: "El usuario tiene una dirección de envío registrada",
+      direccion_envio: direccion_envio // Agregar la dirección de envío a la respuesta
+    });
+  } catch (error) {
+    console.error("Error al obtener la dirección de envío:", error);
+    return res.status(500).json({ error: "Error al obtener la dirección de envío" });
+  }
+};
+
