@@ -3,9 +3,9 @@ import {
   crearPregunta,
   crearRespuesta,
   getPreguntasByIdProducto,
+  getProductosConPreguntasByUsuarioId,
   eliminarPregunta,
   actualizarPregunta,
-  getProductosConPreguntasByUsuarioId
 } from "../../controllers/productosControllers/preguntasProducto.controller.js";
 
 const router = Router();
@@ -26,9 +26,11 @@ router.get(
     "/producto-preguntas/productos-preguntas/:id_usuario",
     getProductosConPreguntasByUsuarioId
   );
+
 // Ruta para eliminar una pregunta por su ID
 router.delete("/producto-preguntas/:id", eliminarPregunta);
 
 // Ruta para actualizar una pregunta por su ID
 router.put("/producto-preguntas/:id", actualizarPregunta);
+
 export default router;

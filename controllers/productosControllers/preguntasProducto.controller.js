@@ -47,7 +47,6 @@ export const getPreguntasByIdProducto = async (req, res) => {
       return { ...pregunta.toJSON(), producto, usuario };
     }));
 
-
     res.status(200).json(preguntasConUsuarioYProducto);
   } catch (error) {
     console.error(error);
