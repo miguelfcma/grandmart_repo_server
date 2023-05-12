@@ -12,6 +12,7 @@
   "author": "Miguel Angel FC and Brayan CG",
   "license": "ISC",
   "dependencies": {
+    "@stripe/stripe-js": "^1.52.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.18.2",
@@ -23,6 +24,7 @@
     "mysqldump": "^3.2.0",
     "nodemailer": "^6.9.1",
     "sequelize": "^6.28.0",
+    "stripe": "^12.5.0",
     "timeago.js": "^4.0.2",
     "uuid": "^9.0.0"
   },

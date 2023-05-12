@@ -107,7 +107,17 @@ export const eliminarDenuncia = async (req, res) => {
 export const getAllDenuncias = async (req, res) => {
   try {
     const denuncias = await DenunciaBuzon.findAll();
-    return res.status(200).json(denuncias);
+
+
+    const denunciasConUsuarioYProducto = await Promise.all(denuncias.map(async motivo => {
+      const producto = await Producto.findByPk(motivo.id_producto, { attributes: ['id', 'nombre'] });
+      const usuario = await Usuario.findByPk(motivo.id_usuario, { attributes: ['id', 'nombre'] });
+      return { ...motivo.toJSON(), producto, usuario };
+    }));
+
+
+
+    return res.status(200).json(denunciasConUsuarioYProducto);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

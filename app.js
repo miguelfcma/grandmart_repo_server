@@ -43,6 +43,9 @@ import favoritosProductosRoutes from "./routes/productosRoutes/favoritosProducto
 //ordenes
 import ordenesRoutes from "./routes/ordenesRoutes/ordenes.routes.js"
 
+
+//pagos 
+import pagosRoutes from "./routes/stripeRoutes/pagos.routes.js"
 import morgan from "morgan";
 import path from "path";
 //  INITIALIZATIONS
@@ -102,7 +105,8 @@ app.use(bdRoutes);
 //ordenes
 
 app.use(ordenesRoutes);
-
+//pagos
+app.use(pagosRoutes);
 //  STATIC FILES
 
 //  EXPORT THE APP
