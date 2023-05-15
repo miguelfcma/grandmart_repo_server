@@ -111,8 +111,10 @@ export const getAllDenuncias = async (req, res) => {
 
     const denunciasConUsuarioYProducto = await Promise.all(denuncias.map(async motivo => {
       const producto = await Producto.findByPk(motivo.id_producto, { attributes: ['id', 'nombre', 'id_usuario'] });
-      const usuarioProducto = await Usuario.findByPk(producto.id_usuario, { attributes: ['id', 'nombre'] });
-      const usuario = await Usuario.findByPk(motivo.id_usuario, { attributes: ['id', 'nombre'] });
+
+      const usuario = await Usuario.findByPk(motivo.id_usuario, { attributes: ['id', 'nombre', 'apellidoPaterno', 'apellidoMaterno'] });
+
+      const usuarioProducto = await Usuario.findByPk(producto.id_usuario, { attributes: ['id', 'nombre', 'apellidoPaterno', 'apellidoMaterno'] });
       return { ...motivo.toJSON(), producto, usuario,usuarioProducto };
     }));
 
