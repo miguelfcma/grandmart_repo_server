@@ -171,7 +171,7 @@ export const crearOrden = async (req, res) => {
       });
 
       // Eliminar el detalle de carrito de compra
-      await detalleCarrito.destroy();
+      //await detalleCarrito.destroy();
     }
 
     // Actualizar el total de la orden
