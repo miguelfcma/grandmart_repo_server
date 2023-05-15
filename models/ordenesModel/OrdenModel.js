@@ -16,9 +16,8 @@ export const Orden = sequelizeDB.define(
       defaultValue: 0,
     },
     estado_orden: {
-      type: DataTypes.ENUM("pendiente", "en proceso", "enviado", "entregado","cancelado"),
-      allowNull: false,
-      defaultValue: "pendiente",
+      type: DataTypes.ENUM("Pendiente", "En proceso", "Confirmada", "Cancelada","Completada"),
+      defaultValue: "Pendiente",
     },
     id_usuario: {
       type: DataTypes.BIGINT(20).UNSIGNED,
@@ -26,7 +25,7 @@ export const Orden = sequelizeDB.define(
     },
     fechaEntrega: {  // Atributo agregado
       type: DataTypes.DATE,
-      allowNull: true, // Cambiar a false si la fecha de entrega es obligatoria
+      
     },
   },
   { timestamps: true }

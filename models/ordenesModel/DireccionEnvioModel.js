@@ -11,10 +11,6 @@ export const DireccionEnvio = sequelizeDB.define(
       autoIncrement: true,
       allowNull: false,
     },
-    id_orden: { // Corrección: Se agrega la columna id_orden
-      type: DataTypes.BIGINT(20).UNSIGNED,
-      allowNull: false,
-    },
     estado: {
       type: DataTypes.STRING(255),
       allowNull: false,

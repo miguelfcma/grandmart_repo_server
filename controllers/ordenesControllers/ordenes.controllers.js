@@ -6,8 +6,7 @@ import { Producto } from "../../models/productosModel/ProductoModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import { DomicilioUsuario } from "../../models/usuariosModel/DomicilioUsuarioModel.js";
 import { DireccionEnvio } from "../../models/ordenesModel/DireccionEnvioModel.js";
-import { EstadoPago } from "../../models/ordenesModel/EstadoPagoModel.js";
-
+import { Envio } from "../../models/ordenesModel/EnviosModel.js";
 export const obtenerTodasLasOrdenes = async (req, res) => {
   try {
     // Buscar todas las órdenes
@@ -130,14 +129,12 @@ export const crearOrden = async (req, res) => {
 
     // Crear una nueva orden
     const nuevaOrden = await Orden.create({
-      total: 0, // El total se actualizará después de calcular el costo total de los productos en el carrito
-      estado_orden: "pendiente",
+      total: 0,
       id_usuario,
     });
 
     // Crear una nueva dirección de envío en la tabla de DireccionEnvio
     const nuevaDireccionEnvio = await DireccionEnvio.create({
-      id_orden: nuevaOrden.id, // Agregar el id de la nueva orden
       nombre_ine: direccion_envio.nombre_ine,
       postal: direccion_envio.postal,
       estado: direccion_envio.estado,
@@ -181,9 +178,13 @@ export const crearOrden = async (req, res) => {
 
     nuevaOrden.total = total;
     await nuevaOrden.save();
-
+    const nuevoEnvio = await Envio.create({
+      orden_id: nuevaOrden.id,
+      direccion_envio_id: nuevaDireccionEnvio.id,
+    });
+    
     // Eliminar el carrito de compra
-    await carrito.destroy();
+    //await carrito.destroy();
 
     return res.status(201).json(nuevaOrden);
   } catch (error) {
@@ -307,7 +308,6 @@ export const obtenerPedidosPorUsuario = async (req, res) => {
   }
 };
 
-
 export const verificacionDireccionEnvio = async (req, res) => {
   const { id_usuario } = req.params;
 
@@ -319,7 +319,7 @@ export const verificacionDireccionEnvio = async (req, res) => {
 
   try {
     const direccion_envio = await DomicilioUsuario.findOne({
-      where: { id_usuario }
+      where: { id_usuario },
     });
 
     if (!direccion_envio) {
@@ -330,11 +330,12 @@ export const verificacionDireccionEnvio = async (req, res) => {
 
     return res.status(200).json({
       message: "El usuario tiene una dirección de envío registrada",
-      direccion_envio: direccion_envio // Agregar la dirección de envío a la respuesta
+      direccion_envio: direccion_envio, // Agregar la dirección de envío a la respuesta
     });
   } catch (error) {
     console.error("Error al obtener la dirección de envío:", error);
-    return res.status(500).json({ error: "Error al obtener la dirección de envío" });
+    return res
+      .status(500)
+      .json({ error: "Error al obtener la dirección de envío" });
   }
 };
-
