@@ -124,7 +124,7 @@ export const getAllDenuncias = async (req, res) => {
 
 export const actualizarDenunciaARevisada = async (req, res) => {
   const { id_denuncia } = req.params;
-  const { revisar: nuevoRevisar } = req.body;
+  
   try {
     // Buscar la denuncia por su ID
     const denuncia = await DenunciaBuzon.findByPk(id_denuncia);
@@ -134,16 +134,11 @@ export const actualizarDenunciaARevisada = async (req, res) => {
         .json({ error: `La denuncia con id ${id_denuncia} no existe` });
     }
     // Actualizar el estado de la denuncia
-    if (nuevoRevisar !== null) {
-      if (nuevoRevisar === 0) {
+    if (denuncia.revisar === false) {
         denuncia.revisar = 1;
-      } else {
-        denuncia.revisar = nuevoRevisar;
-      }
-    } else {
-      return res.status(400).json({ error: "El campo 'revisar' es requerido" });
+    } else{
+      return res.status(400).json({ error: "La denuncia ya ha sido revisada "})
     }
-
     await denuncia.save();
 
     return res.status(200).json(denuncia);
