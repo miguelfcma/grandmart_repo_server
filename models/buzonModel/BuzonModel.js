@@ -18,10 +18,9 @@ export const DenunciaBuzon = sequelizeDB.define(
       type: DataTypes.STRING(1500),
       allowNull: false,
     },
-    fecha: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
+    revisar: {
+      type: DataTypes.TINYINT(1),
+      defaultValue: 0,
     },
     id_usuario: {
       type: DataTypes.BIGINT(20).UNSIGNED,

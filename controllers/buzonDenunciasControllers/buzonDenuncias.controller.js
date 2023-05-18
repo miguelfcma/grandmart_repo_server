@@ -108,7 +108,6 @@ export const getAllDenuncias = async (req, res) => {
   try {
     const denuncias = await DenunciaBuzon.findAll();
 
-
     const denunciasConUsuarioYProducto = await Promise.all(denuncias.map(async motivo => {
       const producto = await Producto.findByPk(motivo.id_producto, { attributes: ['id', 'nombre', 'id_usuario'] });
 
@@ -117,12 +116,47 @@ export const getAllDenuncias = async (req, res) => {
       const usuarioProducto = await Usuario.findByPk(producto.id_usuario, { attributes: ['id', 'nombre', 'apellidoPaterno', 'apellidoMaterno'] });
       return { ...motivo.toJSON(), producto, usuario,usuarioProducto };
     }));
-
-
-
     return res.status(200).json(denunciasConUsuarioYProducto);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const actualizarDenunciaARevisada = async (req, res) => {
+  const { id_denuncia } = req.params;
+  const { revisar: nuevoRevisar } = req.body;
+  try {
+    // Buscar la denuncia por su ID
+    const denuncia = await DenunciaBuzon.findByPk(id_denuncia);
+    if (!denuncia) {
+      return res
+        .status(404)
+        .json({ error: `La denuncia con id ${id_denuncia} no existe` });
+    }
+    // Actualizar el estado de la denuncia
+    if (nuevoRevisar !== null) {
+      if (nuevoRevisar === 0) {
+        denuncia.revisar = 1;
+      } else {
+        denuncia.revisar = nuevoRevisar;
+      }
+    } else {
+      return res.status(400).json({ error: "El campo 'revisar' es requerido" });
+    }
+
+    await denuncia.save();
+
+    return res.status(200).json(denuncia);
+  } catch (error) {
+    console.error("Error al actualizar el estado de la denuncia:", error.message);
+    return res
+      .status(500)
+      .json({ error: "Error al actualizar el estado de la denuncia" });
+  }
+};
+
+
+
+
+
 

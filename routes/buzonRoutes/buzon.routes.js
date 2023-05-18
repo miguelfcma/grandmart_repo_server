@@ -5,6 +5,7 @@ import {
   getProductosConDenunciasByUsuarioId,
   getAllDenuncias,
   eliminarDenuncia,
+  actualizarDenunciaARevisada
 } from "../../controllers/buzonDenunciasControllers/buzonDenuncias.controller.js";
 
 const router = Router();
@@ -28,7 +29,9 @@ router.get(
   getAllDenuncias
 );
 
+router.put("/producto-denuncias/actualizar/:id_denuncia", actualizarDenunciaARevisada);
+
 // Ruta para eliminar una denuncia por su ID
-router.delete("/buzon-denuncias/:id", eliminarDenuncia);
+router.delete("/producto-denuncias/eliminar/:id_denuncia", eliminarDenuncia);
 
 export default router;

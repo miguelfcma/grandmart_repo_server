@@ -104,7 +104,7 @@ export const getProductosConPreguntasByUsuarioId = async (req, res) => {
 
       if (preguntas.length > 0) {
         // Si el producto tiene preguntas asociadas, agregarlas como propiedad al objeto de producto
-        return { ...producto.toJSON(), preguntas };
+        return { producto: producto.toJSON(), preguntas };
       } else {
         // Si el producto no tiene preguntas asociadas, devolver null
         return null;
