@@ -23,6 +23,10 @@ export const Envio = sequelizeDB.define(
         allowNull: false,
         defaultValue: "Pendiente",
     },
+    fechaEntrega: { 
+      type: DataTypes.DATE,
+      
+    },
   },
   {
     tableName: "envios",

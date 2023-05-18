@@ -7,29 +7,15 @@ import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import { DomicilioUsuario } from "../../models/usuariosModel/DomicilioUsuarioModel.js";
 import { DireccionEnvio } from "../../models/ordenesModel/DireccionEnvioModel.js";
 import { Envio } from "../../models/ordenesModel/EnviosModel.js";
+
+import { checkout } from "../stripeController/pagosStripe.controller.js";
+import { response } from "express";
+
 export const obtenerTodasLasOrdenes = async (req, res) => {
   try {
     // Buscar todas las órdenes
     const ordenes = await Orden.findAll();
 
-    /* Crear un arreglo para almacenar las órdenes con los detalles de orden
-    const ordenesConDetallesOrden = await Promise.all(
-      ordenes.map(async (orden) => {
-        // Buscar los detalles de orden para cada orden
-        const detallesOrden = await DetalleOrden.findAll({
-          where: { id_orden: orden.id },
-          attributes: ["id", "cantidad", "precio_unitario", "id_producto", "id_orden"],
-        });
-        
-        // Convertir la orden y los detalles de orden a objetos JSON
-        const ordenJSON = orden.toJSON();
-        const detallesOrdenJSON = detallesOrden.map(d => d.toJSON());
-        // Agregar los detalles de orden a la orden
-        ordenJSON.detallesOrden = detallesOrdenJSON;
-        return ordenJSON;
-      })
-    );
-*/
     return res.status(200).json(ordenes);
   } catch (error) {
     console.error("Error al obtener todas las órdenes:", error);
@@ -85,7 +71,8 @@ export const obtenerDireccionEnvioOrden = async (req, res) => {
 
 // Función para crear una nueva orden
 export const crearOrden = async (req, res) => {
-  const { id_usuario } = req.body; // Obtener el id de usuario desde el cuerpo de la solicitud
+  const { id_usuario, id_card, amount, description } = req.body; // Obtener el id de usuario desde el cuerpo de la solicitud
+  console.log(id_usuario, id_card, amount, description);
 
   try {
     const direccion_envio = await DomicilioUsuario.findOne({
@@ -127,11 +114,76 @@ export const crearOrden = async (req, res) => {
       where: { id_carrito_compra: carrito.id },
     });
 
+    if (detallesCarrito.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "El carrito de compra no tiene detalles" });
+    }
+
     // Crear una nueva orden
     const nuevaOrden = await Orden.create({
       total: 0,
       id_usuario,
     });
+    // Validacion de existencia de productos y validacion de stock
+    let total = 0;
+    for (const detalleCarrito of detallesCarrito) {
+      const producto = await Producto.findByPk(detalleCarrito.id_producto);
+      if (!producto) {
+        // Eliminar la orden y los detalles de la orden creados
+        await DetalleOrden.destroy({ where: { id_orden: nuevaOrden.id } });
+        await nuevaOrden.destroy();
+        return res.status(400).json({
+          error: `El producto con id ${detalleCarrito.id_producto} no existe`,
+        });
+      }
+
+      if (detalleCarrito.cantidad > producto.stock) {
+        // Eliminar la orden y los detalles de la orden creados
+        await DetalleOrden.destroy({ where: { id_orden: nuevaOrden.id } });
+        await nuevaOrden.destroy();
+        return res.status(400).json({
+          message: `No hay suficiente stock disponible para el producto con id ${detalleCarrito.id_producto}`,
+        });
+      }
+    }
+    const response = await checkout({
+      id_card,
+      amount,
+      description,
+      id_usuario,
+      id_orden: nuevaOrden.id,
+    }, res);
+
+    if (response.error) {
+      // Eliminar la orden y los detalles de la orden creados
+      await DetalleOrden.destroy({ where: { id_orden: nuevaOrden.id } });
+      await nuevaOrden.destroy();
+
+      return res.status(400).json({
+        message: "Hubo un problema con el pago",
+      });
+    }
+
+    for (const detalleCarrito of detallesCarrito) {
+      const producto = await Producto.findByPk(detalleCarrito.id_producto);
+
+      producto.stock -= detalleCarrito.cantidad;
+      total += producto.precio * detalleCarrito.cantidad;
+
+      await producto.save();
+
+      // Crear un nuevo detalle de orden
+      await DetalleOrden.create({
+        cantidad: detalleCarrito.cantidad,
+        precio_unitario: producto.precio,
+        id_producto: detalleCarrito.id_producto,
+        id_orden: nuevaOrden.id,
+      });
+
+      // Eliminar el detalle de carrito de compra
+      await detalleCarrito.destroy();
+    }
 
     // Crear una nueva dirección de envío en la tabla de DireccionEnvio
     const nuevaDireccionEnvio = await DireccionEnvio.create({
@@ -149,46 +201,18 @@ export const crearOrden = async (req, res) => {
       descripcion: direccion_envio.descripcion,
     });
 
-    // Calcular el costo total de los productos en el carrito
-    let total = 0;
-    for (const detalleCarrito of detallesCarrito) {
-      const producto = await Producto.findByPk(detalleCarrito.id_producto);
-
-      if (!producto) {
-        return res.status(400).json({
-          error: `El producto con id ${detalleCarrito.id_producto} no existe`,
-        });
-      }
-
-      total += producto.precio * detalleCarrito.cantidad;
-
-      // Crear un nuevo detalle de orden
-      await DetalleOrden.create({
-        cantidad: detalleCarrito.cantidad,
-        precio_unitario: producto.precio,
-        id_producto: detalleCarrito.id_producto,
-        id_orden: nuevaOrden.id,
-      });
-
-      // Eliminar el detalle de carrito de compra
-      //await detalleCarrito.destroy();
-    }
-
-    // Actualizar el total de la orden
-
     nuevaOrden.total = total;
     await nuevaOrden.save();
     const nuevoEnvio = await Envio.create({
       orden_id: nuevaOrden.id,
       direccion_envio_id: nuevaDireccionEnvio.id,
     });
-    
-    // Eliminar el carrito de compra
-    //await carrito.destroy();
 
     return res.status(201).json(nuevaOrden);
   } catch (error) {
     console.error("Error al crear la orden:", error);
+
+
     return res.status(500).json({ error: "Error al crear la orden" });
   }
 };
