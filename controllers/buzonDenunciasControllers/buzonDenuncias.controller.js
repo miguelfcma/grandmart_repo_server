@@ -90,8 +90,11 @@ export const getProductosConDenunciasByUsuarioId = async (req, res) => {
 
 //  Eliminar una denuncia por su ID
 export const eliminarDenuncia = async (req, res) => {
+  const { id_denuncia } = req.params;
+  
   try {
-    const denuncia = await  DenunciaBuzon.findByPk(req.params.id);
+    // Buscar la denuncia por su ID
+    const denuncia = await DenunciaBuzon.findByPk(id_denuncia);
     if (denuncia) {
       await denuncia.destroy();
       res.json({ message: "Denuncia eliminada correctamente" });
