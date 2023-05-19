@@ -1,17 +1,24 @@
 import { Router } from "express";
 import {
   crearOrden,
-  obtenerOrdenesUsuario,
+
   actualizarEstadoOrden,
   obtenerDetalleOrden,
-  obtenerTodasLasOrdenes,
-  obtenerDireccionEnvioOrden,
-  obtenerPedidosPorUsuario,
-  verificacionDireccionEnvio
+  obtenerTodasLasOrdenes,eliminarOrden
+
 } from "../../controllers/ordenesControllers/ordenes.controllers.js";
 
 const router = Router();
 
+// Rutas para agregar productos al carrito
+router.post("/ordenes", crearOrden);
+router.get("/ordenes-all/", obtenerTodasLasOrdenes);
+router.put("/ordenes/estado/:id_orden", actualizarEstadoOrden);
+router.get("/ordenes/detalles/:id_orden", obtenerDetalleOrden);
+router.delete("/ordenes/:id_orden",eliminarOrden)
+
+/**
+ * 
 // Rutas para agregar productos al carrito
 router.post("/ordenes", crearOrden);
 router.get("/ordenes-all/", obtenerTodasLasOrdenes);
@@ -24,4 +31,5 @@ router.get("/ordenes/pedidos/:id_usuario", obtenerPedidosPorUsuario)
 router.get("/ordenes/verificacion-direccion-envio/:id_usuario", verificacionDireccionEnvio);
 
 
+ */
 export default router;

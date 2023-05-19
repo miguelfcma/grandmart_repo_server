@@ -42,10 +42,16 @@ import favoritosProductosRoutes from "./routes/productosRoutes/favoritosProducto
 
 //ordenes
 import ordenesRoutes from "./routes/ordenesRoutes/ordenes.routes.js"
+//Envios
+import enviosRoutes from "./routes/ordenesRoutes/envios.routes.js"
 
+//Compras
+import comprasRoutes from "./routes/ordenesRoutes/compras.routes.js"
 
+//Ventas
+import ventasRoutes from "./routes/ordenesRoutes/ventas.routes.js"
 //pagos 
-import pagosRoutes from "./routes/stripeRoutes/pagos.routes.js"
+import pagosRoutes from "./routes/ordenesRoutes/pagos.routes.js"
 import morgan from "morgan";
 import path from "path";
 //  INITIALIZATIONS
@@ -105,6 +111,15 @@ app.use(bdRoutes);
 //ordenes
 
 app.use(ordenesRoutes);
+
+//Envios
+
+app.use(enviosRoutes);
+//Ventas
+app.use(ventasRoutes)
+
+//Compras
+
 //pagos
 app.use(pagosRoutes);
 //  STATIC FILES

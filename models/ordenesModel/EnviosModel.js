@@ -19,13 +19,18 @@ export const Envio = sequelizeDB.define(
       allowNull: false,
     },
     estado: {
-        type: DataTypes.ENUM("Pendiente", "En tránsito", "Entregado", "Retrasado","Devuelto"),
-        allowNull: false,
-        defaultValue: "Pendiente",
+      type: DataTypes.ENUM(
+        "Pendiente",
+        "En tránsito",
+        "Entregado",
+        "Retrasado",
+        "Devuelto"
+      ),
+      allowNull: false,
+      defaultValue: "Pendiente",
     },
-    fechaEntrega: { 
+    fechaEntrega: {
       type: DataTypes.DATE,
-      
     },
   },
   {
@@ -33,4 +38,3 @@ export const Envio = sequelizeDB.define(
     timestamps: true,
   }
 );
-

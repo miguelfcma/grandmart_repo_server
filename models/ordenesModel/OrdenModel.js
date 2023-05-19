@@ -16,14 +16,19 @@ export const Orden = sequelizeDB.define(
       defaultValue: 0,
     },
     estado_orden: {
-      type: DataTypes.ENUM("Pendiente", "En proceso", "Confirmada", "Cancelada","Completada"),
+      type: DataTypes.ENUM(
+        "Pendiente",
+        "En proceso",
+        "Cancelada",
+        "Completada"
+      ),
+
       defaultValue: "Pendiente",
     },
     id_usuario: {
       type: DataTypes.BIGINT(20).UNSIGNED,
       allowNull: false,
     },
-   
   },
   { timestamps: true }
 );
