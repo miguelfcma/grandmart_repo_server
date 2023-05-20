@@ -41,17 +41,17 @@ import carritoProductosRoutes from "./routes/productosRoutes/carritoProductos.ro
 import favoritosProductosRoutes from "./routes/productosRoutes/favoritosProductos.routes.js";
 
 //ordenes
-import ordenesRoutes from "./routes/ordenesRoutes/ordenes.routes.js"
+import ordenesRoutes from "./routes/ordenesRoutes/ordenes.routes.js";
 //Envios
-import enviosRoutes from "./routes/ordenesRoutes/envios.routes.js"
+import enviosRoutes from "./routes/ordenesRoutes/envios.routes.js";
 
 //Compras
-import comprasRoutes from "./routes/ordenesRoutes/compras.routes.js"
+import comprasRoutes from "./routes/ordenesRoutes/compras.routes.js";
 
 //Ventas
-import ventasRoutes from "./routes/ordenesRoutes/ventas.routes.js"
-//pagos 
-import pagosRoutes from "./routes/ordenesRoutes/pagos.routes.js"
+import ventasRoutes from "./routes/ordenesRoutes/ventas.routes.js";
+//pagos
+import pagosRoutes from "./routes/ordenesRoutes/pagos.routes.js";
 import morgan from "morgan";
 import path from "path";
 //  INITIALIZATIONS
@@ -116,10 +116,10 @@ app.use(ordenesRoutes);
 
 app.use(enviosRoutes);
 //Ventas
-app.use(ventasRoutes)
+app.use(ventasRoutes);
 
 //Compras
-
+app.use(comprasRoutes);
 //pagos
 app.use(pagosRoutes);
 //  STATIC FILES

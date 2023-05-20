@@ -292,7 +292,7 @@ export const obtenerDetalleOrden = async (req, res) => {
   }
 };
 //Compras funciones
-export const obtenerOrdenesUsuario = async (req, res) => {
+export const obtenerComprasUsuario = async (req, res) => {
   const { id_usuario } = req.params; // Obtener el id de usuario desde los parámetros de la URL
 
   try {
@@ -338,11 +338,11 @@ export const obtenerVentasPorUsuario = async (req, res) => {
 
         const productosDetalles = await Promise.all(productosPromises);
         const productosFiltrados = productosDetalles.filter(
-          detalle => detalle.producto !== null
+          (detalle) => detalle.producto !== null
         );
         let totalVenta = 0;
 
-        productosFiltrados.forEach(detalle => {
+        productosFiltrados.forEach((detalle) => {
           const { producto, cantidad } = detalle;
           const subtotal = producto.precio * cantidad; // Multiplica precio por cantidad
           totalVenta += subtotal;
@@ -361,7 +361,7 @@ export const obtenerVentasPorUsuario = async (req, res) => {
     );
 
     // Filtra los elementos indefinidos de ventas
-    const ventasFiltradas = ventas.filter(venta => venta !== undefined);
+    const ventasFiltradas = ventas.filter((venta) => venta !== undefined);
 
     return res.status(200).json(ventasFiltradas);
   } catch (error) {
@@ -410,9 +410,28 @@ export const obtenerInformacionEnvio = async (req, res) => {
     const envio = await Envio.findOne({ where: { orden_id: id_orden } });
 
     if (envio) {
-      return res
-        .status(200)
-        .json({ message: "Información de envío econtrada", envio });
+      // Buscar la dirección de envío en base al ID de orden
+      const direccion_envio = await DireccionEnvio.findByPk(
+        envio.direccion_envio_id
+      );
+
+      // Verificar si se encontró la dirección de envío
+      if (direccion_envio) {
+        // Enviar la dirección de envío como respuesta con un mensaje de éxito y código de estado 200
+        return res
+          .status(200)
+          .json({
+            message: "Información de envío econtrada",
+            envio,
+            direccion_envio,
+          });
+      } else {
+        // Si no se encontró la dirección de envío, enviar una respuesta de error con código de estado 404
+        return res.status(404).json({
+          error:
+            "No se encontró la dirección de envío para la orden proporcionada",
+        });
+      }
     } else {
       return res.status(404).json({
         error: "No se encontró la información de envío",
