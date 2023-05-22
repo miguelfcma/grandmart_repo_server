@@ -6,6 +6,7 @@ import {
   updateReviewById,
   getAvgRatingByProductId,
   getReviewByUserAndProduct,
+  getProductosConReviewsByUsuarioId
 } from "../../controllers/productosControllers/reviewsProducto.controller.js";
 
 const router = express.Router();
@@ -27,6 +28,11 @@ router.get("/producto-review/:id_producto/avg-rating", getAvgRatingByProductId);
 router.get(
   "/producto-review/user/:id_usuario/product/:id_producto",
   getReviewByUserAndProduct
+);
+
+router.get(
+  "/productos-reviews/:id_usuario",
+  getProductosConReviewsByUsuarioId
 );
 
 export default router;
