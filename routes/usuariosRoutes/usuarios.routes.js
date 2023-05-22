@@ -9,6 +9,7 @@ import {
   updateUsuario,
   getUsuarioLogin,
   actualizarPerfilUsuario,
+  actualizarContrasenaUsuario
 } from "../../controllers/usuariosControllers/usuarios.controllers.js";
 import {
   crearCuentaBancaria,
@@ -38,7 +39,7 @@ router.post("/usuarios/login", getUsuarioLogin);
 router.put("/usuario-perfil/:id", actualizarPerfilUsuario);
 router.get("/usuario-perfil/:id", getUsuario);
 ////////////////////////////////////////////////////////////////////////////
-router.get("/contrasena-usuario-actualizar/:id", getUsuario);
+router.put("/contrasena-usuario-actualizar/:id", actualizarContrasenaUsuario);
 ////////////////////////////////////////////////////////////////////////////
 
 router.post("/cuenta-bancaria", crearCuentaBancaria);

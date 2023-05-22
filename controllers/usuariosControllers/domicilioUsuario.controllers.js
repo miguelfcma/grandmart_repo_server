@@ -17,7 +17,8 @@ export const createDomicilioUsuario = async (req, res) => {
     const domicilioUsuario = await DomicilioUsuario.create(data);
     res.status(201).json({ message: "Dirección de usuario creada exitosamente.", data: domicilioUsuario });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Ocurrió un error al crear la dirección del usuario." });
   }
 };
 
@@ -27,7 +28,8 @@ export const deleteDomicilioUsuarioByUserId = async (req, res) => {
     await DomicilioUsuario.destroy({ where: { id_usuario } });
     res.status(204).json({ message: "Dirección de usuario eliminada exitosamente." });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Ocurrió un error al eliminar la dirección del usuario." });
   }
 };
 
@@ -41,7 +43,8 @@ export const updateDomicilioUsuarioByUserId = async (req, res) => {
     });
     res.status(200).json({ message: "Dirección de usuario actualizada exitosamente.", data: updatedDomicilioUsuario });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Ocurrió un error al actualizar la dirección del usuario." });
   }
 };
 
@@ -52,8 +55,14 @@ export const getDomicilioUsuarioByUserId = async (req, res) => {
       where: { id_usuario },
     });
 
-    res.status(200).json({ message: "Dirección de usuario obtenida exitosamente.", data: domicilioUsuario });
+    if (domicilioUsuario) {
+      res.status(200).json({ message: "Dirección de usuario obtenida exitosamente.", data: domicilioUsuario });
+    } else {
+      res.status(404).json({ error: "No se encontró la dirección del usuario." });
+    }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Ocurrió un error al obtener la dirección del usuario." });
   }
 };
+

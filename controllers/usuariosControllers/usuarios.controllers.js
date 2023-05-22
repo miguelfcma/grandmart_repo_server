@@ -168,8 +168,8 @@ export const getUsuarioLogin = async (req, res) => {
         .json({ message: "Credenciales de inicio de sesión incorrectas" });
     }
 
-    // Verificar la contraseña
-    // Desencripta la contraseña y compara
+    // Verificar la contrasena
+    // Desencripta la contrasena y compara
     const contrasenaValida = bcrypt.compareSync(password, usuario.password);
     if (!contrasenaValida) {
       return res
@@ -182,7 +182,7 @@ export const getUsuarioLogin = async (req, res) => {
       expiresIn: "8h",
     });
 
-    // Si se encontró el usuario y la contraseña es válida, incluir el token y el atributo "tipoUsuario" en la respuesta
+    // Si se encontró el usuario y la contrasena es válida, incluir el token y el atributo "tipoUsuario" en la respuesta
     return res.status(200).json({
       message: "Inicio de sesión exitoso",
       token,
@@ -229,19 +229,19 @@ export const actualizarPerfilUsuario = async (req, res) => {
     });
 
     // Envía una respuesta exitosa
-    res
-      .status(200)
-      .json({
-        message: "Usuario actualizado correctamente",
-        usuario: updateUsuario,
-      });
+    res.status(200).json({
+      message: "Usuario actualizado correctamente",
+      usuario: updateUsuario,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
   }
 };
-export const actualizarContraseñaUsuario = async (req, res) => {
-  const { contraseñaActual, nuevaContraseña } = req.body;
+export const actualizarContrasenaUsuario = async (req, res) => {
+  console.log(req.body)
+  const { contrasenaActual, nuevaContrasena } = req.body;
+ 
   const usuarioId = req.params.id;
 
   try {
@@ -250,28 +250,28 @@ export const actualizarContraseñaUsuario = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Verificar si la contraseña actual coincide con la almacenada en el usuario
-    const esContraseñaValida = await bcrypt.compare(
-      contraseñaActual,
-      usuario.contraseña
+    // Verificar si la contrasena actual coincide con la almacenada en el usuario
+    const esContrasenaValida = await bcrypt.compare(
+      contrasenaActual,
+      usuario.password
     );
-    if (!esContraseñaValida) {
+    if (!esContrasenaValida) {
       return res
         .status(400)
         .json({ message: "La contraseña actual no es correcta" });
     }
 
-    // Encriptar la nueva contraseña
-    const nuevaContraseñaEncriptada = await bcrypt.hash(nuevaContraseña, 10);
+    // Encriptar la nueva contrasena
+    const nuevaContrasenaEncriptada = await bcrypt.hash(nuevaContrasena, 10);
 
-    // Actualizar la contraseña del usuario con la nueva contraseña encriptada
-    usuario.contraseña = nuevaContraseñaEncriptada;
+    // Actualizar la contrasena del usuario con la nueva contrasena encriptada
+    usuario.password = nuevaContrasenaEncriptada;
     await usuario.save();
 
     // Envía una respuesta exitosa
     return res
       .status(200)
-      .json({ message: "Contraseña actualizada correctamente" });
+      .json({ message: "contraseña actualizada correctamente" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });

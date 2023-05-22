@@ -4,15 +4,30 @@ import nodemailer from "nodemailer";
 
 function generatePassword() {
   const length = 8;
-  const chars =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let password = "";
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * chars.length);
-    password += chars[randomIndex];
+
+  while (true) {
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      password += chars[randomIndex];
+    }
+
+    // Verificar si la contraseña cumple con todas las condiciones
+    const meetsLengthRequirement = password.length >= 7;
+    const hasNumber = /\d/.test(password);
+    const hasNoSpaces = !password.includes(" ");
+
+    if (meetsLengthRequirement && hasNumber && hasNoSpaces) {
+      break;
+    }
+
+    password = ""; // Restablecer la contraseña si no cumple con las condiciones
   }
+
   return password;
 }
+
 
 export const sendEmail = async (req, res) => {
   const { email } = req.body;
