@@ -1,7 +1,15 @@
 import { Router } from "express";
 
 // Importamos los controladores que manejan las distintas rutas de usuarios
-import { getUsuario, getUsuarios, deleteUsuario, createUsuario, updateUsuario, getUsuarioLogin, getContrasenaUsuarioByUserId, updateContrasenaUsuarioByUserId } from "../../controllers/usuariosControllers/usuarios.controllers.js";
+import {
+  getUsuario,
+  getUsuarios,
+  deleteUsuario,
+  createUsuario,
+  updateUsuario,
+  getUsuarioLogin,
+  actualizarPerfilUsuario,
+} from "../../controllers/usuariosControllers/usuarios.controllers.js";
 
 // Creamos una nueva instancia del Router de Express
 const router = Router();
@@ -9,9 +17,6 @@ const router = Router();
 // Rutas disponibles:
 // Obtiene todos los usuarios
 router.get("/usuarios", getUsuarios);
-
-// Obtiene un usuario por su ID
-router.get("/usuarios/:id", getUsuario);
 
 // Crea un nuevo usuario
 router.post("/usuarios", createUsuario);
@@ -25,11 +30,9 @@ router.delete("/usuarios/:id", deleteUsuario);
 // Ruta para que un usuario inicie sesión
 router.post("/usuarios/login", getUsuarioLogin);
 
-// Ruta para obtener la contraseña
-router.get("/contrasena-usuario/:id_usuario", getContrasenaUsuarioByUserId);
+router.put("/usuario-perfil/:id", actualizarPerfilUsuario);
 
-// Ruta para actualizar la contraseña
-router.put("/contrasena-usuario/:id_usuario", updateContrasenaUsuarioByUserId);
+// Obtiene un usuario por su ID
+router.get("/usuario-perfil/:id", getUsuario);
 
-// Exportamos el router creado para ser utilizado por nuestra aplicación
 export default router;

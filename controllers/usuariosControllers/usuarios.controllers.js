@@ -31,7 +31,17 @@ export const getUsuarios = async (req, res) => {
 // Obtener un usuario por id
 export const getUsuario = async (req, res) => {
   try {
-    const usuario = await Usuario.findByPk(req.params.id);
+    const usuario = await Usuario.findByPk(req.params.id, {
+      attributes: [
+        "id",
+        "nombre",
+        "apellidoPaterno",
+        "apellidoMaterno",
+        "sexo",
+        "fechaNacimiento",
+        "telefono",
+      ],
+    });
     if (!usuario) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -94,7 +104,7 @@ export const updateUsuario = async (req, res) => {
     nombre,
     apellidoPaterno,
     apellidoMaterno,
-    
+
     sexo,
     fechaNacimiento,
     telefono,
@@ -111,7 +121,7 @@ export const updateUsuario = async (req, res) => {
       nombre,
       apellidoPaterno,
       apellidoMaterno,
-    
+
       sexo,
       fechaNacimiento,
       telefono,
@@ -140,37 +150,6 @@ export const deleteUsuario = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
-  }
-};
-
-export const getContrasenaUsuarioByUserId = async (req, res) => {
-  try {
-    const { id_usuario } = req.params;
-    const usuarios = await Usuario.findOne({
-      where: { id: id_usuario},
-    });
-
-    console.log(usuarios.password); // Imprimir el valor de password en la consola
-
-    res.status(200).json({ message: "Contrasena de usuario obtenida exitosamente.", data: usuarios });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-
-export const updateContrasenaUsuarioByUserId = async (req, res) => {
-
-  try {
-    const { id_usuario } = req.params;
-    const data = req.body;
-    await Usuario.update(data, { where: {id: id_usuario } });
-    const updatedContrasenaUsuario = await Usuario.findOne({
-      where: { id_usuario },
-    });
-    res.status(200).json({ message: "Contraseña de usuario actualizada exitosamente.", data: updatedContrasenaUsuario });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
 };
 
@@ -221,5 +200,39 @@ export const getUsuarioLogin = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Ha ocurrido un error en el servidor" });
+  }
+};
+
+export const actualizarPerfilUsuario = async (req, res) => {
+  const {
+    nombre,
+    apellidoPaterno,
+    apellidoMaterno,
+    sexo,
+    fechaNacimiento,
+    telefono,
+  } = req.body;
+  try {
+    const usuario = await Usuario.findByPk(req.params.id);
+    if (!usuario) {
+      res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    // Actualiza el registro usuario con los nuevos valores
+    const updateUsuario = await usuario.update({
+      nombre,
+      apellidoPaterno,
+      apellidoMaterno,
+      sexo,
+      fechaNacimiento,
+      telefono,
+    });
+
+    // Envía una respuesta exitosa
+    res
+      .status(200)
+      .json({ message: "Usuario actualizado correctamente" }, updateUsuario);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
   }
 };

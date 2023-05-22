@@ -43,7 +43,7 @@ export const Usuario = sequelizeDB.define(
       allowNull: false,
     },
     tipoUsuario: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.TINYINT,
       allowNull: false,
     },
   },
