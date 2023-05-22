@@ -13,7 +13,7 @@ export const crearPregunta = async (req, res) => {
     res.status(201).json(nuevaPregunta);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send("Error interno del servidor");
   }
 };
 
@@ -28,7 +28,7 @@ export const crearRespuesta = async (req, res) => {
     res.status(200).json(pregunta);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send("Error interno del servidor");
   }
 };
 
@@ -36,21 +36,29 @@ export const crearRespuesta = async (req, res) => {
 export const getPreguntasByIdProducto = async (req, res) => {
   try {
     const { id_producto } = req.params;
-    const preguntas = await PreguntaProducto.findAll({ where: { id_producto } });
+    const preguntas = await PreguntaProducto.findAll({
+      where: { id_producto },
+    });
 
     if (preguntas.length === 0) {
       return res.status(404).json({ message: "No se encontraron preguntas" });
     }
-    const preguntasConUsuarioYProducto = await Promise.all(preguntas.map(async pregunta => {
-      const producto = await Producto.findByPk(pregunta.id_producto, { attributes: ['id', 'nombre'] });
-      const usuario = await Usuario.findByPk(pregunta.id_usuario, { attributes: ['id', 'nombre'] });
-      return { ...pregunta.toJSON(), producto, usuario };
-    }));
+    const preguntasConUsuarioYProducto = await Promise.all(
+      preguntas.map(async (pregunta) => {
+        const producto = await Producto.findByPk(pregunta.id_producto, {
+          attributes: ["id", "nombre"],
+        });
+        const usuario = await Usuario.findByPk(pregunta.id_usuario, {
+          attributes: ["id", "nombre"],
+        });
+        return { ...pregunta.toJSON(), producto, usuario };
+      })
+    );
 
     res.status(200).json(preguntasConUsuarioYProducto);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send("Error interno del servidor");
   }
 };
 
@@ -60,13 +68,13 @@ export const eliminarPregunta = async (req, res) => {
     const { id } = req.params;
     const pregunta = await PreguntaProducto.findOne({ where: { id } });
     if (!pregunta) {
-      return res.status(404).send('Pregunta no encontrada');
+      return res.status(404).send("Pregunta no encontrada");
     }
     await pregunta.destroy();
     res.status(204).send();
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send("Error interno del servidor");
   }
 };
 
@@ -82,7 +90,7 @@ export const actualizarPregunta = async (req, res) => {
     res.status(200).json(preguntaActualizada);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send("Error interno del servidor");
   }
 };
 
@@ -95,33 +103,76 @@ export const getProductosConPreguntasByUsuarioId = async (req, res) => {
     const productos = await Producto.findAll({ where: { id_usuario } });
 
     if (productos.length === 0) {
-      return res.status(404).json({ message: "No se encontraron productos para el usuario especificado" });
+      return res
+        .status(404)
+        .json({
+          message: "No se encontraron productos para el usuario especificado",
+        });
     }
 
-    const productosConPreguntas = await Promise.all(productos.map(async producto => {
-      // Buscar preguntas asociadas al producto
-      const preguntas = await PreguntaProducto.findAll({ where: { id_producto: producto.id } });
+    const productosConPreguntas = await Promise.all(
+      productos.map(async (producto) => {
+        // Buscar preguntas asociadas al producto
+        const preguntas = await PreguntaProducto.findAll({
+          where: { id_producto: producto.id },
+        });
 
-      if (preguntas.length > 0) {
-        // Si el producto tiene preguntas asociadas, agregarlas como propiedad al objeto de producto
-        return { producto: producto.toJSON(), preguntas };
-      } else {
-        // Si el producto no tiene preguntas asociadas, devolver null
-        return null;
-      }
-    }));
+        if (preguntas.length > 0) {
+          // Si el producto tiene preguntas asociadas, agregarlas como propiedad al objeto de producto
+          return { producto: producto.toJSON(), preguntas };
+        } else {
+          // Si el producto no tiene preguntas asociadas, devolver null
+          return null;
+        }
+      })
+    );
 
     // Filtrar los productos nulos (que no tienen preguntas asociadas)
-    const productosConPreguntasFiltrados = productosConPreguntas.filter(producto => producto !== null);
+    const productosConPreguntasFiltrados = productosConPreguntas.filter(
+      (producto) => producto !== null
+    );
 
     res.status(200).json(productosConPreguntasFiltrados);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send("Error interno del servidor");
   }
 };
 
+export const getTodosProductosConPreguntas = async (req, res) => {
+  try {
+    // Buscar productos del usuario por su ID de usuario
+    const productos = await Producto.findAll();
 
+    if (productos.length === 0) {
+      return res.status(404).json({ message: "No se encontraron productos " });
+    }
 
+    const productosConPreguntas = await Promise.all(
+      productos.map(async (producto) => {
+        // Buscar preguntas asociadas al producto
+        const preguntas = await PreguntaProducto.findAll({
+          where: { id_producto: producto.id },
+        });
 
+        if (preguntas.length > 0) {
+          // Si el producto tiene preguntas asociadas, agregarlas como propiedad al objeto de producto
+          return { producto: producto.toJSON(), preguntas };
+        } else {
+          // Si el producto no tiene preguntas asociadas, devolver null
+          return null;
+        }
+      })
+    );
 
+    // Filtrar los productos nulos (que no tienen preguntas asociadas)
+    const productosConPreguntasFiltrados = productosConPreguntas.filter(
+      (producto) => producto !== null
+    );
+
+    res.status(200).json(productosConPreguntasFiltrados);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error interno del servidor");
+  }
+};

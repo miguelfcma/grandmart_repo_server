@@ -179,7 +179,7 @@ export const getUsuarioLogin = async (req, res) => {
 
     // Crear el token de sesión
     const token = jwt.sign({ userId: usuario.id }, "secreto", {
-      expiresIn: "1h",
+      expiresIn: "8h",
     });
 
     // Si se encontró el usuario y la contraseña es válida, incluir el token y el atributo "tipoUsuario" en la respuesta
@@ -204,6 +204,7 @@ export const getUsuarioLogin = async (req, res) => {
 };
 
 export const actualizarPerfilUsuario = async (req, res) => {
+  console.log(req.body);
   const {
     nombre,
     apellidoPaterno,
@@ -230,7 +231,47 @@ export const actualizarPerfilUsuario = async (req, res) => {
     // Envía una respuesta exitosa
     res
       .status(200)
-      .json({ message: "Usuario actualizado correctamente" }, updateUsuario);
+      .json({
+        message: "Usuario actualizado correctamente",
+        usuario: updateUsuario,
+      });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+export const actualizarContraseñaUsuario = async (req, res) => {
+  const { contraseñaActual, nuevaContraseña } = req.body;
+  const usuarioId = req.params.id;
+
+  try {
+    const usuario = await Usuario.findByPk(usuarioId);
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Verificar si la contraseña actual coincide con la almacenada en el usuario
+    const esContraseñaValida = await bcrypt.compare(
+      contraseñaActual,
+      usuario.contraseña
+    );
+    if (!esContraseñaValida) {
+      return res
+        .status(400)
+        .json({ message: "La contraseña actual no es correcta" });
+    }
+
+    // Encriptar la nueva contraseña
+    const nuevaContraseñaEncriptada = await bcrypt.hash(nuevaContraseña, 10);
+
+    // Actualizar la contraseña del usuario con la nueva contraseña encriptada
+    usuario.contraseña = nuevaContraseñaEncriptada;
+    await usuario.save();
+
+    // Envía una respuesta exitosa
+    return res
+      .status(200)
+      .json({ message: "Contraseña actualizada correctamente" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });

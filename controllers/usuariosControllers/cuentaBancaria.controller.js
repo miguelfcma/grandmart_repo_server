@@ -1,4 +1,4 @@
-import { CuentaBancaria } from "../../models/usuariosModel/CuentaBancariaModel";
+import { CuentaBancaria } from "../../models/usuariosModel/CuentaBancariaModel.js";
 
 // Crear una nueva cuenta bancaria
 export const crearCuentaBancaria = async (req, res) => {
@@ -36,39 +36,40 @@ export const obtenerCuentaBancariaPorIdUsuario = async (req, res) => {
 };
 
 // Actualizar una cuenta bancaria
-export const updateCuentaBancaria = async (req, res) => {
-  try {
-    const cuentaBancaria = await CuentaBancaria.findByPk(req.params.id);
-    if (!cuentaBancaria) {
-      res.status(404).json({ message: "Cuenta bancaria no encontrada" });
-      return;
+export const actualizarCuentaBancaria = async (req, res) => {
+    try {
+        const { id_usuario } = req.params;
+      const cuentaBancaria = await CuentaBancaria.findOne({ where: { usuario_id: id_usuario } });
+      if (!cuentaBancaria) {
+        res.status(404).json({ message: "Cuenta bancaria no encontrada" });
+        return;
+      }
+      const { nombre_titular, numero_cuenta, banco } = req.body;
+      await cuentaBancaria.update({
+        nombre_titular,
+        numero_cuenta,
+        banco,
+      });
+      res.status(200).json({ message: "Cuenta bancaria actualizada exitosamente", cuentaBancaria });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error al actualizar la cuenta bancaria" });
     }
-    const { usuario_id, nombre_titular, numero_cuenta, banco } = req.body;
-    await cuentaBancaria.update({
-      usuario_id,
-      nombre_titular,
-      numero_cuenta,
-      banco,
-    });
-    res.status(200).json({ message: "Cuenta bancaria actualizada exitosamente", cuentaBancaria });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al actualizar la cuenta bancaria" });
-  }
-};
-
-// Eliminar una cuenta bancaria
-export const deleteCuentaBancaria = async (req, res) => {
-  try {
-    const cuentaBancaria = await CuentaBancaria.findByPk(req.params.id);
-    if (!cuentaBancaria) {
-      res.status(404).json({ message: "Cuenta bancaria no encontrada" });
-      return;
+  };
+  
+  export const eliminarCuentaBancaria = async (req, res) => {
+    try {
+        const { id_usuario } = req.params;
+      const cuentaBancaria = await CuentaBancaria.findOne({ where: { usuario_id: id_usuario } });
+      if (!cuentaBancaria) {
+        res.status(404).json({ message: "Cuenta bancaria no encontrada" });
+        return;
+      }
+      await cuentaBancaria.destroy();
+      res.status(200).json({ message: "Cuenta bancaria eliminada exitosamente" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error al eliminar la cuenta bancaria" });
     }
-    await cuentaBancaria.destroy();
-    res.status(200).json({ message: "Cuenta bancaria eliminada exitosamente" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al eliminar la cuenta bancaria" });
-  }
-};
+  };
+  

@@ -10,7 +10,12 @@ import {
   getUsuarioLogin,
   actualizarPerfilUsuario,
 } from "../../controllers/usuariosControllers/usuarios.controllers.js";
-
+import {
+  crearCuentaBancaria,
+  obtenerCuentaBancariaPorIdUsuario,
+  actualizarCuentaBancaria,
+  eliminarCuentaBancaria,
+} from "../../controllers/usuariosControllers/cuentaBancaria.controller.js";
 // Creamos una nueva instancia del Router de Express
 const router = Router();
 
@@ -29,10 +34,15 @@ router.delete("/usuarios/:id", deleteUsuario);
 
 // Ruta para que un usuario inicie sesión
 router.post("/usuarios/login", getUsuarioLogin);
-
+////////////////////////////////////////////////////////////////////////////
 router.put("/usuario-perfil/:id", actualizarPerfilUsuario);
-
-// Obtiene un usuario por su ID
 router.get("/usuario-perfil/:id", getUsuario);
+////////////////////////////////////////////////////////////////////////////
+router.get("/contrasena-usuario-actualizar/:id", getUsuario);
+////////////////////////////////////////////////////////////////////////////
 
+router.post("/cuenta-bancaria", crearCuentaBancaria);
+router.get("/cuenta-bancaria/:id_usuario", obtenerCuentaBancariaPorIdUsuario);
+router.put("/cuenta-bancaria/:id_usuario", actualizarCuentaBancaria);
+router.delete("/cuenta-bancaria/:id_usuario", eliminarCuentaBancaria)
 export default router;
