@@ -24,7 +24,8 @@ export const Envio = sequelizeDB.define(
         "En tránsito",
         "Entregado",
         "Retrasado",
-        "Devuelto"
+        "Devuelto",
+        "Cancelado"
       ),
       allowNull: false,
       defaultValue: "Pendiente",

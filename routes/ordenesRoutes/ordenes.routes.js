@@ -1,11 +1,10 @@
 import { Router } from "express";
 import {
   crearOrden,
-
-  actualizarEstadoOrden,
   obtenerDetalleOrden,
-  obtenerTodasLasOrdenes,eliminarOrden
-
+  obtenerTodasLasOrdenes,
+  eliminarOrden,
+  cambiarEstadoOrden,
 } from "../../controllers/ordenesControllers/ordenes.controllers.js";
 
 const router = Router();
@@ -13,9 +12,11 @@ const router = Router();
 // Rutas para agregar productos al carrito
 router.post("/ordenes", crearOrden);
 router.get("/ordenes-all/", obtenerTodasLasOrdenes);
-router.put("/ordenes/estado/:id_orden", actualizarEstadoOrden);
+
+router.put("/ordenes/estado/:id_orden", cambiarEstadoOrden);
+
 router.get("/ordenes/detalles/:id_orden", obtenerDetalleOrden);
-router.delete("/ordenes/:id_orden",eliminarOrden)
+router.delete("/ordenes/eliminar/:id_orden", eliminarOrden);
 
 /**
  * 
