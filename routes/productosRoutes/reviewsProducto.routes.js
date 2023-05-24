@@ -27,11 +27,6 @@ router.put("/producto-review/:id", updateReviewById);
 router.get("/producto-review/:id_producto/avg-rating", getAvgRatingByProductId);
 
 router.get(
-  "/producto-review/user/:id_usuario/product/:id_producto",
-  getReviewByUserAndProduct
-);
-
-router.get(
   "/productos-reviews/:id_usuario",
   getProductosConReviewsByUsuarioId
 );

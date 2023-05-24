@@ -15,7 +15,8 @@ export const Servicio = sequelizeDB.define(
       allowNull: false,
     },
     descripcion: { type: DataTypes.TEXT },
-    precio: { type: DataTypes.DOUBLE(10, 2), allowNull: false },
+    precio: { type: DataTypes.DOUBLE(10, 2), allowNull: false 
+    },
     id_categoria: {
       type: DataTypes.BIGINT(20).UNSIGNED,
       primaryKey: false,

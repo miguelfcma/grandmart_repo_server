@@ -16,8 +16,6 @@ export const getServicio = async (req, res) => {
       return { ...servicio.toJSON(), categoria, usuario };
     }));
 
-
-
     return res.status(200).json(servicioConCategoriaYUsuario);
   } catch (error) {
     return res
@@ -40,8 +38,7 @@ export const getServicios = async (req, res) => {
       const usuario = await Usuario.findByPk(servicio.id_usuario, { attributes: ['id', 'nombre'] });
       return { ...servicio.toJSON(), categoria, usuario };
     }));
-
-    
+   
     return res.status(200).json(serviciosConCategoriaYUsuario);
   } catch (error) {
     return res
