@@ -5,7 +5,6 @@ import {
   getReviewsByProductId,
   updateReviewById,
   getAvgRatingByProductId,
-  getReviewByUserAndProduct,
   getProductosConReviewsByUsuarioId,
   getTodosProductosConReviews
 } from "../../controllers/productosControllers/reviewsProducto.controller.js";
@@ -31,7 +30,7 @@ router.get(
   getProductosConReviewsByUsuarioId
 );
 router.get(
-  "/productos-reviews-all/",
+  "/productos-reviews-todas/",
   getTodosProductosConReviews
 );
 
