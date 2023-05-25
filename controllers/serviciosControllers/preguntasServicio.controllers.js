@@ -123,3 +123,42 @@ export const getServiciosConPreguntasByUsuarioId = async (req, res) => {
     res.status(500).send('Error interno del servidor');
   }
 };
+
+
+export const getTodosServiciosConPreguntas = async (req, res) => {
+  try {
+    // Buscar servicios del usuario por su ID de usuario
+    const servicios = await Servicio.findAll();
+
+    if (servicios.length === 0) {
+      return res.status(404).json({ message: "No se encontraron servicios " });
+    }
+
+    const serviciosConPreguntas = await Promise.all(
+      servicios.map(async (servicio) => {
+        // Buscar preguntas asociadas al servicio
+        const preguntas = await PreguntaServicio.findAll({
+          where: { id_servicio: servicio.id },
+        });
+
+        if (preguntas.length > 0) {
+          // Si el servicio tiene preguntas asociadas, agregarlas como propiedad al objeto de servicio
+          return { servicio: servicio.toJSON(), preguntas };
+        } else {
+          // Si el servicio no tiene preguntas asociadas, devolver null
+          return null;
+        }
+      })
+    );
+
+    // Filtrar los servicios nulos (que no tienen preguntas asociadas)
+    const serviciosConPreguntasFiltrados = serviciosConPreguntas.filter(
+      (servicio) => servicio !== null
+    );
+
+    res.status(200).json(serviciosConPreguntasFiltrados);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error interno del servidor");
+  }
+};

@@ -36,10 +36,6 @@ router.delete("/producto-preguntas/:id", eliminarPregunta);
 router.put("/producto-preguntas/:id", actualizarPregunta);
 
 
-
-router.get(
-  "/producto-preguntas-all/",
-  getTodosProductosConPreguntas
-);
+router.get("/producto-preguntas-all/", getTodosProductosConPreguntas);
 
 export default router;

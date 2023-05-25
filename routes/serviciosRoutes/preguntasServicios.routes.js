@@ -6,6 +6,7 @@ import {
     getServiciosConPreguntasByUsuarioId,
     eliminarPregunta,
     actualizarPregunta,
+    getTodosServiciosConPreguntas
 } from "../../controllers/serviciosControllers/preguntasServicio.controllers.js";
 
 const router = Router();
@@ -28,5 +29,8 @@ router.delete('/servicio-preguntas/:id', eliminarPregunta);
 
 // Ruta para actualizar una pregunta de un servicio por su ID
 router.put('/servicio-preguntas/:id', actualizarPregunta);
+
+router.get("/servicio-preguntas-all/",getTodosServiciosConPreguntas
+);
 
 export default router;
