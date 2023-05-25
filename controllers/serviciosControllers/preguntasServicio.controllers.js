@@ -19,6 +19,8 @@ export const crearPregunta = async (req, res) => {
 
 
 
+
+
 // Crear una nueva respuesta para una pregunta
 export const crearRespuesta = async (req, res) => {
   try {
@@ -48,7 +50,6 @@ export const getPreguntasByIdServicio = async (req, res) => {
       const usuario = await Usuario.findByPk(pregunta.id_usuario, { attributes: ['id', 'nombre'] });
       return { ...pregunta.toJSON(), servicio, usuario };
     }));    
-
     res.status(200).json(preguntasConUsuarioYServicio);
   } catch (error) {
     console.error(error);
