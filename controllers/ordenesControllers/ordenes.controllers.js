@@ -186,71 +186,39 @@ export const eliminarOrden = async (req, res) => {
         .status(404)
         .json({ error: `La orden con id ${id_orden} no existe` });
     }
-    // Buscar los detalles de la orden por el ID de la orden
+
     const detallesOrden = await DetalleOrden.findAll({
       where: { id_orden },
     });
 
     const envio = await Envio.findOne({ where: { orden_id: id_orden } });
-
-    // Buscar la dirección de envío en base al ID de orden
     const direccion_envio = await DireccionEnvio.findByPk(
       envio.direccion_envio_id
     );
     const pago = await Pago.findOne({ where: { orden_id: id_orden } });
-
-    if (envio) {
-      await envio.destroy();
-    }
     if (direccion_envio) {
+      if (envio) {
+        await envio.destroy();
+      }
       await direccion_envio.destroy();
     }
+   
+
     if (pago) {
       await pago.destroy();
     }
-    if (detallesOrden) {
-      // Eliminar cada detalle de la orden
-      detallesOrden.forEach(async (detalle) => {
+    if (detallesOrden.length) {
+      for (const detalle of detallesOrden) {
         await detalle.destroy();
-      });
-    }
-    if (orden) {
-      await orden.destroy();
+      }
     }
 
-    console.log();
-    return res.status(200).json(orden);
-  } catch (error) {
-    console.error("Error eliminar la orden", error);
-    return res.status(500).json({ error: "Error eliminar la orden" });
-  }
-};
-
-export const actualizarEstadoOrden = async (req, res) => {
-  const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
-  const { estado_orden } = req.body; // Obtener el nuevo estado de la orden desde el cuerpo de la solicitud
-
-  try {
-    // Buscar la orden por su ID
-    const orden = await Orden.findByPk(id_orden);
-
-    if (!orden) {
-      return res
-        .status(404)
-        .json({ error: `La orden con id ${id_orden} no existe` });
-    }
-
-    // Actualizar el estado de la orden
-    orden.estado_orden = estado_orden;
-
-    await orden.save();
+    await orden.destroy();
 
     return res.status(200).json(orden);
   } catch (error) {
-    console.error("Error al actualizar el estado de la orden:", error);
-    return res
-      .status(500)
-      .json({ error: "Error al actualizar el estado de la orden" });
+    console.error("Error al eliminar la orden", error);
+    return res.status(500).json({ error: "Error al eliminar la orden" });
   }
 };
 
@@ -418,13 +386,11 @@ export const obtenerInformacionEnvio = async (req, res) => {
       // Verificar si se encontró la dirección de envío
       if (direccion_envio) {
         // Enviar la dirección de envío como respuesta con un mensaje de éxito y código de estado 200
-        return res
-          .status(200)
-          .json({
-            message: "Información de envío econtrada",
-            envio,
-            direccion_envio,
-          });
+        return res.status(200).json({
+          message: "Información de envío econtrada",
+          envio,
+          direccion_envio,
+        });
       } else {
         // Si no se encontró la dirección de envío, enviar una respuesta de error con código de estado 404
         return res.status(404).json({
@@ -443,37 +409,6 @@ export const obtenerInformacionEnvio = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Error al obtener la dirección de envío de la orden" });
-  }
-};
-
-export const cambiarEstadoEnvio = async (req, res) => {
-  const { id_orden } = req.params;
-  const { nuevoEstado } = req.body;
-
-  try {
-    const envio = await Envio.findOne({ where: { orden_id: id_orden } });
-
-    if (envio) {
-      envio.estado = nuevoEstado;
-      if (nuevoEstado === "Entregado") {
-        envio.fechaEntrega = new Date();
-      }
-      await envio.save();
-
-      return res
-        .status(200)
-        .json({ message: "Información de envío econtrada", envio });
-    } else {
-      return res.status(404).json({
-        error: "No se encontró la información de envío",
-      });
-    }
-  } catch (error) {
-    console.error("Error al cambiar el estado del envío:", error);
-    // Enviar una respuesta de error con código de estado 500
-    return res
-      .status(500)
-      .json({ error: "Error al cambiar el estado del envío" });
   }
 };
 
@@ -570,5 +505,141 @@ export const obtenerPagosPorIdUsuario = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Error al obtener la dirección de envío de la orden" });
+  }
+};
+///cambiar los estados
+export const cambiarEstadoEnvio = async (req, res) => {
+  const { id_envio } = req.params; // Obtener el id del envío desde los parámetros de la URL
+  const { nuevoEstado } = req.body; // Obtener el nuevo estado del envío desde el cuerpo de la solicitud
+
+  try {
+    // Buscar el envío por su ID
+    const envio = await Envio.findByPk(id_envio);
+
+    if (!envio) {
+      return res
+        .status(404)
+        .json({ error: `El envío con id ${id_envio} no existe` });
+    }
+
+    if (envio.estado === "Cancelado") {
+      return res.status(400).json({
+        error: "La envío esta cancelado y no se puede cambiar su estado",
+      });
+    } else if (envio.estado === nuevoEstado) {
+      return res.status(400).json({
+        error: `El estado de envío ya tiene el estado ${nuevoEstado} y no se puede cambiar su estado nuevamente`,
+      });
+    }
+
+    // Actualizar el estado del envío
+    envio.estado = nuevoEstado;
+
+    await envio.save();
+
+    return res.status(200).json(envio);
+  } catch (error) {
+    console.error("Error al cambiar el estado del envío:", error);
+    return res
+      .status(500)
+      .json({ error: "Error al cambiar el estado del envío" });
+  }
+};
+
+export const cambiarEstadoOrden = async (req, res) => {
+  const { id_orden } = req.params; // Obtener el id del envío desde los parámetros de la URL
+  const { nuevoEstado } = req.body; // Obtener el nuevo estado del envío desde el cuerpo de la solicitud
+  try {
+    const orden = await Orden.findByPk(id_orden);
+
+    if (!orden) {
+      return res
+        .status(404)
+        .json({ error: `La orden con id ${id_orden} no existe` });
+    }
+
+    if (orden.estado_orden === "Cancelada") {
+      return res.status(400).json({
+        error: "La orden ya está cancelada y no se puede cambiar su estado",
+      });
+    } else if (orden.estado_orden === nuevoEstado) {
+      return res.status(400).json({
+        error: `La orden ya tiene el estado ${nuevoEstado} y no se puede cambiar su estado nuevamente`,
+      });
+    }
+
+    const detallesOrden = await DetalleOrden.findAll({ where: { id_orden } });
+
+    if (nuevoEstado === "Cancelada") {
+      // Restablecer el stock de los productos en los detalles de la orden
+      for (const detalle of detallesOrden) {
+        const producto = await Producto.findByPk(detalle.id_producto);
+
+        if (producto) {
+          producto.stock += detalle.cantidad;
+          await producto.save();
+        }
+      }
+    }
+
+    orden.estado_orden = nuevoEstado;
+    await orden.save();
+
+    return res.status(200).json({ message: "Estado de la orden actualizado" });
+  } catch (error) {
+    console.error("Error al cambiar el estado de la orden:", error);
+    return res
+      .status(500)
+      .json({ error: "Error al cambiar el estado de la orden" });
+  }
+};
+
+export const cancelarOrden = async (req, res) => {
+  const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
+
+  try {
+    const orden = await Orden.findByPk(id_orden);
+    const envio = await Envio.findOne({ where: { orden_id: id_orden } });
+
+    if (!orden) {
+      return res
+        .status(404)
+        .json({ error: `La orden con id ${id_orden} no existe` });
+    }
+    if (orden.estado_orden === "Cancelada") {
+      return res.status(400).json({
+        error: "La orden ya está cancelada y no se puede cambiar su estado",
+      });
+    }
+    if (orden.estado_orden !== "Pendiente") {
+      return res.status(400).json({
+        error: "La orden no está en estado 'Pendiente' y no se puede cancelar",
+      });
+    }
+    if (envio.estado !== "Pendiente") {
+      return res.status(400).json({
+        error: "El envío no está en estado 'Pendiente' y no se puede cancelar",
+      });
+    }
+
+    const detallesOrden = await DetalleOrden.findAll({ where: { id_orden } });
+
+    // Restablecer el stock de los productos en los detalles de la orden
+    for (const detalle of detallesOrden) {
+      const producto = await Producto.findByPk(detalle.id_producto);
+
+      if (producto) {
+        producto.stock += detalle.cantidad;
+        await producto.save();
+      }
+    }
+
+    orden.estado_orden = "Cancelada";
+    await orden.save();
+
+    return res.status(200).json({ message: "Orden cancelada" });
+  } catch (error) {
+    console.error("Error al cancelar la orden:", error);
+    return res.status(500).json({ error: "Error al cancelar la orden" });
   }
 };
