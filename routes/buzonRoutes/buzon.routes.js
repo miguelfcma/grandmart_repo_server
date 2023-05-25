@@ -5,13 +5,24 @@ import {
   getProductosConDenunciasByUsuarioId,
   getAllDenuncias,
   eliminarDenuncia,
-  actualizarDenunciaARevisada
+  actualizarDenunciaARevisada,
+
+  createDenunciaServicio,
+  getDenunciasByIdServicio,
+  getServiciosConDenunciasByUsuarioId,
+  getAllDenunciasServicio,
+  eliminarDenunciaServicio,
+  actualizarDenunciaARevisadaServicio,
+
 } from "../../controllers/buzonDenunciasControllers/buzonDenuncias.controller.js";
 
 const router = Router();
 
 // Ruta para crear una nuevo denuncia
 router.post("/buzon-denuncias", createDenuncia);
+
+// Ruta para crear una nuevo denuncia para servicio
+router.post("/buzon-denuncias/servicio", createDenunciaServicio);
 
 // Ruta para obtener todas las denuncias asociadas a un producto
 router.get(
@@ -20,8 +31,18 @@ router.get(
 );
 
 router.get(
+  "/producto-denuncias/servicio/:id_servicio",
+  getDenunciasByIdServicio
+);
+
+router.get(
   "/producto-denuncias/productos-denuncias/:id_usuario",
   getProductosConDenunciasByUsuarioId
+);
+
+router.get(
+  "/servicio-denuncias/servicios-denuncias/:id_usuario",
+  getServiciosConDenunciasByUsuarioId
 );
 
 router.get(
@@ -29,9 +50,19 @@ router.get(
   getAllDenuncias
 );
 
+router.get(
+  "/servicio-denuncias-todas/",
+  getAllDenunciasServicio
+);
+
 router.put("/producto-denuncias/actualizar/:id_denuncia", actualizarDenunciaARevisada);
+
+router.put("/servicio-denuncias/actualizar/:id_denuncia", actualizarDenunciaARevisadaServicio);
 
 // Ruta para eliminar una denuncia por su ID
 router.delete("/producto-denuncias/eliminar/:id_denuncia", eliminarDenuncia);
+
+// Ruta para eliminar una denuncia por su ID
+router.delete("/servicio-denuncias/eliminar/:id_denuncia", eliminarDenunciaServicio);
 
 export default router;
