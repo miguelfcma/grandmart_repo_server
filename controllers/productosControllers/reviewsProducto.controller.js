@@ -230,3 +230,22 @@ export const getTodosProductosConReviews= async (req, res) => {
     res.status(500).send("Error interno del servidor");
   }
 };
+
+
+// Buscar una review por id_producto e id_usuario
+export const getReviewByProductIdAndUserId = async (req, res) => {
+  const { id_producto, id_usuario } = req.params;
+  try {
+    const review = await ReviewProducto.findOne({
+      where: { id_producto, id_usuario },
+    });
+    if (review) {
+      res.status(200).json({ message: "Review encontrada", review });
+    } else {
+      res.status(404).json({ message: "Review no encontrada" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
+};
