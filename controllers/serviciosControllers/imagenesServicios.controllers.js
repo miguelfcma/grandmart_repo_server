@@ -19,7 +19,6 @@ export const createImgServicio = async (req, res) => {
   }
 };
 export const createImagenes = async (req, res) => {
- 
   const id_servicio = req.body.id_servicio;
   const imagenes = req.body.imagenes;
   try {
@@ -74,6 +73,7 @@ export const getAllImagenesPorIdServicio = async (req, res) => {
       where: {
         id_servicio: req.params.id_servicio,
       },
+      attributes: ["url"],
     });
     res.status(200).json(imagenes);
   } catch (error) {
