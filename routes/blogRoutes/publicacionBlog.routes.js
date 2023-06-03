@@ -12,7 +12,7 @@ const router = Router();
 
 // Definir las rutas para las diferentes funciones del controlador de publicaciones
 router.post("/blog-publicaciones", createPublicacion);
-router.delete("/blog-publicaciones/:id_usuario", deletePublicacionPorIdUsuario);
+router.post("/blog-publicaciones/elminar/:id_usuario", deletePublicacionPorIdUsuario);
 router.put("/blog-publicaciones/:idUsuario", updatePublicacionPorIdUsuario);
 router.get("/blog-publicaciones", getPublicaciones);
 router.get("/blog-publicaciones/:idUsuario", getPublicacionesPorIdUsuario);

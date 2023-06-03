@@ -27,3 +27,6 @@ export const verificarToken = (req, res, next) => {
   }
 };
 
+export function tokenValido(req, res) {
+  res.status(200).json({ message: "Acceso permitido" });
+}

@@ -24,7 +24,9 @@ export const getUsuarios = async (req, res) => {
     res.status(200).json(usuarios);
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -48,7 +50,9 @@ export const getUsuario = async (req, res) => {
     res.status(200).json(usuario);
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -94,7 +98,9 @@ export const createUsuario = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -133,7 +139,9 @@ export const updateUsuario = async (req, res) => {
     res.status(200).json({ message: "Usuario actualizado correctamente" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -149,7 +157,9 @@ export const deleteUsuario = async (req, res) => {
     res.status(200).json({ message: "Usuario eliminado correctamente" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -179,7 +189,7 @@ export const getUsuarioLogin = async (req, res) => {
 
     // Crear el token de sesión
     const token = jwt.sign({ userId: usuario.id }, "secreto", {
-      expiresIn: "8h",
+      expiresIn: "1h",
     });
 
     // Si se encontró el usuario y la contrasena es válida, incluir el token y el atributo "tipoUsuario" en la respuesta
@@ -235,13 +245,15 @@ export const actualizarPerfilUsuario = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 export const actualizarContrasenaUsuario = async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   const { contrasenaActual, nuevaContrasena } = req.body;
- 
+
   const usuarioId = req.params.id;
 
   try {
@@ -274,6 +286,35 @@ export const actualizarContrasenaUsuario = async (req, res) => {
       .json({ message: "contraseña actualizada correctamente" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
+  }
+};
+
+
+export const eliminarCuentaUsuario = async (req, res) => {
+  const idUsuario = req.params.id;
+  const password = req.body.password;
+
+  try {
+    const usuario = await Usuario.findByPk(idUsuario);
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Verificar si la contraseña proporcionada coincide con la almacenada en el usuario
+    const contrasenaValida = await bcrypt.compare(password, usuario.password);
+    if (!contrasenaValida) {
+      return res.status(401).json({ message: "Contraseña incorrecta" });
+    }
+
+    // Eliminar el usuario
+    await usuario.destroy();
+
+    return res.status(200).json({ message: "Cuenta de usuario eliminada correctamente" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

@@ -10,53 +10,68 @@ export const getServicio = async (req, res) => {
       return res.status(404).json({ message: "Servicio no encontrado" });
     }
 
-    const servicioConCategoriaYUsuario = await Promise.all(servicio.map(async servicio => {
-      const categoria = await Categoria.findByPk(servicio.id_categoria, { attributes: ['id', 'nombre'] });
-      const usuario = await Usuario.findByPk(servicio.id_usuario, { attributes: ['id', 'nombre'] });
-      return { ...servicio.toJSON(), categoria, usuario };
-    }));
+    const servicioConCategoriaYUsuario = await Promise.all(
+      servicio.map(async (servicio) => {
+        const categoria = await Categoria.findByPk(servicio.id_categoria, {
+          attributes: ["id", "nombre"],
+        });
+        const usuario = await Usuario.findByPk(servicio.id_usuario, {
+          attributes: ["id", "nombre"],
+        });
+        return { ...servicio.toJSON(), categoria, usuario };
+      })
+    );
 
     return res.status(200).json(servicioConCategoriaYUsuario);
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
-      .json({ message: "Ocurrió un error al obtener el servicio." });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
 export const getServicios = async (req, res) => {
   try {
     const servicios = await Servicio.findAll({
-      attributes: ['id', 'titulo', 'descripcion', 'precio', 'id_categoria', 'id_usuario'],
+      attributes: [
+        "id",
+        "titulo",
+        "descripcion",
+        "precio",
+        "id_categoria",
+        "id_usuario",
+      ],
     });
     if (servicios.length === 0) {
       return res.status(404).json({ message: "No se encontraron servicios" });
     }
 
-    const serviciosConCategoriaYUsuario = await Promise.all(servicios.map(async servicio => {
-      const categoria = await Categoria.findByPk(servicio.id_categoria, { attributes: ['id', 'nombre'] });
-      const usuario = await Usuario.findByPk(servicio.id_usuario, { attributes: ['id', 'nombre'] });
-      return { ...servicio.toJSON(), categoria, usuario };
-    }));
-   
+    const serviciosConCategoriaYUsuario = await Promise.all(
+      servicios.map(async (servicio) => {
+        const categoria = await Categoria.findByPk(servicio.id_categoria, {
+          attributes: ["id", "nombre"],
+        });
+        const usuario = await Usuario.findByPk(servicio.id_usuario, {
+          attributes: ["id", "nombre"],
+        });
+        return { ...servicio.toJSON(), categoria, usuario };
+      })
+    );
+
     return res.status(200).json(serviciosConCategoriaYUsuario);
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
-      .json({ message: "Ocurrió un error al obtener los servicios." });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
 export const createServicio = async (req, res) => {
-  console.log(req.body)
-  const {
-    titulo,
-    descripcion,
-    precio,
-    id_categoria,
-    id_usuario,
-  } = req.body;
- 
+  
+  const { titulo, descripcion, precio, id_categoria, id_usuario } = req.body;
+
   try {
     // validar la existencia de id_categoria
     const categoria = await Categoria.findByPk(id_categoria);
@@ -91,29 +106,20 @@ export const createServicio = async (req, res) => {
       id_categoria,
       id_usuario,
     });
-    return res
-      .status(201)
-      .json({
-        message: "Servicio creado exitosamente.",
-        servicio: newServicio,
-      });
+    return res.status(201).json({
+      message: "Servicio creado exitosamente.",
+      servicio: newServicio,
+    });
   } catch (error) {
     console.log(error);
     return res
       .status(500)
-      .json({ message: "Ocurrió un error al crear el servicio." });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
-
 export const updateServicio = async (req, res) => {
-  const {
-    titulo,
-    descripcion,
-    precio,
-    id_categoria,
-    id_usuario,
-  } = req.body;
+  const { titulo, descripcion, precio, id_categoria, id_usuario } = req.body;
   try {
     const servicio = await Servicio.findByPk(req.params.id);
     if (!servicio) {
@@ -126,16 +132,15 @@ export const updateServicio = async (req, res) => {
       id_categoria,
       id_usuario,
     });
-    return res
-      .status(200)
-      .json({
-        message: "Servicio actualizado exitosamente.",
-        servicio: updateServicio,
-      });
+    return res.status(200).json({
+      message: "Servicio actualizado exitosamente.",
+      servicio: updateServicio,
+    });
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
-      .json({ message: "Ocurrió un error al actualizar el servicio." });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -150,7 +155,10 @@ export const deleteServicio = async (req, res) => {
       .status(200)
       .json({ message: "El servicio fue eliminado exitosamente." });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -158,15 +166,25 @@ export const getServiciosByUsuarioId = async (req, res) => {
   try {
     const servicios = await Servicio.findAll({
       where: { id_usuario: req.params.id_usuario },
-      attributes: ['id', 'titulo', 'descripcion', 'precio', 'id_categoria', 'id_usuario'],
+      attributes: [
+        "id",
+        "titulo",
+        "descripcion",
+        "precio",
+        "id_categoria",
+        "id_usuario",
+      ],
     });
     if (servicios.length === 0) {
-      return res.status(404).json({ message: "No se encontraron servicios para este usuario" });
+      return res
+        .status(404)
+        .json({ message: "No se encontraron servicios para este usuario" });
     }
     return res.status(200).json(servicios);
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
-      .json({ message: "Ocurrió un error al obtener los servicios." });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

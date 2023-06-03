@@ -9,8 +9,10 @@ export const createImagen = async (req, res) => {
     });
     res.status(201).json(imagen);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al crear la imagen" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -35,11 +37,10 @@ export const createImagenes = async (req, res) => {
       data: results,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Error al crear las imágenes",
-      error: error,
-    });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -53,8 +54,10 @@ export const getImagenesPorIdPublicacion = async (req, res) => {
     });
     res.status(200).json(imagenes);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al obtener las imágenes" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -77,8 +80,10 @@ export const updateImagenPorIdPublicacion = async (req, res) => {
       res.status(404).json({ message: "Imagen no encontrada" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al actualizar la imagen" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -97,8 +102,10 @@ export const deleteImagenPorIdPublicacion = async (req, res) => {
       res.status(404).json({ message: "Imagen no encontrada" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al eliminar la imagen" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -113,7 +120,9 @@ export const getImagenPortadaPorIdPublicacion = async (req, res) => {
     });
     res.status(200).json(imagen);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al obtener la imagen de portada" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

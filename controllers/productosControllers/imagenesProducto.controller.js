@@ -2,19 +2,26 @@ import { ImagenProducto } from "../../models/productosModel/ImagenesProductoMode
 
 export const createImgProducto = async (req, res) => {
   const { url, id_producto, es_portada } = req.body;
-console.log(req.body)
+  console.log(req.body);
   try {
-    const newImgProducto = await ImagenProducto.create({ url, id_producto, es_portada });
+    const newImgProducto = await ImagenProducto.create({
+      url,
+      id_producto,
+      es_portada,
+    });
 
-    res.status(201).json({ message: "Url de imagen de producto creada correctamente" });
+    res
+      .status(201)
+      .json({ message: "Url de imagen de producto creada correctamente" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
 export const createImagenes = async (req, res) => {
- 
   const id_producto = req.body.id_producto;
   const imagenes = req.body.imagenes;
   try {
@@ -35,11 +42,10 @@ export const createImagenes = async (req, res) => {
       data: results,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Error al crear las imágenes",
-      error: error,
-    });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -53,8 +59,10 @@ export const getGaleriaImagenesByProductId = async (req, res) => {
 
     res.status(200).json(imagenesProducto);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -64,13 +72,15 @@ export const getAllImagenesByProductId = async (req, res) => {
   try {
     const imagenesProducto = await ImagenProducto.findAll({
       where: { id_producto: id_producto },
-      attributes: ['url'],
+      attributes: ["url"],
     });
 
     res.status(200).json(imagenesProducto);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -88,7 +98,9 @@ export const getPortadaByProductId = async (req, res) => {
       res.status(404).json({ message: "Imagen de portada no encontrada" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

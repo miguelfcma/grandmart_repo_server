@@ -2,7 +2,6 @@ import { Producto } from "../../models/productosModel/ProductoModel.js";
 import { Categoria } from "../../models/categoriasModel/CategoriaModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 
-
 import { Op } from "sequelize";
 
 export const getProductoById = async (req, res) => {
@@ -12,48 +11,73 @@ export const getProductoById = async (req, res) => {
     if (!producto) {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
-    
-    const categoria = await Categoria.findByPk(producto.id_categoria, { attributes: ['id', 'nombre'] });
-    const usuario = await Usuario.findByPk(producto.id_usuario, { attributes: ['id', 'nombre'] });
 
-    const productoConCategoriaYUsuario = { ...producto.toJSON(), categoria, usuario };
+    const categoria = await Categoria.findByPk(producto.id_categoria, {
+      attributes: ["id", "nombre"],
+    });
+    const usuario = await Usuario.findByPk(producto.id_usuario, {
+      attributes: ["id", "nombre"],
+    });
+
+    const productoConCategoriaYUsuario = {
+      ...producto.toJSON(),
+      categoria,
+      usuario,
+    };
 
     return res.status(200).json(productoConCategoriaYUsuario);
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
-      .json({ message: "Ocurrió un error al obtener el producto." });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
-
 
 export const getProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll({
-      attributes: ['id', 'nombre', 'precio', 'stock', 'descripcion', 'marca', 'modelo', 'color', 'estado', 'id_categoria', 'id_usuario'],
+      attributes: [
+        "id",
+        "nombre",
+        "precio",
+        "stock",
+        "descripcion",
+        "marca",
+        "modelo",
+        "color",
+        "estado",
+        "id_categoria",
+        "id_usuario",
+      ],
     });
     if (productos.length === 0) {
       return res.status(404).json({ message: "No se encontraron productos" });
     }
 
-    const productosConCategoriaYUsuario = await Promise.all(productos.map(async producto => {
-      const categoria = await Categoria.findByPk(producto.id_categoria, { attributes: ['id', 'nombre'] });
-      const usuario = await Usuario.findByPk(producto.id_usuario, { attributes: ['id', 'nombre'] });
-      return { ...producto.toJSON(), categoria, usuario };
-    }));
+    const productosConCategoriaYUsuario = await Promise.all(
+      productos.map(async (producto) => {
+        const categoria = await Categoria.findByPk(producto.id_categoria, {
+          attributes: ["id", "nombre"],
+        });
+        const usuario = await Usuario.findByPk(producto.id_usuario, {
+          attributes: ["id", "nombre"],
+        });
+        return { ...producto.toJSON(), categoria, usuario };
+      })
+    );
 
     return res.status(200).json(productosConCategoriaYUsuario);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Ocurrió un error al obtener los productos." });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
-
-
 export const createProducto = async (req, res) => {
-  console.log(req.body)
+ 
   const {
     nombre,
     precio,
@@ -66,7 +90,7 @@ export const createProducto = async (req, res) => {
     id_categoria,
     id_usuario,
   } = req.body;
- 
+
   try {
     const existenciaProducto = await Producto.findOne({
       where: {
@@ -90,17 +114,15 @@ export const createProducto = async (req, res) => {
       id_categoria,
       id_usuario,
     });
-    return res
-      .status(201)
-      .json({
-        message: "Producto creado exitosamente.",
-        producto: newProducto,
-      });
+    return res.status(201).json({
+      message: "Producto creado exitosamente.",
+      producto: newProducto,
+    });
   } catch (error) {
     console.log(error);
     return res
       .status(500)
-      .json({ message: "Ocurrió un error al crear el producto." });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -132,16 +154,15 @@ export const updateProducto = async (req, res) => {
       estado,
       id_categoria,
     });
-    return res
-      .status(200)
-      .json({
-        message: "Producto actualizado exitosamente.",
-        producto: updateProducto,
-      });
+    return res.status(200).json({
+      message: "Producto actualizado exitosamente.",
+      producto: updateProducto,
+    });
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
-      .json({ message: "Ocurrió un error al actualizar el producto." });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -156,26 +177,43 @@ export const deleteProducto = async (req, res) => {
       .status(200)
       .json({ message: "El producto fue eliminado exitosamente." });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
 
 export const getProductosByUser = async (req, res) => {
   try {
     const productos = await Producto.findAll({
       where: {
-        id_usuario: req.params.id_usuario
+        id_usuario: req.params.id_usuario,
       },
-      attributes: ['id', 'nombre', 'precio', 'stock', 'descripcion', 'marca', 'modelo', 'color', 'estado', 'id_categoria', 'id_usuario'],
+      attributes: [
+        "id",
+        "nombre",
+        "precio",
+        "stock",
+        "descripcion",
+        "marca",
+        "modelo",
+        "color",
+        "estado",
+        "id_categoria",
+        "id_usuario",
+      ],
     });
     if (productos.length === 0) {
-      return res.status(404).json({ message: "No se encontraron productos del usuario" });
+      return res
+        .status(404)
+        .json({ message: "No se encontraron productos del usuario" });
     }
     return res.status(200).json(productos);
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
-      .json({ message: "Ocurrió un error al obtener los productos del usuario." });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

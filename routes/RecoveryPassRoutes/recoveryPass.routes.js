@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import { sendEmail } from "../../controllers/RecoveryPassController/recoveryPass.controller.js";
+import { enviarCorreo } from "../../controllers/ControladorRecuperarContraseña/recuperarContraseña.controller.js";
 
 const router = Router();
 
-router.post("/send-email", sendEmail);
+router.post("/send-email", enviarCorreo);
 
 
 export default router;

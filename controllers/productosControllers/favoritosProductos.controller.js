@@ -20,20 +20,22 @@ export const obtenerFavoritos = async (req, res) => {
         return { ...favorito.toJSON(), producto };
       })
     );
-    res
-      .status(200)
-      .json({ message: "Favoritos obtenidos correctamente", data: favoritosConProducto });
+    res.status(200).json({
+      message: "Favoritos obtenidos correctamente",
+      data: favoritosConProducto,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al obtener favoritos", error });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
 
 export const agregarProductoAFavoritos = async (req, res) => {
   const { id_usuario } = req.params;
   const { id_producto } = req.body.data;
-  console.log(id_usuario,id_producto )
+  console.log(id_usuario, id_producto);
 
   try {
     const favoritoExistente = await FavoritosProductos.findOne({
@@ -52,15 +54,17 @@ export const agregarProductoAFavoritos = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al agregar favorito", error });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
 export const eliminarProductoFavorito = async (req, res) => {
   const { id_usuario } = req.params;
   const { id_producto } = req.body.data;
-console.log("webos")
+  console.log("webos");
   try {
     const favorito = await FavoritosProductos.findOne({
       where: { id_producto: id_producto, id_usuario: id_usuario },
@@ -72,7 +76,9 @@ console.log("webos")
       res.status(200).json({ message: "Favorito eliminado correctamente" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al eliminar favorito", error });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

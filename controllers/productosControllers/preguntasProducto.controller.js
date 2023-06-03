@@ -1,6 +1,7 @@
 import { PreguntaProducto } from "../../models/productosModel/PreguntasProductoModel.js";
 import { Producto } from "../../models/productosModel/ProductoModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
+import { enviarCorreo } from "../CorreoController/enviarCorreo.controllers.js";
 // Crear una nueva pregunta
 export const crearPregunta = async (req, res) => {
   try {
@@ -10,25 +11,103 @@ export const crearPregunta = async (req, res) => {
       id_producto,
       id_usuario,
     });
-    res.status(201).json(nuevaPregunta);
+
+    if (pregunta) {
+      const producto = await Producto.findByPk(id_producto);
+      if (!producto) {
+        return res.status(404).json({ message: "Producto no encontrado" });
+      }
+
+      const usuarioVendedor = await Usuario.findByPk(producto.id_usuario, {
+        attributes: [
+          "id",
+          "nombre",
+          "apellidoPaterno",
+          "apellidoMaterno",
+          "email",
+        ],
+      });
+
+      if (!usuarioVendedor) {
+        return res
+          .status(404)
+          .json({ message: "Usuario vendedor no encontrado" });
+      }
+
+      const usuarioPregunta = await Usuario.findByPk(id_usuario, {
+        attributes: [
+          "id",
+          "nombre",
+          "apellidoPaterno",
+          "apellidoMaterno",
+          "email",
+        ],
+      });
+
+      const email = usuarioVendedor.email;
+      const subject = "GrandMart Marketplace";
+      const header = "Notificación de nueva pregunta";
+      const contenido = `
+      <h2>Tienes una nueva pregunta</h2>
+        <p>
+        Usuario: <strong>${usuarioPregunta.id} ${usuarioPregunta.nombre} ${usuarioPregunta.apellidoPaterno} ${usuarioPregunta.apellidoMaterno}</strong>
+          </p>
+          <p>
+          Producto: <strong>${producto.id} ${producto.nombre}</strong>
+        </p>
+        <hr />
+        <p>Pregunta: <strong>${pregunta}</p></strong>
+      `;
+
+      await enviarCorreo(email, subject, header, contenido);
+    }
+
+    res.status(201).json({ message: "Pregunta creada correctamente" });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error interno del servidor");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
+// Crear una nueva respuesta para una pregunta
 // Crear una nueva respuesta para una pregunta
 export const crearRespuesta = async (req, res) => {
   try {
     const { id } = req.params;
     const { respuesta } = req.body;
     const pregunta = await PreguntaProducto.findOne({ where: { id } });
+
+    if (!pregunta) {
+      return res.status(404).json({ message: "Pregunta no encontrada" });
+    }
+
     pregunta.respuesta = respuesta;
     await pregunta.save();
+
+    // Obtener información del usuario que hizo la pregunta
+    const usuarioPregunta = await Usuario.findByPk(pregunta.id_usuario, {
+      attributes: ["id", "nombre", "email"],
+    });
+
+    const email = usuarioPregunta.email;
+    const subject = "Respuesta a tu pregunta";
+    const header = "Respuesta recibida";
+    const contenido = `
+      <h2>Tu pregunta ha sido respondida</h2>
+      <p>Pregunta: ${pregunta.pregunta}</p>
+      <p>Respuesta: ${pregunta.respuesta}</p>
+    `;
+
+    await enviarCorreo(email, subject, header, contenido);
+
     res.status(200).json(pregunta);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error interno del servidor");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -57,8 +136,10 @@ export const getPreguntasByIdProducto = async (req, res) => {
 
     res.status(200).json(preguntasConUsuarioYProducto);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error interno del servidor");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -73,8 +154,10 @@ export const eliminarPregunta = async (req, res) => {
     await pregunta.destroy();
     res.status(204).send();
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error interno del servidor");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -89,8 +172,10 @@ export const actualizarPregunta = async (req, res) => {
     );
     res.status(200).json(preguntaActualizada);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error interno del servidor");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -103,11 +188,9 @@ export const getProductosConPreguntasByUsuarioId = async (req, res) => {
     const productos = await Producto.findAll({ where: { id_usuario } });
 
     if (productos.length === 0) {
-      return res
-        .status(404)
-        .json({
-          message: "No se encontraron productos para el usuario especificado",
-        });
+      return res.status(404).json({
+        message: "No se encontraron productos para el usuario especificado",
+      });
     }
 
     const productosConPreguntas = await Promise.all(
@@ -134,8 +217,10 @@ export const getProductosConPreguntasByUsuarioId = async (req, res) => {
 
     res.status(200).json(productosConPreguntasFiltrados);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error interno del servidor");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -172,7 +257,9 @@ export const getTodosProductosConPreguntas = async (req, res) => {
 
     res.status(200).json(productosConPreguntasFiltrados);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error interno del servidor");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

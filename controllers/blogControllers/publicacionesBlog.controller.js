@@ -1,6 +1,6 @@
 import { PublicacionBlog } from "../../models/blogModel/PublicacionesBlogModel.js";
-import {Usuario} from "../../models/usuariosModel/UsuarioModel.js"
-
+import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
+import { ComentarioBlog } from "../../models/blogModel/ComentariosBlogModel.js";
 // Función para crear una nueva publicación
 export const createPublicacion = async (req, res) => {
   try {
@@ -12,8 +12,10 @@ export const createPublicacion = async (req, res) => {
     });
     res.status(201).json(publicacion);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al crear la publicación" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -22,15 +24,21 @@ export const getPublicaciones = async (req, res) => {
   try {
     const publicaciones = await PublicacionBlog.findAll();
 
-    const publicacionesConUsuario = await Promise.all(publicaciones.map(async publicacion => {
-      const usuario = await Usuario.findByPk(publicacion.id_usuario, { attributes: ['id', 'nombre'] });
-      return { ...publicacion.toJSON(), usuario };
-    }));
+    const publicacionesConUsuario = await Promise.all(
+      publicaciones.map(async (publicacion) => {
+        const usuario = await Usuario.findByPk(publicacion.id_usuario, {
+          attributes: ["id", "nombre"],
+        });
+        return { ...publicacion.toJSON(), usuario };
+      })
+    );
 
     res.status(200).json(publicacionesConUsuario);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al obtener las publicaciones" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -45,10 +53,10 @@ export const getPublicacionesPorIdUsuario = async (req, res) => {
     });
     res.status(200).json(publicaciones);
   } catch (error) {
-    console.error(error);
-    res
+    console.log(error);
+    return res
       .status(500)
-      .json({ message: "Error al obtener las publicaciones del usuario" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -71,30 +79,43 @@ export const updatePublicacionPorIdUsuario = async (req, res) => {
       res.status(404).json({ message: "Publicación no encontrada" });
     }
   } catch (error) {
-    console.error(error);
-    res
+    console.log(error);
+    return res
       .status(500)
-      .json({ message: "Error al actualizar la publicación del usuario" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
-// Función para eliminar una publicación por su id y el id del usuario
+/// Función para eliminar una publicación por su id y el id del usuario
 export const deletePublicacionPorIdUsuario = async (req, res) => {
   try {
     const id_usuario = req.params.id_usuario;
-    const id_publicacionBlog = req.query.id;
-    const numRows = await PublicacionBlog.destroy({
-      where: { id_publicacionBlog, id_usuario },
+    const id_publicacionBlog = req.body.id;
+    console.log(id_publicacionBlog);
+    const publicacion = await PublicacionBlog.findOne({
+      where: { id: id_publicacionBlog, id_usuario: id_usuario },
     });
-    if (numRows > 0) {
-      res.status(204).send();
+
+    if (publicacion) {
+      const comentarios = await ComentarioBlog.findAll({
+        where: { id_publicacionBlog: id_publicacionBlog },
+      });
+      await Promise.all(
+        comentarios.map(async (comentario) => {
+          await comentario.destroy();
+        })
+      );
+      await publicacion.destroy();
+      return res
+        .status(204)
+        .json({ message: "Publicación y comentarios eliminados exitosamente" });
     } else {
-      res.status(404).json({ message: "Publicación no encontrada" });
+      return res.status(404).json({ message: "Publicación no encontrada" });
     }
   } catch (error) {
-    console.error(error);
-    res
+    console.log(error);
+    return res
       .status(500)
-      .json({ message: "Error al eliminar la publicación del usuario" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

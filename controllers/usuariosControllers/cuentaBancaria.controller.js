@@ -11,7 +11,11 @@ export const crearCuentaBancaria = async (req, res) => {
       where: { usuario_id },
     });
     if (cuentaBancariaExistente) {
-      return res.status(400).json({ error: "Este usuario ya tiene una cuenta bancaria registrada." });
+      return res
+        .status(400)
+        .json({
+          error: "Este usuario ya tiene una cuenta bancaria registrada.",
+        });
     }
 
     const cuentaBancaria = await CuentaBancaria.create({
@@ -24,8 +28,10 @@ export const crearCuentaBancaria = async (req, res) => {
       .status(201)
       .json({ message: "Cuenta bancaria creada exitosamente", cuentaBancaria });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al crear la cuenta bancaria" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -42,8 +48,10 @@ export const obtenerCuentaBancariaPorIdUsuario = async (req, res) => {
     }
     res.status(200).json(cuentaBancaria);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al obtener la cuenta bancaria" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -64,15 +72,15 @@ export const actualizarCuentaBancaria = async (req, res) => {
       numero_cuenta,
       banco,
     });
-    res
-      .status(200)
-      .json({
-        message: "Cuenta bancaria actualizada exitosamente",
-        cuentaBancaria,
-      });
+    res.status(200).json({
+      message: "Cuenta bancaria actualizada exitosamente",
+      cuentaBancaria,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al actualizar la cuenta bancaria" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -90,7 +98,9 @@ export const eliminarCuentaBancaria = async (req, res) => {
     await cuentaBancaria.destroy();
     res.status(200).json({ message: "Cuenta bancaria eliminada exitosamente" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al eliminar la cuenta bancaria" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

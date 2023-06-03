@@ -14,8 +14,10 @@ export const createImgServicio = async (req, res) => {
       .status(201)
       .json({ message: "Url de imagen de servicio creada correctamente" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 export const createImagenes = async (req, res) => {
@@ -39,11 +41,10 @@ export const createImagenes = async (req, res) => {
       data: results,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Error al crear las imágenes",
-      error: error,
-    });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -62,8 +63,10 @@ export const deleteImgServicio = async (req, res) => {
       res.status(404).json({ message: "Imagen de servicio no encontrada" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -77,8 +80,10 @@ export const getAllImagenesPorIdServicio = async (req, res) => {
     });
     res.status(200).json(imagenes);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al obtener las imágenes" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -96,8 +101,10 @@ export const getPortada = async (req, res) => {
       res.status(404).json({ message: "Imagen de portada no encontrada" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -122,7 +129,9 @@ export const updateImgServicio = async (req, res) => {
       res.status(404).json({ message: "Imagen de servicio no encontrada" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

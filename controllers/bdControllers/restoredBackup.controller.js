@@ -22,8 +22,10 @@ export function listBackupFiles(req, res) {
       res.status(200).json(sqlFiles);
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).send("Error al listar los archivos de backups.");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Error al leer la carpeta de backups." });
   }
 }
 
@@ -71,8 +73,10 @@ export async function deleteBackupFile(req, res) {
       res.status(200).send("Archivo eliminado exitosamente.");
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).send("Error al eliminar el archivo de backup.");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 }
 
@@ -152,8 +156,10 @@ export async function restoreBackup(req, res) {
 
     await sequelize.close();
   } catch (error) {
-    console.error(error);
-    res.status(500).send(`Error: ${error}`);
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 }
 export async function downloadBackupFile(req, res) {
@@ -192,7 +198,9 @@ export async function downloadBackupFile(req, res) {
     // Descargar el archivo
     res.download(filePath);
   } catch (error) {
-    console.error(error);
-    return res.status(500).send("Error al descargar el archivo de backup.");
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 }

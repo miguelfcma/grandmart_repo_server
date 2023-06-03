@@ -6,7 +6,6 @@ import fs from "fs";
 
 export async function createBackup(req, res) {
   try {
-
     const { email, password } = req.body;
 
     // Buscar un usuario con el email recibido
@@ -29,13 +28,6 @@ export async function createBackup(req, res) {
         .json({ message: "Credenciales de inicio de sesión incorrectas" });
     }
 
-
-
-
-
-
-
-   
     console.log("Iniciando creación de respaldo...");
 
     const createDatabaseQuery = `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;\n\n`;
@@ -123,9 +115,11 @@ export async function createBackup(req, res) {
     console.log("Respaldo creado exitosamente.");
     await sequelize.close();
 
-    res.status(200).send({message: "Archivo SQL creado exitosamente."});
+    res.status(200).send({ message: "Archivo SQL creado exitosamente." });
   } catch (error) {
-    console.error(error);
-    res.status(500).send(`Error: ${error}`);
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 }

@@ -9,7 +9,8 @@ import {
   updateUsuario,
   getUsuarioLogin,
   actualizarPerfilUsuario,
-  actualizarContrasenaUsuario
+  actualizarContrasenaUsuario,
+  eliminarCuentaUsuario,
 } from "../../controllers/usuariosControllers/usuarios.controllers.js";
 import {
   crearCuentaBancaria,
@@ -45,5 +46,8 @@ router.put("/contrasena-usuario-actualizar/:id", actualizarContrasenaUsuario);
 router.post("/cuenta-bancaria", crearCuentaBancaria);
 router.get("/cuenta-bancaria/:id_usuario", obtenerCuentaBancariaPorIdUsuario);
 router.put("/cuenta-bancaria/:id_usuario", actualizarCuentaBancaria);
-router.delete("/cuenta-bancaria/:id_usuario", eliminarCuentaBancaria)
+router.delete("/cuenta-bancaria/:id_usuario", eliminarCuentaBancaria);
+
+router.delete("/usuarios/:id/eliminar-cuenta", eliminarCuentaUsuario);
+
 export default router;

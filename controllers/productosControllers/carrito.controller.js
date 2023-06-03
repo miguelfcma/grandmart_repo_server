@@ -74,11 +74,10 @@ export const agregarProductoAlCarrito = async (req, res) => {
 
     return res.status(200).json(respuesta);
   } catch (error) {
-    console.error(error);
-
-    res
+    console.log(error);
+    return res
       .status(500)
-      .json({ message: "Error al agregar el producto al carrito de compras" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -143,12 +142,10 @@ export const actualizarCantidadProductoEnCarrito = async (req, res) => {
 
     return res.status(200).json(respuesta);
   } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      mensaje:
-        "Error al actualizar la cantidad del producto en el carrito de compras",
-    });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -186,20 +183,17 @@ export const obtenerCarritoDeCompras = async (req, res) => {
 
     return res.status(200).json(respuesta);
   } catch (error) {
-    console.error(error);
     console.log(error);
-    return res.status(500).json({
-      mensaje: "Hubo un error al obtener el carrito de compras del usuario",
-    });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
 export const eliminarProductoDelCarrito = async (req, res) => {
-
   try {
     const id_producto = req.params.id_producto;
     const id_usuario = req.body.id_usuario;
-
 
     // Buscar el carrito de compras del usuario
     const carrito = await Carritos_compras.findOne({ where: { id_usuario } });
@@ -245,8 +239,10 @@ export const eliminarProductoDelCarrito = async (req, res) => {
 
     return res.status(200).json(respuesta);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ mensaje: "Error en el servidor" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -276,10 +272,9 @@ export const vaciarCarrito = async (req, res) => {
       .status(200)
       .json({ mensaje: "El carrito de compras ha sido vaciado exitosamente" });
   } catch (error) {
-    console.error(error);
     console.log(error);
     return res
       .status(500)
-      .json({ mensaje: "Ocurrió un error al vaciar el carrito de compras" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

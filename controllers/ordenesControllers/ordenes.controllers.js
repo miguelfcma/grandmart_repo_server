@@ -10,7 +10,10 @@ import { Envio } from "../../models/ordenesModel/EnviosModel.js";
 
 import { checkout } from "../stripeController/pagosStripe.controller.js";
 import { Pago } from "../../models/ordenesModel/PagosModel.js";
+
+import { enviarCorreo } from "../CorreoController/enviarCorreo.controllers.js";
 //Funciones de ordenes
+
 export const obtenerTodasLasOrdenes = async (req, res) => {
   try {
     // Buscar todas las órdenes
@@ -18,17 +21,16 @@ export const obtenerTodasLasOrdenes = async (req, res) => {
 
     return res.status(200).json(ordenes);
   } catch (error) {
-    console.error("Error al obtener todas las órdenes:", error);
+    console.log(error);
     return res
       .status(500)
-      .json({ error: "Error al obtener todas las órdenes" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
 // Función para crear una nueva orden
 export const crearOrden = async (req, res) => {
-  const { id_usuario, id_card, amount, description } = req.body; // Obtener el id de usuario desde el cuerpo de la solicitud
-  console.log(id_usuario, id_card, amount, description);
+  const { id_usuario, id_card, amount, description } = req.body; // Obtener el
 
   try {
     const direccion_envio = await DomicilioUsuario.findOne({
@@ -81,9 +83,32 @@ export const crearOrden = async (req, res) => {
       total: 0,
       id_usuario,
     });
-
+    const usuario = await Usuario.findByPk(id_usuario, {
+      attributes: [
+        "id",
+        "nombre",
+        "apellidoPaterno",
+        "apellidoMaterno",
+        "email",
+      ],
+    });
     // Validacion de existencia de productos y validacion de stock
     let total = 0;
+    let contenidoClienteCompra = `
+      <p>Tu compra ha sido exitosa, gracias por elegir GrandMart Marketplace</p>
+      <p>Este es el ID de tu orden de compra: ${nuevaOrden.id}</p>
+      <h2>Detalles de la compra:</h2>
+    `;
+    let contenidoAdmin = `
+    <p>Este es el ID de la orden de compra: ${nuevaOrden.id}</p>
+    <h3>Información del usuario:</h3>
+    <ul>
+      <li>ID: ${usuario.id}</li>
+      <li>Nombre: ${usuario.nombre} ${usuario.apellidoPaterno} ${usuario.apellidoMaterno}</li>
+      <li>Email: ${usuario.email}</li>
+    </ul>
+    <h2>Detalles de la compra:</h2>
+  `;
     for (const detalleCarrito of detallesCarrito) {
       const producto = await Producto.findByPk(detalleCarrito.id_producto);
       if (!producto) {
@@ -91,7 +116,7 @@ export const crearOrden = async (req, res) => {
         await DetalleOrden.destroy({ where: { id_orden: nuevaOrden.id } });
         await nuevaOrden.destroy();
         return res.status(400).json({
-          error: `El producto con id ${detalleCarrito.id_producto} no existe`,
+          error: `El producto con id ${detalleCarrito.id_producto} Nombre: ${producto.nombre} no existe`,
         });
       }
 
@@ -100,7 +125,7 @@ export const crearOrden = async (req, res) => {
         await DetalleOrden.destroy({ where: { id_orden: nuevaOrden.id } });
         await nuevaOrden.destroy();
         return res.status(400).json({
-          message: `No hay suficiente stock disponible para el producto con id ${detalleCarrito.id_producto}`,
+          message: `No hay suficiente stock disponible para el producto con Id: id ${detalleCarrito.id_producto} Nombre: ${producto.nombre}`,
         });
       }
     }
@@ -121,10 +146,55 @@ export const crearOrden = async (req, res) => {
         message: "Hubo un problema con el pago",
       });
     }
+    const ventasPorUsuario = {};
 
     for (const detalleCarrito of detallesCarrito) {
       const producto = await Producto.findByPk(detalleCarrito.id_producto);
+      const usuario = await Usuario.findByPk(producto.id_usuario, {
+        attributes: [
+          "id",
+          "nombre",
+          "apellidoPaterno",
+          "apellidoMaterno",
+          "email",
+        ],
+      });
 
+      // Verificar si el usuario ya tiene detalles de venta registrados
+      if (ventasPorUsuario.hasOwnProperty(usuario.id)) {
+        // El usuario ya tiene detalles de venta registrados, agregar el producto a su lista
+        ventasPorUsuario[usuario.id].push({
+          id: producto.id,
+          nombre: producto.nombre,
+          precio: producto.precio,
+          cantidad: detalleCarrito.cantidad,
+        });
+      } else {
+        // El usuario no tiene detalles de venta registrados, crear una nueva lista con el producto
+        ventasPorUsuario[usuario.id] = [
+          {
+            id: producto.id,
+            nombre: producto.nombre,
+            precio: producto.precio,
+            cantidad: detalleCarrito.cantidad,
+          },
+        ];
+      }
+
+      contenidoClienteCompra += `
+      <p>Id: ${producto.id}</p>
+      <p>Producto: ${producto.nombre}</p>
+      <p>Precio unitario: $ ${producto.precio} MXN</p>
+      <p>Cantidad: ${detalleCarrito.cantidad}</p>
+      <hr />
+    `;
+      contenidoAdmin += `
+      <p>Id: ${producto.id}</p>
+      <p>Producto: ${producto.nombre}</p>
+      <p>Precio unitario: $ ${producto.precio} MXN</p>
+      <p>Cantidad: ${detalleCarrito.cantidad}</p>
+      <hr />
+    `;
       producto.stock -= detalleCarrito.cantidad;
       total += producto.precio * detalleCarrito.cantidad;
 
@@ -140,6 +210,42 @@ export const crearOrden = async (req, res) => {
 
       // Eliminar el detalle de carrito de compra
       await detalleCarrito.destroy();
+    }
+    contenidoClienteCompra += `<h2>Total de la compra: $ ${total} MXN</h2>`;
+    contenidoAdmin += `<h2>Total de la compra: $ ${total} MXN</h2>`;
+    // Generar el mensaje para cada usuario
+    for (const usuarioId in ventasPorUsuario) {
+      const usuario = await Usuario.findByPk(usuarioId);
+      const productosVendidos = ventasPorUsuario[usuarioId];
+
+      const emailVendedor = usuario.email;
+      const subjectVendedor = "GrandMart Marketplace";
+      const headerVendedor = "¡Has realizado una venta!";
+
+      let contenidoVendedor = `
+        <p>Has realizado una venta en GrandMart Marketplace</p>
+        <h2>Detalles de la venta:</h2>
+      `;
+      let total = 0;
+      for (const producto of productosVendidos) {
+        contenidoVendedor += `
+          <p>ID: ${producto.id}</p>
+          <p>Producto: ${producto.nombre}</p>
+          <p>Precio unitario: $ ${producto.precio} MXN</p>
+          <p>Cantidad: ${producto.cantidad}</p>
+          <hr />
+        `;
+
+        total += producto.precio * producto.cantidad;
+      }
+      contenidoVendedor += `<h2>Total de la venta: $ ${total} MXN</h2>`;
+
+      await enviarCorreo(
+        emailVendedor,
+        subjectVendedor,
+        headerVendedor,
+        contenidoVendedor
+      );
     }
 
     // Crear una nueva dirección de envío en la tabla de DireccionEnvio
@@ -165,11 +271,30 @@ export const crearOrden = async (req, res) => {
     });
     await nuevaOrden.save();
 
-    return res.status(201).json(nuevaOrden);
-  } catch (error) {
-    console.error("Error al crear la orden:", error);
+    const emailClienteCompra = usuario.email;
+    const subjectClienteCompra = "GrandMart Marketplace";
+    const headerClienteCompra = "¡Compra exitosa!";
 
-    return res.status(500).json({ error: "Error al crear la orden" });
+    await enviarCorreo(
+      emailClienteCompra,
+      subjectClienteCompra,
+      headerClienteCompra,
+      contenidoClienteCompra
+    );
+    //--------------------------------------------------------
+    const emailAdmin = "grandmarthtd@gmail.com";
+    const subjectAdmin = "GrandMart Marketplace";
+    const headerAdmin = "Notificación de nueva orden de compra";
+
+    await enviarCorreo(emailAdmin, subjectAdmin, headerAdmin, contenidoAdmin);
+    return res
+      .status(201)
+      .json({ message: "La orden se ha creado correctamente", nuevaOrden });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -202,7 +327,6 @@ export const eliminarOrden = async (req, res) => {
       }
       await direccion_envio.destroy();
     }
-   
 
     if (pago) {
       await pago.destroy();
@@ -217,8 +341,10 @@ export const eliminarOrden = async (req, res) => {
 
     return res.status(200).json(orden);
   } catch (error) {
-    console.error("Error al eliminar la orden", error);
-    return res.status(500).json({ error: "Error al eliminar la orden" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -253,10 +379,10 @@ export const obtenerDetalleOrden = async (req, res) => {
 
     return res.status(200).json(respuesta);
   } catch (error) {
-    console.error("Error al obtener los detalles de la orden:", error);
+    console.log(error);
     return res
       .status(500)
-      .json({ error: "Error al obtener los detalles de la orden" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 //Compras funciones
@@ -271,10 +397,10 @@ export const obtenerComprasUsuario = async (req, res) => {
 
     return res.status(200).json(ordenes);
   } catch (error) {
-    console.error("Error al obtener las órdenes del usuario:", error);
+    console.log(error);
     return res
       .status(500)
-      .json({ error: "Error al obtener las órdenes del usuario" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -333,8 +459,10 @@ export const obtenerVentasPorUsuario = async (req, res) => {
 
     return res.status(200).json(ventasFiltradas);
   } catch (error) {
-    console.error("Error al obtener productosPedidos:", error);
-    return res.status(500).json({ error: "Error al obtener productosPedidos" });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -365,11 +493,10 @@ export const obtenerDireccionEnvioOrden = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error al obtener la dirección de envío de la orden:", error);
-    // Enviar una respuesta de error con código de estado 500
+    console.log(error);
     return res
       .status(500)
-      .json({ error: "Error al obtener la dirección de envío de la orden" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 export const obtenerInformacionEnvio = async (req, res) => {
@@ -404,22 +531,15 @@ export const obtenerInformacionEnvio = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error al obtener la dirección de envío de la orden:", error);
-    // Enviar una respuesta de error con código de estado 500
+    console.log(error);
     return res
       .status(500)
-      .json({ error: "Error al obtener la dirección de envío de la orden" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
 export const verificacionDireccionEnvio = async (req, res) => {
   const { id_usuario } = req.params;
-
-  if (!id_usuario) {
-    return res.status(400).json({
-      error: "Falta el parámetro 'id_usuario' en la solicitud",
-    });
-  }
 
   try {
     const direccion_envio = await DomicilioUsuario.findOne({
@@ -428,7 +548,7 @@ export const verificacionDireccionEnvio = async (req, res) => {
 
     if (!direccion_envio) {
       return res.status(400).json({
-        error: "El usuario no tiene una dirección de envío registrada",
+        message: "El usuario no tiene una dirección de envío registrada",
       });
     }
 
@@ -437,10 +557,10 @@ export const verificacionDireccionEnvio = async (req, res) => {
       direccion_envio: direccion_envio, // Agregar la dirección de envío a la respuesta
     });
   } catch (error) {
-    console.error("Error al obtener la dirección de envío:", error);
+    console.log(error);
     return res
       .status(500)
-      .json({ error: "Error al obtener la dirección de envío" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -457,11 +577,10 @@ export const obtenerTodosLosPagos = async (req, res) => {
     }
     return res.status(200).json({ message: "Pagos encontrados", pagos });
   } catch (error) {
-    console.error("Error al obtener la dirección de envío de la orden:", error);
-    // Enviar una respuesta de error con código de estado 500
+    console.log(error);
     return res
       .status(500)
-      .json({ error: "Error al obtener la dirección de envío de la orden" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -480,11 +599,10 @@ export const obtenerPagoPorIdOrden = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error al obtener la dirección de envío de la orden:", error);
-    // Enviar una respuesta de error con código de estado 500
+    console.log(error);
     return res
       .status(500)
-      .json({ error: "Error al obtener la dirección de envío de la orden" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -500,11 +618,10 @@ export const obtenerPagosPorIdUsuario = async (req, res) => {
     }
     return res.status(200).json({ message: "Pagos encontrados", pagos });
   } catch (error) {
-    console.error("Error al obtener la dirección de envío de la orden:", error);
-    // Enviar una respuesta de error con código de estado 500
+    console.log(error);
     return res
       .status(500)
-      .json({ error: "Error al obtener la dirección de envío de la orden" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 ///cambiar los estados
@@ -522,35 +639,7 @@ export const cambiarEstadoEnvio = async (req, res) => {
         .json({ error: `El envío con id ${id_envio} no existe` });
     }
 
-    if (envio.estado === "Cancelado") {
-      return res.status(400).json({
-        error: "La envío esta cancelado y no se puede cambiar su estado",
-      });
-    } else if (envio.estado === nuevoEstado) {
-      return res.status(400).json({
-        error: `El estado de envío ya tiene el estado ${nuevoEstado} y no se puede cambiar su estado nuevamente`,
-      });
-    }
-
-    // Actualizar el estado del envío
-    envio.estado = nuevoEstado;
-
-    await envio.save();
-
-    return res.status(200).json(envio);
-  } catch (error) {
-    console.error("Error al cambiar el estado del envío:", error);
-    return res
-      .status(500)
-      .json({ error: "Error al cambiar el estado del envío" });
-  }
-};
-
-export const cambiarEstadoOrden = async (req, res) => {
-  const { id_orden } = req.params; // Obtener el id del envío desde los parámetros de la URL
-  const { nuevoEstado } = req.body; // Obtener el nuevo estado del envío desde el cuerpo de la solicitud
-  try {
-    const orden = await Orden.findByPk(id_orden);
+    const orden = await Orden.findOne({ where: { id: envio.orden_id } });
 
     if (!orden) {
       return res
@@ -558,41 +647,104 @@ export const cambiarEstadoOrden = async (req, res) => {
         .json({ error: `La orden con id ${id_orden} no existe` });
     }
 
-    if (orden.estado_orden === "Cancelada") {
-      return res.status(400).json({
-        error: "La orden ya está cancelada y no se puede cambiar su estado",
+    const usuarioEnvio = await Usuario.findByPk(orden.id_usuario, {
+      attributes: ["id", "nombre", "email"],
+    });
+
+    if (envio.estado === "Cancelado") {
+      return res.status(401).json({
+        error: "El envío está cancelado y no se puede cambiar su estado",
       });
-    } else if (orden.estado_orden === nuevoEstado) {
-      return res.status(400).json({
-        error: `La orden ya tiene el estado ${nuevoEstado} y no se puede cambiar su estado nuevamente`,
+    } else if (envio.estado === nuevoEstado) {
+      return res.status(402).json({
+        error: `El estado de envío ya tiene el estado ${nuevoEstado} y no se puede cambiar su estado nuevamente`,
       });
     }
 
-    const detallesOrden = await DetalleOrden.findAll({ where: { id_orden } });
+    // Actualizar el estado del envío
+    envio.estado = nuevoEstado;
+    await envio.save();
 
+    // Enviar correo electrónico al usuario de envío
+    const email = usuarioEnvio.email;
+    const subject = "Cambio de estado del envío";
+    const header = "Cambio de estado del envío";
+    const contenido = `
+      <h2>El estado de tu envío ha cambiado</h2>
+      <p>Estado actual: ${envio.estado}</p>
+    `;
+
+    await enviarCorreo(email, subject, header, contenido);
+
+    return res.status(200).json(envio);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
+  }
+};
+
+export const cambiarEstadoOrden = async (req, res) => {
+  const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
+  const { nuevoEstado } = req.body; // Obtener el nuevo estado de la orden desde el cuerpo de la solicitud
+  
+  try {
+    const orden = await Orden.findByPk(id_orden);
+    
+    if (!orden) {
+      return res.status(404).json({ error: `La orden con id ${id_orden} no existe` });
+    }
+    
+    const usuarioOrden = await Usuario.findByPk(orden.id_usuario, {
+      attributes: ["id", "nombre", "email"],
+    });
+    
+    if (orden.estado_orden === "Cancelada") {
+      return res.status(401).json({
+        error: "La orden ya está cancelada y no se puede cambiar su estado",
+      });
+    } else if (orden.estado_orden === nuevoEstado) {
+      return res.status(402).json({
+        error: `La orden ya tiene el estado ${nuevoEstado} y no se puede cambiar su estado nuevamente`,
+      });
+    }
+    
+    const detallesOrden = await DetalleOrden.findAll({ where: { id_orden } });
+    
     if (nuevoEstado === "Cancelada") {
       // Restablecer el stock de los productos en los detalles de la orden
       for (const detalle of detallesOrden) {
         const producto = await Producto.findByPk(detalle.id_producto);
-
+        
         if (producto) {
           producto.stock += detalle.cantidad;
           await producto.save();
         }
       }
     }
-
+    
     orden.estado_orden = nuevoEstado;
     await orden.save();
-
+    
+    // Enviar correo electrónico al usuario de la orden
+    const email = usuarioOrden.email;
+    const subject = "Cambio de estado de la orden";
+    const header = "Cambio de estado de la orden";
+    const contenido = `
+      <h2>El estado de tu orden ha cambiado</h2>
+      <p>Estado actual: ${orden.estado_orden}</p>
+    `;
+    
+    await enviarCorreo(email, subject, header, contenido);
+    
     return res.status(200).json({ message: "Estado de la orden actualizado" });
   } catch (error) {
-    console.error("Error al cambiar el estado de la orden:", error);
-    return res
-      .status(500)
-      .json({ error: "Error al cambiar el estado de la orden" });
+    console.log(error);
+    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
+
 
 export const cancelarOrden = async (req, res) => {
   const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
@@ -607,17 +759,17 @@ export const cancelarOrden = async (req, res) => {
         .json({ error: `La orden con id ${id_orden} no existe` });
     }
     if (orden.estado_orden === "Cancelada") {
-      return res.status(400).json({
+      return res.status(401).json({
         error: "La orden ya está cancelada y no se puede cambiar su estado",
       });
     }
     if (orden.estado_orden !== "Pendiente") {
-      return res.status(400).json({
+      return res.status(402).json({
         error: "La orden no está en estado 'Pendiente' y no se puede cancelar",
       });
     }
     if (envio.estado !== "Pendiente") {
-      return res.status(400).json({
+      return res.status(403).json({
         error: "El envío no está en estado 'Pendiente' y no se puede cancelar",
       });
     }
@@ -637,9 +789,21 @@ export const cancelarOrden = async (req, res) => {
     orden.estado_orden = "Cancelada";
     await orden.save();
 
+    // Enviar correo electrónico al administrador
+    const email = "grandmarthtd@gmail.com"; // Correo del administrador
+    const subject = "Orden cancelada por usuario";
+    const header = "Orden cancelada por usuario";
+    const contenido = `
+      <h2>La orden ${orden.id} ha sido cancelada por el usuario</h2>
+      <p>Usuario: ${orden.id_usuario}</p>
+    `;
+
+    await enviarCorreo(email, subject, header, contenido);
+
     return res.status(200).json({ message: "Orden cancelada" });
   } catch (error) {
-    console.error("Error al cancelar la orden:", error);
-    return res.status(500).json({ error: "Error al cancelar la orden" });
+    console.log(error);
+    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
+

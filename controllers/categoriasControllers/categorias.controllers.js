@@ -9,8 +9,10 @@ export const getCategoria = async (req, res) => {
     }
     res.json(categoria);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -23,8 +25,10 @@ export const getCategorias = async (req, res) => {
     }
     res.status(200).json(categorias);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -39,12 +43,12 @@ export const createCategoria = async (req, res) => {
     }
     if (id_parent) {
       const existingCategoriaPadre = await Categoria.findOne({
-        where: { id: id_parent},
+        where: { id: id_parent },
       });
 
       if (!existingCategoriaPadre) {
         return res
-          .status(400)
+          .status(401)
           .json({ message: "La categoria padre no existe" });
       }
     }
@@ -52,8 +56,10 @@ export const createCategoria = async (req, res) => {
 
     res.status(201).json({ message: "Categoría creada correctamente" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -80,14 +86,14 @@ export const updateCategoria = async (req, res) => {
     if (id_parent) {
       const categoriaPadre = await Categoria.findByPk(id_parent);
       if (categoriaPadre && categoriaPadre.id_parent === categoria.id) {
-        return res.status(400).json({
+        return res.status(401).json({
           message: "La categoría no puede ser hija de una de sus hijas",
         });
       }
     }
 
     // Actualizar la categoría con los nuevos valores
-    const updateCategoria = await categoria.update({
+    const updatedCategoria = await categoria.update({
       nombre,
       id_parent,
     });
@@ -95,8 +101,10 @@ export const updateCategoria = async (req, res) => {
     // Enviar una respuesta exitosa
     res.status(200).json({ message: "Categoría actualizada correctamente" });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -127,13 +135,13 @@ export const deleteCategoria = async (req, res) => {
     await Categoria.destroy({
       where: { id },
     });
-    
+
     // Envía una respuesta HTTP vacía con un estado de "sin contenido"
     res.status(204).send();
-
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-

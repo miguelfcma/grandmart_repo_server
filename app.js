@@ -52,6 +52,9 @@ import comprasRoutes from "./routes/ordenesRoutes/compras.routes.js";
 import ventasRoutes from "./routes/ordenesRoutes/ventas.routes.js";
 //pagos
 import pagosRoutes from "./routes/ordenesRoutes/pagos.routes.js";
+
+//
+import tokenRoutes from "./routes/verificacionTokenRoutes/verificacionToken.routes.js";
 import morgan from "morgan";
 import path from "path";
 //  INITIALIZATIONS
@@ -122,6 +125,7 @@ app.use(ventasRoutes);
 app.use(comprasRoutes);
 //pagos
 app.use(pagosRoutes);
+app.use(tokenRoutes);
 //  STATIC FILES
 
 //  EXPORT THE APP

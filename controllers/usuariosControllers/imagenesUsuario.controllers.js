@@ -8,11 +8,12 @@ export const createImgUsuario = async (req, res) => {
 
     res.status(201).json({ message: "Avatar de usuario creado correctamente" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
 
 export const getImgUsuarioByUserId = async (req, res) => {
   const { id_usuario } = req.params;
@@ -28,8 +29,10 @@ export const getImgUsuarioByUserId = async (req, res) => {
       res.status(404).json({ message: "Avatar de usuario no encontrado" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -43,13 +46,17 @@ export const deleteImgUsuarioByUserId = async (req, res) => {
 
     if (imagenUsuario) {
       await imagenUsuario.destroy();
-      res.status(200).json({ message: "Avatar de usuario eliminado correctamente" });
+      res
+        .status(200)
+        .json({ message: "Avatar de usuario eliminado correctamente" });
     } else {
       res.status(404).json({ message: "Avatar de usuario no encontrado" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
@@ -67,13 +74,16 @@ export const updateImgUsuarioByUserId = async (req, res) => {
 
       await imagenUsuario.save();
 
-      res.status(200).json({ message: "Imagen de usuario actualizada correctamente" });
+      res
+        .status(200)
+        .json({ message: "Imagen de usuario actualizada correctamente" });
     } else {
       res.status(404).json({ message: "Imagen de usuario no encontrada" });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
