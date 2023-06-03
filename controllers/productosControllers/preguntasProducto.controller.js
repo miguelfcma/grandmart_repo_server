@@ -47,17 +47,18 @@ export const crearPregunta = async (req, res) => {
       const email = usuarioVendedor.email;
       const subject = "GrandMart Marketplace";
       const header = "Notificación de nueva pregunta";
+
       const contenido = `
       <h2>Tienes una nueva pregunta</h2>
-        <p>
+      <p>
         Usuario: <strong>${usuarioPregunta.id} ${usuarioPregunta.nombre} ${usuarioPregunta.apellidoPaterno} ${usuarioPregunta.apellidoMaterno}</strong>
-          </p>
-          <p>
-          Producto: <strong>${producto.id} ${producto.nombre}</strong>
-        </p>
-        <hr />
-        <p>Pregunta: <strong>${pregunta}</p></strong>
-      `;
+      </p>
+      <p>
+        Producto: <strong>${producto.id} ${producto.nombre}</strong>
+      </p>
+      <hr />
+      <p>Pregunta: <strong>${pregunta}</p></strong>
+    `;
 
       await enviarCorreo(email, subject, header, contenido);
     }
@@ -91,6 +92,11 @@ export const crearRespuesta = async (req, res) => {
       attributes: ["id", "nombre", "email"],
     });
 
+    // Obtener información del producto al que se refiere la pregunta
+    const producto = await Producto.findByPk(pregunta.id_producto, {
+      attributes: ["id", "nombre"],
+    });
+
     const email = usuarioPregunta.email;
     const subject = "Respuesta a tu pregunta";
     const header = "Respuesta recibida";
@@ -98,6 +104,7 @@ export const crearRespuesta = async (req, res) => {
       <h2>Tu pregunta ha sido respondida</h2>
       <p>Pregunta: ${pregunta.pregunta}</p>
       <p>Respuesta: ${pregunta.respuesta}</p>
+      <p>Producto: ${producto.id} ${producto.nombre}</p>
     `;
 
     await enviarCorreo(email, subject, header, contenido);

@@ -1,12 +1,15 @@
 import { ReviewProducto } from "../../models/productosModel/ReviewsProductosModel.js";
 import { Producto } from "../../models/productosModel/ProductoModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
+import { enviarCorreo } from "../CorreoController/enviarCorreo.controllers.js";
+
 import sequelize from "sequelize";
 
 // Crear una nueva review de un producto
 export const createReview = async (req, res) => {
   const { titulo, comentario, calificacion, id_producto, id_usuario } =
     req.body;
+
   try {
     // Verificar si el usuario ya ha dejado una revisión para el producto
     const existingReview = await ReviewProducto.findOne({
@@ -26,6 +29,41 @@ export const createReview = async (req, res) => {
       id_producto,
       id_usuario,
     });
+
+    // Obtener el producto y su vendedor
+    const producto = await Producto.findByPk(id_producto);
+    const usuarioVendedor = await Usuario.findByPk(producto.id_usuario, {
+      attributes: [
+        "id",
+        "nombre",
+        "apellidoPaterno",
+        "apellidoMaterno",
+        "email",
+      ],
+    });
+
+    // Construir el contenido del correo en formato HTML
+    const contenido = `
+     
+        <h2>Se ha dejado una nueva revisión en tu producto</h2>
+        <hr />
+        <h3>Producto:</h3>
+        <p>Descripción: ${producto.id}</p>
+        <p>Nombre: ${producto.nombre}</p>
+        
+        <hr />
+        <h3>Opinión del usuario:</h3>
+        <p>Título: ${titulo}</p>
+        <p>Comentario: ${comentario}</p>
+        <p>Calificación: ${calificacion}</p>
+   
+    `;
+
+    // Enviar el correo al vendedor del producto
+    const emailVendedor = usuarioVendedor.email;
+    const asunto = "GrandMart Marketplace";
+    const header = "Notificación de nueva revisión";
+    await enviarCorreo(emailVendedor, asunto, header, contenido);
     res.status(201).json({
       message: "La revisión ha sido creada correctamente",
       review: newReview,

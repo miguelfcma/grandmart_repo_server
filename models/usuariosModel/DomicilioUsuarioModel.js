@@ -42,10 +42,7 @@ export const DomicilioUsuario = sequelizeDB.define(
       type: DataTypes.STRING(255),
       allowNull: true,
     },
-    numeroInterior: {
-      type: DataTypes.STRING(10),
-      allowNull: true,
-    },
+
     calle1: {
       type: DataTypes.STRING(255),
       allowNull: true,
@@ -55,6 +52,10 @@ export const DomicilioUsuario = sequelizeDB.define(
       allowNull: true,
     },
     numeroExterior: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+    },
+    numeroInterior: {
       type: DataTypes.STRING(10),
       allowNull: true,
     },

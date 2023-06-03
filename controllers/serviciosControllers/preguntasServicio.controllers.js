@@ -78,15 +78,20 @@ export const crearRespuesta = async (req, res) => {
     const usuarioPregunta = await Usuario.findByPk(pregunta.id_usuario, {
       attributes: ["id", "nombre", "email"],
     });
+    // Obtener información del servicio al que se refiere la pregunta
+    const servicio = await Servicio.findByPk(pregunta.id_servicio, {
+      attributes: ["id", "titulo"],
+    });
 
     const email = usuarioPregunta.email;
     const subject = "Respuesta a tu pregunta de servicio";
     const header = "Respuesta recibida";
     const contenido = `
-      <h2>Tu pregunta de servicio ha sido respondida</h2>
-      <p>Pregunta: ${pregunta.pregunta}</p>
-      <p>Respuesta: ${pregunta.respuesta}</p>
-    `;
+    <h2>Tu pregunta de servicio ha sido respondida</h2>
+    <p>Pregunta: ${pregunta.pregunta}</p>
+    <p>Respuesta: ${pregunta.respuesta}</p>
+    <p>Servicio: ${servicio.id} ${servicio.titulo}</p>
+  `;
 
     await enviarCorreo(email, subject, header, contenido);
 

@@ -2,6 +2,7 @@ import { Servicio } from "../../models/serviciosModel/ServicioModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import { Categoria } from "../../models/categoriasModel/CategoriaModel.js";
 import { Op } from "sequelize";
+import { DatosContactoServicio } from "../../models/serviciosModel/ServicioDatosContactoModel.js";
 
 export const getServicio = async (req, res) => {
   try {
@@ -69,7 +70,6 @@ export const getServicios = async (req, res) => {
 };
 
 export const createServicio = async (req, res) => {
-  
   const { titulo, descripcion, precio, id_categoria, id_usuario } = req.body;
 
   try {
@@ -186,5 +186,46 @@ export const getServiciosByUsuarioId = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Ha ocurrido un error en el servidor" });
+  }
+};
+
+export const createDatosContactoServicio = async (req, res) => {
+  try {
+    const datosContacto = req.body;
+    console.log(datosContacto)
+    const nuevoDatosContacto = await DatosContactoServicio.create(
+      datosContacto
+    );
+    return res.status(201).json({
+      message: "Datos de contacto del servicio creados exitosamente.",
+      datosContacto: nuevoDatosContacto,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message:
+        "Ha ocurrido un error en el servidor al crear los datos de contacto del servicio.",
+    });
+  }
+};
+
+export const obtenerDatosContactoServicio = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const datosContacto = await DatosContactoServicio.findOne({
+      where: { id_servicio: id },
+    });
+    if (!datosContacto) {
+      return res.status(404).json({
+        message: "Datos de contacto del servicio no encontrados.",
+      });
+    }
+    return res.status(200).json(datosContacto);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message:
+        "Ha ocurrido un error en el servidor al obtener los datos de contacto del servicio.",
+    });
   }
 };

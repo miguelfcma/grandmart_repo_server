@@ -6,6 +6,8 @@ import {
   updateServicio,
   deleteServicio,
   getServiciosByUsuarioId,
+  createDatosContactoServicio,
+  obtenerDatosContactoServicio,
 } from "../../controllers/serviciosControllers/servicios.controllers.js";
 
 const router = Router();
@@ -21,5 +23,10 @@ router.put("/servicios/:id", updateServicio);
 router.delete("/servicios/:id", deleteServicio);
 
 router.get("/servicios/user/:id_usuario", getServiciosByUsuarioId);
+
+
+router.post("/servicios/datos-contacto", createDatosContactoServicio);
+
+router.get("/servicios/datos-contacto/:id", obtenerDatosContactoServicio);
 
 export default router;
