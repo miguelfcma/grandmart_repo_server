@@ -23,7 +23,15 @@ export const getCategorias = async (req, res) => {
     if (categorias.length === 0) {
       return res.status(404).json({ message: "No se encontraron categorias" });
     }
-    res.status(200).json(categorias);
+    const categoriasConCategoriasPadre = await Promise.all(
+      categorias.map(async (categoria) => {
+        const categoriaPadre = await Categoria.findByPk(categoria.id_parent, {
+          attributes: ["id", "nombre"],
+        })
+        return { ...categoria.toJSON(), categoriaPadre };
+      })
+    );
+    res.status(200).json(categoriasConCategoriasPadre);
   } catch (error) {
     console.log(error);
     return res

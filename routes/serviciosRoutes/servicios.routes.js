@@ -8,6 +8,7 @@ import {
   getServiciosByUsuarioId,
   createDatosContactoServicio,
   obtenerDatosContactoServicio,
+  updateDatosContactoServicio
 } from "../../controllers/serviciosControllers/servicios.controllers.js";
 
 const router = Router();
@@ -28,5 +29,7 @@ router.get("/servicios/user/:id_usuario", getServiciosByUsuarioId);
 router.post("/servicios/datos-contacto", createDatosContactoServicio);
 
 router.get("/servicios/datos-contacto/:id", obtenerDatosContactoServicio);
+
+router.put("/servicios/datos-contacto/:id", updateDatosContactoServicio);
 
 export default router;

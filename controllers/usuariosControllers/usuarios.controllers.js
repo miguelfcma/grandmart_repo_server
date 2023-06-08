@@ -39,6 +39,7 @@ export const getUsuario = async (req, res) => {
         "nombre",
         "apellidoPaterno",
         "apellidoMaterno",
+        "email",
         "sexo",
         "fechaNacimiento",
         "telefono",
@@ -189,7 +190,7 @@ export const getUsuarioLogin = async (req, res) => {
 
     // Crear el token de sesión
     const token = jwt.sign({ userId: usuario.id }, "secreto", {
-      expiresIn: "1h",
+      expiresIn: "2h",
     });
 
     // Si se encontró el usuario y la contrasena es válida, incluir el token y el atributo "tipoUsuario" en la respuesta

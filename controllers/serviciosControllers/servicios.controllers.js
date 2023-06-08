@@ -192,7 +192,7 @@ export const getServiciosByUsuarioId = async (req, res) => {
 export const createDatosContactoServicio = async (req, res) => {
   try {
     const datosContacto = req.body;
-    console.log(datosContacto)
+    console.log(datosContacto);
     const nuevoDatosContacto = await DatosContactoServicio.create(
       datosContacto
     );
@@ -227,5 +227,53 @@ export const obtenerDatosContactoServicio = async (req, res) => {
       message:
         "Ha ocurrido un error en el servidor al obtener los datos de contacto del servicio.",
     });
+  }
+};
+
+export const updateDatosContactoServicio = async (req, res) => {
+  const {
+    telefono1,
+    telefono2,
+    email,
+    estado,
+    municipio_alcaldia,
+    colonia,
+    calle,
+    numeroExterior,
+    numeroInterior,
+    descripcion,
+  } = req.body;
+  const id_servicio = req.params.id;
+  try {
+    const datosContacto = await DatosContactoServicio.findOne({
+      where: { id_servicio },
+    });
+    if (!datosContacto) {
+      return res.status(404).json({
+        message: "No se encontraron los datos de contacto del servicio",
+      });
+    }
+    const updatedDatosContacto = await datosContacto.update({
+      telefono1,
+      telefono2,
+      email,
+      estado,
+      municipio_alcaldia,
+      colonia,
+      calle,
+      numeroExterior,
+      numeroInterior,
+      descripcion,
+      id_servicio,
+    });
+    return res.status(200).json({
+      message: "Datos de contacto del servicio actualizados exitosamente.",
+      datosContacto: updatedDatosContacto,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
