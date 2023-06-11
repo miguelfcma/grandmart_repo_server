@@ -312,30 +312,30 @@ export const eliminarOrden = async (req, res) => {
         .json({ error: `La orden con id ${id_orden} no existe` });
     }
 
-    const detallesOrden = await DetalleOrden.findAll({
-      where: { id_orden },
-    });
+    // const detallesOrden = await DetalleOrden.findAll({
+    //   where: { id_orden },
+    // });
 
-    const envio = await Envio.findOne({ where: { orden_id: id_orden } });
-    const direccion_envio = await DireccionEnvio.findByPk(
-      envio.direccion_envio_id
-    );
-    const pago = await Pago.findOne({ where: { orden_id: id_orden } });
-    if (direccion_envio) {
-      if (envio) {
-        await envio.destroy();
-      }
-      await direccion_envio.destroy();
-    }
+    // const envio = await Envio.findOne({ where: { orden_id: id_orden } });
+    // const direccion_envio = await DireccionEnvio.findByPk(
+    //   envio.direccion_envio_id
+    // );
+    // const pago = await Pago.findOne({ where: { orden_id: id_orden } });
+    // if (direccion_envio) {
+    //   if (envio) {
+    //     await envio.destroy();
+    //   }
+    //   await direccion_envio.destroy();
+    // }
 
-    if (pago) {
-      await pago.destroy();
-    }
-    if (detallesOrden.length) {
-      for (const detalle of detallesOrden) {
-        await detalle.destroy();
-      }
-    }
+    // if (pago) {
+    //   await pago.destroy();
+    // }
+    // if (detallesOrden.length) {
+    //   for (const detalle of detallesOrden) {
+    //     await detalle.destroy();
+    //   }
+    // }
 
     await orden.destroy();
 
