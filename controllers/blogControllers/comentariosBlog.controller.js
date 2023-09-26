@@ -25,7 +25,7 @@ export async function getComentariosPorIdPublicacion(req, res) {
   console.log(id_publicacionBlog);
   try {
     if (!id_publicacionBlog) {
-      res.status(404).json({ mensaje: "Error el id es indefinido" });
+      res.status(404).json({ message: "Error el id es indefinido" });
     }
 
     const comentarios = await ComentarioBlog.findAll({
@@ -65,7 +65,7 @@ export async function updateComentarioPorIdUsuario(req, res) {
     if (numRows > 0) {
       res.status(200).json(comentarioActualizado[0]);
     } else {
-      res.status(404).json({ mensaje: "Comentario no encontrado" });
+      res.status(404).json({ message: "Comentario no encontrado" });
     }
   } catch (error) {
     console.log(error);
@@ -87,15 +87,15 @@ export async function deleteComentarioPorIdUsuario(req, res) {
 
     if (comentario) {
       await comentario.destroy();
-      res.status(200).json({ mensaje: "Comentario eliminado correctamente" });
+      res.status(200).json({ message: "Comentario eliminado correctamente" });
     } else {
-      res.status(404).json({ mensaje: "Comentario no encontrado" });
+      res.status(404).json({ message: "Comentario no encontrado" });
     }
   } catch (error) {
     console.log(error);
     return res
       .status(500)
-      .json({ mensaje: "Ha ocurrido un error en el servidor" });
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 }
 

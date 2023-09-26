@@ -27,7 +27,7 @@ export const agregarProductoAlCarrito = async (req, res) => {
     // Verificar si hay suficiente stock de producto
     const producto = await Producto.findOne({ where: { id: id_producto } });
     if (!producto) {
-      return res.status(404).json({ mensaje: "No se encontró el producto" });
+      return res.status(404).json({ message: "No se encontró el producto" });
     }
 
     if (detalle) {
@@ -38,7 +38,7 @@ export const agregarProductoAlCarrito = async (req, res) => {
       } else {
         return res
           .status(400)
-          .json({ mensaje: "No hay suficiente stock del producto" });
+          .json({ message: "No hay suficiente stock del producto" });
       }
     } else {
       // Si el producto no está en el carrito, se agrega como un nuevo detalle
@@ -51,7 +51,7 @@ export const agregarProductoAlCarrito = async (req, res) => {
       } else {
         return res
           .status(400)
-          .json({ mensaje: "No hay suficiente stock del producto" });
+          .json({ message: "No hay suficiente stock del producto" });
       }
     }
 
@@ -68,7 +68,7 @@ export const agregarProductoAlCarrito = async (req, res) => {
     });
 
     const respuesta = {
-      mensaje: "Producto agregado",
+      message: "Producto agregado",
       detalle: { ...detalle.toJSON(), producto: productoDetalles }, // Combinar el detalle del carrito de compras con el producto encontrado
     };
 
@@ -92,7 +92,7 @@ export const actualizarCantidadProductoEnCarrito = async (req, res) => {
     if (!carrito) {
       return res
         .status(404)
-        .json({ mensaje: "No se encontró el carrito de compras del usuario" });
+        .json({ message: "No se encontró el carrito de compras del usuario" });
     }
 
     // Buscar el detalle del producto en el carrito de compras
@@ -102,14 +102,14 @@ export const actualizarCantidadProductoEnCarrito = async (req, res) => {
 
     if (!detalle) {
       return res.status(404).json({
-        mensaje: "No se encontró el producto en el carrito de compras",
+        message: "No se encontró el producto en el carrito de compras",
       });
     }
 
     // Verificar si hay suficiente stock de producto
     const producto = await Producto.findOne({ where: { id: id_producto } });
     if (!producto) {
-      return res.status(404).json({ mensaje: "No se encontró el producto" });
+      return res.status(404).json({ message: "No se encontró el producto" });
     }
 
     // Actualizar la cantidad del producto en el carrito de compras
@@ -117,16 +117,16 @@ export const actualizarCantidadProductoEnCarrito = async (req, res) => {
       if (detalle.cantidad + 1 > producto.stock) {
         return res
           .status(400)
-          .json({ mensaje: "No hay suficiente stock del producto" });
+          .json({ message: "No hay suficiente stock del producto" });
       }
       detalle.cantidad += 1;
     } else if (accion === "decrementar") {
       if (detalle.cantidad - 1 < 1) {
-        return res.status(400).json({ mensaje: "La cantidad mínima es 1" });
+        return res.status(400).json({ message: "La cantidad mínima es 1" });
       }
       detalle.cantidad -= 1;
     } else {
-      return res.status(400).json({ mensaje: "Acción inválida" });
+      return res.status(400).json({ message: "Acción inválida" });
     }
 
     await detalle.save();
@@ -136,7 +136,7 @@ export const actualizarCantidadProductoEnCarrito = async (req, res) => {
     });
 
     const respuesta = {
-      mensaje: "Cantidad de producto actualizada",
+      message: "Cantidad de producto actualizada",
       detalle: { ...detalle.toJSON(), producto: productoDetalles }, // Combinar el detalle del carrito de compras con el producto encontrado
     };
 
@@ -159,7 +159,7 @@ export const obtenerCarritoDeCompras = async (req, res) => {
     if (!carrito) {
       return res
         .status(404)
-        .json({ mensaje: "No se encontró el carrito de compras del usuario" });
+        .json({ message: "No se encontró el carrito de compras del usuario" });
     }
 
     // Buscar los detalles del carrito de compras
@@ -201,7 +201,7 @@ export const eliminarProductoDelCarrito = async (req, res) => {
     if (!carrito) {
       return res
         .status(404)
-        .json({ mensaje: "No se encontró el carrito de compras del usuario" });
+        .json({ message: "No se encontró el carrito de compras del usuario" });
     }
 
     // Eliminar el detalle del carrito de compras que corresponde al producto a eliminar
@@ -211,7 +211,7 @@ export const eliminarProductoDelCarrito = async (req, res) => {
 
     if (!detalleCarrito) {
       return res.status(404).json({
-        mensaje: "El producto no se encontró en el carrito de compras",
+        message: "El producto no se encontró en el carrito de compras",
       });
     }
 
@@ -233,7 +233,7 @@ export const eliminarProductoDelCarrito = async (req, res) => {
     );
 
     const respuesta = {
-      mensaje: "Producto eliminado del carrito",
+      message: "Producto eliminado del carrito",
       detalleCarrito: detallesCarritoConProducto,
     };
 
@@ -256,7 +256,7 @@ export const vaciarCarrito = async (req, res) => {
     if (!carrito) {
       return res
         .status(404)
-        .json({ mensaje: "No se encontró el carrito de compras del usuario" });
+        .json({ message: "No se encontró el carrito de compras del usuario" });
     }
 
     // Eliminar todos los detalles del carrito de compras correspondientes al usuario
@@ -270,7 +270,7 @@ export const vaciarCarrito = async (req, res) => {
 
     return res
       .status(200)
-      .json({ mensaje: "El carrito de compras ha sido vaciado exitosamente" });
+      .json({ message: "El carrito de compras ha sido vaciado exitosamente" });
   } catch (error) {
     console.log(error);
     return res
