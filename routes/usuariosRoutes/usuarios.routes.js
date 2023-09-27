@@ -18,6 +18,8 @@ import {
   actualizarCuentaBancaria,
   eliminarCuentaBancaria,
 } from "../../controllers/usuariosControllers/cuentaBancaria.controller.js";
+
+import {informacionContada} from "../../controllers/usuariosControllers/dashInfo.controller.js";
 // Creamos una nueva instancia del Router de Express
 const router = Router();
 
@@ -49,5 +51,6 @@ router.put("/cuenta-bancaria/:id_usuario", actualizarCuentaBancaria);
 router.delete("/cuenta-bancaria/:id_usuario", eliminarCuentaBancaria);
 
 router.delete("/usuarios/:id/eliminar-cuenta", eliminarCuentaUsuario);
-
+////////////////////////////////////////////////////////////////////////////
+router.get("/dashinformacion/:id_usuario", informacionContada);
 export default router;

@@ -184,7 +184,7 @@ export const getReviewByUserAndProduct = async (req, res) => {
   }
 };
 
-// Obtener productos del usuario con preguntas asociadas
+// Obtener productos del usuario con revisiones asociadas
 export const getProductosConReviewsByUsuarioId = async (req, res) => {
   try {
     const { id_usuario } = req.params;
