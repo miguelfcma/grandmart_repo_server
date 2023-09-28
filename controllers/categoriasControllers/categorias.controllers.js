@@ -153,7 +153,7 @@ export const deleteCategoria = async (req, res) => {
         .status(401)
         .json({
           message:
-            "No se puede eliminar la categoría porque está siendo utilizada en uno o más servicios.",
+            "No se puede eliminar la categoría porque está siendo utilizada en uno o más registros",
         });
     } else {
       return res
