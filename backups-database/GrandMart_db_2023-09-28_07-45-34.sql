@@ -39,7 +39,7 @@ CREATE TABLE `categorias` (
   PRIMARY KEY (`id`),
   KEY `id_categoria` (`id_parent`),
   CONSTRAINT `categorias_ibfk_1` FOREIGN KEY (`id_parent`) REFERENCES `categorias` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `comentariosblogs`;
 CREATE TABLE `comentariosblogs` (
@@ -54,7 +54,7 @@ CREATE TABLE `comentariosblogs` (
   KEY `comentariosblogs_FK` (`id_usuario`),
   CONSTRAINT `comentariosblogs_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `comentariosblogs_ibfk_1` FOREIGN KEY (`id_publicacionBlog`) REFERENCES `publicacionesblogs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `cuenta_bancaria`;
 CREATE TABLE `cuenta_bancaria` (
@@ -89,7 +89,7 @@ CREATE TABLE `datoscontactoservicios` (
   PRIMARY KEY (`id`),
   KEY `id_servicio` (`id_servicio`),
   CONSTRAINT `datoscontactoservicios_ibfk_1` FOREIGN KEY (`id_servicio`) REFERENCES `servicios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `denunciabuzon_servicios`;
 CREATE TABLE `denunciabuzon_servicios` (
@@ -194,7 +194,7 @@ CREATE TABLE `favoritosproductos` (
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `favoritosproductos_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `favoritosproductos_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `imagenesblogs`;
 CREATE TABLE `imagenesblogs` (
@@ -233,7 +233,7 @@ CREATE TABLE `imagenesservicios` (
   PRIMARY KEY (`id`),
   KEY `id_servicio` (`id_servicio`),
   CONSTRAINT `imagenesservicios_ibfk_1` FOREIGN KEY (`id_servicio`) REFERENCES `servicios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `imagenesusuarios`;
 CREATE TABLE `imagenesusuarios` (
@@ -345,7 +345,7 @@ CREATE TABLE `productos` (
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `productos_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `publicacionesblogs`;
 CREATE TABLE `publicacionesblogs` (
@@ -375,20 +375,7 @@ CREATE TABLE `reviewsproductos` (
   KEY `reviewsproductos_FK` (`id_usuario`),
   CONSTRAINT `reviewsproductos_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `reviewsproductos_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
-
-DROP TABLE IF EXISTS `reviewsservicios`;
-CREATE TABLE `reviewsservicios` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `titulo` varchar(150) COLLATE utf8_spanish2_ci NOT NULL,
-  `comentario` text COLLATE utf8_spanish2_ci NOT NULL,
-  `calificacion` tinyint(1) NOT NULL,
-  `id_servicio` bigint(20) unsigned NOT NULL,
-  `id_usuario` bigint(20) unsigned NOT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `servicios`;
 CREATE TABLE `servicios` (
@@ -405,7 +392,7 @@ CREATE TABLE `servicios` (
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `servicios_FK` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id`),
   CONSTRAINT `servicios_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE `usuarios` (
@@ -422,11 +409,11 @@ CREATE TABLE `usuarios` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 INSERT INTO `carrito_compra_detalles` (`id`, `id_producto`, `id_carrito_compra`, `cantidad`, `createdAt`, `updatedAt`) VALUES
 (3, 126, 22, 1, '2023-06-10 03:57:33', '2023-06-10 03:57:33'),
-(5, 126, 20, 1, '2023-07-03 20:55:32', '2023-07-03 21:11:14');
+(4, 92, 20, 1, '2023-09-27 22:51:18', '2023-09-27 22:51:18');
 
 INSERT INTO `carritos_compras` (`id`, `fecha_creacion`, `id_usuario`, `createdAt`, `updatedAt`) VALUES
 (17, '2023-05-27', 74, '2023-05-27 15:21:13', '2023-05-27 15:21:13'),
@@ -498,7 +485,6 @@ INSERT INTO `categorias` (`id`, `nombre`, `id_parent`, `createdAt`, `updatedAt`)
 (116, 'Limpieza del hogar', 117, '2023-06-08 22:46:56', '2023-06-08 22:48:20'),
 (117, 'Servicios', NULL, '2023-06-08 22:47:59', '2023-06-08 22:48:52'),
 (118, 'Peluquería', 117, '2023-06-08 22:48:07', '2023-06-08 22:52:19'),
-(119, 'Salud y bienestar', 28, '2023-06-08 22:49:49', '2023-06-08 22:49:49'),
 (121, 'Automóviles', 117, '2023-06-30 22:09:16', '2023-06-30 22:09:16');
 
 INSERT INTO `comentariosblogs` (`id`, `comentario`, `createdAt`, `updatedAt`, `id_publicacionBlog`, `id_usuario`) VALUES
@@ -506,7 +492,8 @@ INSERT INTO `comentariosblogs` (`id`, `comentario`, `createdAt`, `updatedAt`, `i
 (22, 'wfewf', '2023-05-27 18:44:39', '2023-05-27 18:44:39', NULL, 74),
 (23, 'wefwef', '2023-05-27 18:44:41', '2023-05-27 18:44:41', NULL, 74),
 (24, 'wefwef', '2023-05-27 18:44:44', '2023-05-27 18:44:44', NULL, 74),
-(25, 'wef', '2023-05-27 18:44:46', '2023-05-27 18:44:46', NULL, 74);
+(25, 'wef', '2023-05-27 18:44:46', '2023-05-27 18:44:46', NULL, 74),
+(27, 'Excelente publicación!! ', '2023-07-05 20:05:45', '2023-07-05 20:05:45', 99, 96);
 
 INSERT INTO `datoscontactoservicios` (`id`, `estado`, `municipio_alcaldia`, `colonia`, `calle`, `numeroExterior`, `numeroInterior`, `descripcion`, `createdAt`, `updatedAt`, `id_servicio`, `telefono1`, `telefono2`, `email`) VALUES
 (12, 'Estado De México', 'Cuauhtémoc', 'Roma Norte', 'Calle Durango', 'SN', '', 'Departamento ubicado en el cuarto piso.', '2023-06-08 23:05:52', '2023-06-14 19:46:50', 79, '5551234567', '5551234562', 'ejemplo@email.com'),
@@ -570,7 +557,6 @@ INSERT INTO `envios` (`id`, `orden_id`, `estado`, `direccion_envio_id`, `fechaEn
 (69, 92, 'Pendiente', 72, NULL, '2023-06-02 01:03:37', '2023-06-02 01:03:37'),
 (77, 107, 'Pendiente', 80, NULL, '2023-06-02 16:28:46', '2023-06-02 16:28:46'),
 (78, 108, 'En tránsito', 81, NULL, '2023-06-02 16:31:09', '2023-06-02 20:27:15'),
-(81, 111, 'Pendiente', 84, NULL, '2023-06-08 03:28:44', '2023-06-08 03:28:44'),
 (82, 112, 'Pendiente', 85, NULL, '2023-06-08 03:31:30', '2023-06-08 03:31:30'),
 (83, 113, 'Pendiente', 86, NULL, '2023-06-08 03:49:37', '2023-06-08 03:49:37'),
 (84, 114, 'Pendiente', 87, NULL, '2023-06-08 03:51:30', '2023-06-08 03:51:30'),
@@ -581,8 +567,8 @@ INSERT INTO `favoritosproductos` (`id`, `createdAt`, `updatedAt`, `id_producto`,
 (5, '2023-04-18 16:00:43', '2023-04-18 16:00:43', 91, 77),
 (6, '2023-04-18 16:02:38', '2023-04-18 16:02:38', 92, 77),
 (7, '2023-04-18 21:17:13', '2023-04-18 21:17:13', NULL, 77),
-(12, '2023-06-14 20:20:32', '2023-06-14 20:20:32', 92, 96),
-(16, '2023-06-14 20:28:38', '2023-06-14 20:28:38', 127, 96);
+(17, '2023-07-05 20:00:02', '2023-07-05 20:00:02', 128, 96),
+(18, '2023-07-05 20:00:17', '2023-07-05 20:00:17', 129, 96);
 
 INSERT INTO `imagenesblogs` (`id`, `url`, `es_portada`, `id_publicacionBlog`, `createdAt`, `updatedAt`) VALUES
 (75, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/blog%2F520898d3-5e61-4e7a-91cd-cd3fa519d11c_515d76c5-dd8e-400f-ad92-474415ce71c6?alt=media&token=17522bd5-d938-472b-abb9-a2a64d0e05f5', 1, 97, '2023-06-01 04:55:05', '2023-06-01 04:55:05'),
@@ -600,7 +586,6 @@ INSERT INTO `imagenesproductos` (`id`, `url`, `id_producto`, `es_portada`, `crea
 (223, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/productos%2F356a0263-b0b5-4ce9-a9c7-e92b7db83fb2_c11bcb46-057d-467d-8765-ed68b84624f0?alt=media&token=1da1b5fc-a972-4a1e-bef3-6e439750c1ec', 126, 1, '2023-06-07 16:17:19', '2023-06-07 16:17:19'),
 (224, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/productos%2F356a0263-b0b5-4ce9-a9c7-e92b7db83fb2_5bb81231-55f5-4442-a6ec-58355fb170ac?alt=media&token=691e140a-4258-4b04-983a-49f6af65eb49', 126, 0, '2023-06-07 16:17:19', '2023-06-07 16:17:19'),
 (225, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/productos%2F356a0263-b0b5-4ce9-a9c7-e92b7db83fb2_cd825150-53a8-4055-9ebf-a473e69f209c?alt=media&token=8c878858-ce0c-4392-a65c-2905d0feee50', 126, 0, '2023-06-07 16:17:19', '2023-06-07 16:17:19'),
-(226, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/productos%2F74d5827e-0921-4266-a42e-a4a8c61a3f89_3f2c5d45-0664-441b-be51-8971733a702e?alt=media&token=ab730307-e7c9-407f-9e64-4091e2fc8b8f', 127, 1, '2023-06-09 17:05:51', '2023-06-09 17:05:51'),
 (227, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/productos%2F80e9af26-1d4b-4299-a7a9-4e0ff528f16a_0ac657d4-c212-4b34-84ff-104b1eb7dd22?alt=media&token=25a3a21c-993b-4998-9ef9-c432a2c58eec', 128, 1, '2023-06-09 17:08:19', '2023-06-09 17:08:19'),
 (228, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/productos%2Ff4e581db-f754-45a1-9647-7848f6ea78c8_63b917d3-6cfa-45f2-b606-3ade8152af87?alt=media&token=b81388b1-5c35-407b-aee4-000e9bbf6ee8', 129, 1, '2023-06-09 17:10:12', '2023-06-09 17:10:12'),
 (229, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/productos%2F58d8b2fc-07d2-4698-a874-ed081ff3e5b7_10e5480c-973b-49aa-a0ec-ba6699b40205?alt=media&token=cb85f5e6-4bc6-4f19-8f31-5e048d56c284', 130, 1, '2023-06-30 22:01:33', '2023-06-30 22:01:33'),
@@ -627,7 +612,6 @@ INSERT INTO `orden_detalles` (`id`, `cantidad`, `precio_unitario`, `id_producto`
 (99, 1, '10.00', 92, 107, '2023-06-02 16:28:46', '2023-06-02 16:28:46'),
 (100, 1, '60.00', 91, 108, '2023-06-02 16:31:09', '2023-06-02 16:31:09'),
 (102, 1, '10.00', 92, 108, '2023-06-02 16:31:09', '2023-06-02 16:31:09'),
-(105, 4, '10.00', 92, 111, '2023-06-08 03:28:42', '2023-06-08 03:28:42'),
 (106, 1, '99.99', 126, 112, '2023-06-08 03:31:28', '2023-06-08 03:31:28'),
 (107, 1, '60.00', 91, 113, '2023-06-08 03:49:34', '2023-06-08 03:49:34'),
 (108, 1, '10.00', 92, 113, '2023-06-08 03:49:34', '2023-06-08 03:49:34'),
@@ -646,7 +630,6 @@ INSERT INTO `ordenes` (`id`, `total`, `estado_orden`, `id_usuario`, `createdAt`,
 (92, '60.00', 'Pendiente', 96, '2023-06-02 01:03:36', '2023-06-02 01:03:37'),
 (107, '70.00', 'Completada', 96, '2023-06-02 16:28:44', '2023-06-08 22:06:41'),
 (108, '170.00', 'Pendiente', 96, '2023-06-02 16:31:07', '2023-06-02 16:31:09'),
-(111, '40.00', 'Pendiente', 96, '2023-06-08 03:28:40', '2023-06-08 03:28:44'),
 (112, '99.99', 'En proceso', 99, '2023-06-08 03:31:26', '2023-06-08 22:06:55'),
 (113, '169.99', 'Pendiente', 96, '2023-06-08 03:49:33', '2023-06-08 03:49:37'),
 (114, '699.93', 'Pendiente', 96, '2023-06-08 03:51:27', '2023-06-08 03:51:30'),
@@ -662,7 +645,6 @@ INSERT INTO `pago` (`id`, `usuario_id`, `orden_id`, `monto`, `estado`, `id_pago_
 (34, 96, 92, '6000.00', 'Procesado', 'pi_3NEMOwIscKwQt1dm04dMWpDg', '2023-06-02', '2023-06-02 01:03:37', '2023-06-02 01:03:37'),
 (42, 96, 107, '7000.00', 'Procesado', 'pi_3NEaqFIscKwQt1dm0MABeV8B', '2023-06-02', '2023-06-02 16:28:45', '2023-06-02 16:28:45'),
 (43, 96, 108, '17000.00', 'Procesado', 'pi_3NEasZIscKwQt1dm0OAZ7wMz', '2023-06-02', '2023-06-02 16:31:09', '2023-06-02 16:31:09'),
-(46, 96, 111, '4000.00', 'Procesado', 'pi_3NGZWdIscKwQt1dm2qIWCBsu', '2023-06-08', '2023-06-08 03:28:42', '2023-06-08 03:28:42'),
 (47, 99, 112, '9999.00', 'Procesado', 'pi_3NGZZJIscKwQt1dm0RabZRY3', '2023-06-08', '2023-06-08 03:31:28', '2023-06-08 03:31:28'),
 (48, 96, 113, '16999.00', 'Procesado', 'pi_3NGZqqIscKwQt1dm2XsbVlYq', '2023-06-08', '2023-06-08 03:49:34', '2023-06-08 03:49:34'),
 (49, 96, 114, '69993.00', 'Procesado', 'pi_3NGZsgIscKwQt1dm2Lfmdp5g', '2023-06-08', '2023-06-08 03:51:28', '2023-06-08 03:51:28'),
@@ -677,7 +659,6 @@ INSERT INTO `productos` (`id`, `nombre`, `precio`, `stock`, `descripcion`, `marc
 (91, 'Batidora para Smoothies Nutritivos', 60, 0, 'La Batidora para Smoothies Nutritivos es una herramienta útil para adultos mayores que desean mejorar su nutrición y salud en general. Es fácil de usar y limpiar, y cuenta con una potencia suficiente para triturar frutas y verduras. Además, incluye recetas y consejos para preparar smoothies saludables.', 'Nutribullet', 'NBR-0801', 'Gris', 1, 61, 65, '2023-04-11 15:59:01', '2023-06-08 03:49:34'),
 (92, 'Collar para Perros', 10, 32, ' Este collar para perros es de alta calidad y está hecho con materiales duraderos. Viene en varios tamaños y colores, lo que lo hace adecuado para todo tipo de perros. Además, tiene una hebilla de liberación rápida para mayor seguridad.', '', '', '', 1, 31, 65, '2023-04-11 16:04:13', '2023-06-14 20:35:30'),
 (126, ' Teléfono móvil para adultos mayores \"SeniorPhone\"', 99.99, 40, ' El teléfono móvil para adultos mayores \"SeniorPhone\" está diseñado pensando en las necesidades específicas de las personas mayores. Cuenta con una interfaz simple y fácil de usar, grandes botones numéricos y un amplio display de alto contraste para facilitar la lectura. Además, incorpora funciones como llamadas de emergencia, linterna integrada y volumen amplificado para adaptarse a las dificultades de audición. Este teléfono es ideal para aquellos que buscan mantenerse conectados de manera sencilla y segura.', 'SeniorTech', 'SP-200', 'Negro', 1, 52, 96, '2023-06-07 16:15:27', '2023-06-14 20:35:30'),
-(127, 'Multivitamínico para adultos mayores', 30, 50, 'Descripción del producto: Un suplemento vitamínico completo diseñado especialmente para satisfacer las necesidades nutricionales de los adultos mayores. Contiene una combinación de vitaminas y minerales esenciales para promover la salud y el bienestar en esta etapa de la vida.', 'VitalSenior', '', '', 1, 119, 99, '2023-06-09 17:04:38', '2023-06-09 17:04:38'),
 (128, 'Champú revitalizante para mascotas', 15, 100, 'Un champú suave y enriquecido con ingredientes naturales que promueven el crecimiento del pelaje, fortalecen la piel y dejan a tu mascota con un aspecto saludable y brillante. Ideal para perros y gatos de todas las razas y tamaños.', 'PetCare', '', '', 1, 103, 99, '2023-06-09 17:07:34', '2023-06-09 17:07:34'),
 (129, 'Barra de proteínas nutritivas', 3, 200, 'Una deliciosa barra de proteínas diseñada para proporcionar un impulso energético y satisfacer los requerimientos nutricionales después del ejercicio. Contiene una mezcla de proteínas de alta calidad y nutrientes clave para apoyar la recuperación muscular.', 'FitFuel', '', '', 1, 61, 99, '2023-06-09 17:09:20', '2023-06-09 17:09:20'),
 (130, 'Zapatos ortopédicos para adultos mayores', 79.99, 0, 'Los zapatos ortopédicos para adultos mayores son una opción ideal para aquellos que buscan comodidad y soporte en su calzado. Están diseñados pensando en las necesidades específicas de las personas de edad avanzada, brindando un ajuste adecuado y una base estable para caminar. Estos zapatos cuentan con plantillas acolchadas y contorneadas, proporcionando un excelente soporte para el arco y reduciendo la presión en los pies. Además, tienen suelas antideslizantes que garantizan una mayor seguridad al caminar. Su estilo clásico y discreto los convierte en una opción elegante y funcional para cualquier ocasión.', 'ComfortWalk', 'CW-300', 'Negro', 1, 80, 96, '2023-06-30 22:00:45', '2023-06-30 22:37:30');
@@ -690,7 +671,10 @@ INSERT INTO `publicacionesblogs` (`id`, `titulo`, `descripcion`, `createdAt`, `u
 
 INSERT INTO `reviewsproductos` (`id`, `titulo`, `comentario`, `calificacion`, `createdAt`, `updatedAt`, `id_producto`, `id_usuario`) VALUES
 (9, 'Muy bueno teléfono ', 'Genial a mi papá le sirvió mucho lo usa diario para hablar con sus nietos.', 4, '2023-06-10 04:10:15', '2023-06-10 04:10:15', 126, 99),
-(11, 'My buen producto.', 'Pensé que no eran tan cómodos pero me terminaron sorprendiendo.', 4, '2023-06-30 22:48:36', '2023-06-30 22:48:36', 130, 101);
+(11, 'My buen producto.', 'Pensé que no eran tan cómodos pero me terminaron sorprendiendo.', 4, '2023-06-30 22:48:36', '2023-06-30 22:48:36', 130, 101),
+(12, 'Muy buen teléfono Me agrada ', 'Me gusto todo excelente', 4, '2023-07-31 13:17:27', '2023-07-31 13:17:27', 126, 96),
+(13, 'Muy buena batidora ', 'muy bueno solo que no tiene mucha potencia', 3, '2023-07-31 13:18:10', '2023-07-31 13:18:10', 91, 96),
+(14, 'muy malo ', 'es un collar muy malo no sirve se rompe', 2, '2023-07-31 13:19:55', '2023-07-31 13:19:55', 92, 96);
 
 INSERT INTO `servicios` (`id`, `titulo`, `descripcion`, `precio`, `id_categoria`, `id_usuario`, `createdAt`, `updatedAt`) VALUES
 (79, 'Limpieza de hogar', '$50 por hora\nDescripción del servicio: Ofrezco servicios de limpieza de hogar, incluyendo barrido, trapeado, aspirado, limpieza de baños y cocina, entre otros.', 50, 116, 65, '2023-06-08 23:04:14', '2023-06-08 23:04:14'),
@@ -702,7 +686,7 @@ INSERT INTO `usuarios` (`id`, `nombre`, `apellidoPaterno`, `apellidoMaterno`, `e
 (74, 'Admin1', 'Admin1', 'Admin1', 'admin@gmail.com', 'M', '2001-04-04', '4354534234', '$2a$10$/7xOXIiRBhO4NoNmo6T8fORzJNcokmdhHGGNRYGK7ph5d1vsJIBQ2', 1, '2023-04-09 22:13:18', '2023-06-08 22:20:06'),
 (77, 'Cliente2', 'Cliente2', 'Cliente2', 'cliente2@gmail.com', 'M', '2001-04-03', '34234', '$2a$10$if6V2rX0.9p1Px1zXCmKseVicU2kSOOqFNmH9zuXUETFqJuj0S8t6', 0, '2023-04-11 15:52:41', '2023-04-11 19:31:33'),
 (83, 'Repartidor2', 'Repartidor2', 'Repartidor2', 'repartidor2@gmail.com', 'M', '2000-02-23', '2313333333', '$2a$10$BznI6osMzShPBdED1NPOjeNEwkNNtVHLdnB/tw./O/rbM99TbcI7y', 2, '2023-05-22 14:34:07', '2023-05-31 13:31:23'),
-(96, 'Miguel Angel', 'Flores', 'Catalán ', 'miguelangelfloca@gmail.com', 'M', '2001-09-26', '3423423423', '$2a$10$T5nTDH9A6uHz6xWkc8DE3eDOpjZANH5c/7WWlkZz/kvo5kQ9ef2xe', 0, '2023-06-01 17:02:21', '2023-06-30 21:17:13'),
+(96, 'Miguel Angel', 'Flores', 'Catalán ', 'miguelangelfloca@gmail.com', 'M', '2001-09-26', '3423423423', '$2a$10$pWSNVOXPmKCdgImJGp7L9OLNsrHC9XUXaefhXnscTW0/n9vI9XkC2', 0, '2023-06-01 17:02:21', '2023-09-27 22:21:37'),
 (99, 'Benito ', 'Pérez ', 'Rodríguez', 'juanperez@gmail.com', 'M', '1990-05-15', '1234567890', '$2a$10$VRvVgV427hihZFylX7f.S.6KTFUiMd3gN4tFDH/n7cyvemQdIMj4S', 0, '2023-06-07 18:42:09', '2023-06-07 18:44:02'),
 (101, 'Hugo', 'Lopez', 'Muñoz', 'fcmo190775@upemor.edu.mx', 'M', '2001-09-23', '2342342342', '$2a$10$fE1AIfVZsvRF3sWD4oJWZOxLD.MeQui7LD/dHFFyiLM6m.WygqdzK', 0, '2023-06-30 22:24:45', '2023-06-30 22:24:45');
 

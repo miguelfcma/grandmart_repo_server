@@ -27,7 +27,7 @@ export const getCategorias = async (req, res) => {
       categorias.map(async (categoria) => {
         const categoriaPadre = await Categoria.findByPk(categoria.id_parent, {
           attributes: ["id", "nombre"],
-        })
+        });
         return { ...categoria.toJSON(), categoriaPadre };
       })
     );
@@ -148,8 +148,17 @@ export const deleteCategoria = async (req, res) => {
     res.status(204).send();
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Ha ocurrido un error en el servidor" });
+    if (error.name === "SequelizeForeignKeyConstraintError") {
+      return res
+        .status(401)
+        .json({
+          message:
+            "No se puede eliminar la categoría porque está siendo utilizada en uno o más servicios.",
+        });
+    } else {
+      return res
+        .status(500)
+        .json({ message: "Ha ocurrido un error en el servidor" });
+    }
   }
 };
