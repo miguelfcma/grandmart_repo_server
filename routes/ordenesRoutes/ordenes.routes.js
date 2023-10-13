@@ -5,6 +5,7 @@ import {
   obtenerTodasLasOrdenes,
   eliminarOrden,
   cambiarEstadoOrden,
+  obtenerInfoPago,
 } from "../../controllers/ordenesControllers/ordenes.controllers.js";
 
 const router = Router();
@@ -17,6 +18,8 @@ router.put("/ordenes/estado/:id_orden", cambiarEstadoOrden);
 
 router.get("/ordenes/detalles/:id_orden", obtenerDetalleOrden);
 router.delete("/ordenes/eliminar/:id_orden", eliminarOrden);
+
+router.get("/ordenes/infopago/:id_orden", obtenerInfoPago);
 
 /**
  * 

@@ -15,7 +15,7 @@ CREATE TABLE `carrito_compra_detalles` (
   KEY `carrito_compra_detalles_FK_1` (`id_carrito_compra`),
   CONSTRAINT `carrito_compra_detalles_FK` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `carrito_compra_detalles_FK_1` FOREIGN KEY (`id_carrito_compra`) REFERENCES `carritos_compras` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `carritos_compras`;
 CREATE TABLE `carritos_compras` (
@@ -39,7 +39,7 @@ CREATE TABLE `categorias` (
   PRIMARY KEY (`id`),
   KEY `id_categoria` (`id_parent`),
   CONSTRAINT `categorias_ibfk_1` FOREIGN KEY (`id_parent`) REFERENCES `categorias` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `comentariosblogs`;
 CREATE TABLE `comentariosblogs` (
@@ -54,7 +54,7 @@ CREATE TABLE `comentariosblogs` (
   KEY `comentariosblogs_FK` (`id_usuario`),
   CONSTRAINT `comentariosblogs_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `comentariosblogs_ibfk_1` FOREIGN KEY (`id_publicacionBlog`) REFERENCES `publicacionesblogs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `cuenta_bancaria`;
 CREATE TABLE `cuenta_bancaria` (
@@ -89,7 +89,7 @@ CREATE TABLE `datoscontactoservicios` (
   PRIMARY KEY (`id`),
   KEY `id_servicio` (`id_servicio`),
   CONSTRAINT `datoscontactoservicios_ibfk_1` FOREIGN KEY (`id_servicio`) REFERENCES `servicios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `denunciabuzon_servicios`;
 CREATE TABLE `denunciabuzon_servicios` (
@@ -194,7 +194,7 @@ CREATE TABLE `favoritosproductos` (
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `favoritosproductos_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `favoritosproductos_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `imagenesblogs`;
 CREATE TABLE `imagenesblogs` (
@@ -233,7 +233,7 @@ CREATE TABLE `imagenesservicios` (
   PRIMARY KEY (`id`),
   KEY `id_servicio` (`id_servicio`),
   CONSTRAINT `imagenesservicios_ibfk_1` FOREIGN KEY (`id_servicio`) REFERENCES `servicios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `imagenesusuarios`;
 CREATE TABLE `imagenesusuarios` (
@@ -307,7 +307,7 @@ CREATE TABLE `preguntasproductos` (
   KEY `preguntasproductos_FK` (`id_usuario`),
   CONSTRAINT `preguntasproductos_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `preguntasproductos_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `preguntasservicios`;
 CREATE TABLE `preguntasservicios` (
@@ -323,7 +323,7 @@ CREATE TABLE `preguntasservicios` (
   KEY `preguntasservicios_FK` (`id_usuario`),
   CONSTRAINT `preguntasservicios_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `preguntasservicios_ibfk_1` FOREIGN KEY (`id_servicio`) REFERENCES `servicios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `productos`;
 CREATE TABLE `productos` (
@@ -345,7 +345,7 @@ CREATE TABLE `productos` (
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `productos_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `publicacionesblogs`;
 CREATE TABLE `publicacionesblogs` (
@@ -375,7 +375,20 @@ CREATE TABLE `reviewsproductos` (
   KEY `reviewsproductos_FK` (`id_usuario`),
   CONSTRAINT `reviewsproductos_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `reviewsproductos_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+DROP TABLE IF EXISTS `reviewsservicios`;
+CREATE TABLE `reviewsservicios` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(150) COLLATE utf8_spanish2_ci NOT NULL,
+  `comentario` text COLLATE utf8_spanish2_ci NOT NULL,
+  `calificacion` tinyint(1) NOT NULL,
+  `id_servicio` bigint(20) unsigned NOT NULL,
+  `id_usuario` bigint(20) unsigned NOT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `servicios`;
 CREATE TABLE `servicios` (
@@ -392,7 +405,7 @@ CREATE TABLE `servicios` (
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `servicios_FK` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id`),
   CONSTRAINT `servicios_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE `usuarios` (
@@ -409,7 +422,7 @@ CREATE TABLE `usuarios` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 INSERT INTO `carrito_compra_detalles` (`id`, `id_producto`, `id_carrito_compra`, `cantidad`, `createdAt`, `updatedAt`) VALUES
 (3, 126, 22, 1, '2023-06-10 03:57:33', '2023-06-10 03:57:33'),
@@ -498,15 +511,15 @@ INSERT INTO `comentariosblogs` (`id`, `comentario`, `createdAt`, `updatedAt`, `i
 INSERT INTO `datoscontactoservicios` (`id`, `estado`, `municipio_alcaldia`, `colonia`, `calle`, `numeroExterior`, `numeroInterior`, `descripcion`, `createdAt`, `updatedAt`, `id_servicio`, `telefono1`, `telefono2`, `email`) VALUES
 (12, 'Estado De México', 'Cuauhtémoc', 'Roma Norte', 'Calle Durango', 'SN', '', 'Departamento ubicado en el cuarto piso.', '2023-06-08 23:05:52', '2023-06-14 19:46:50', 79, '5551234567', '5551234562', 'ejemplo@email.com'),
 (13, 'Nuevo León', 'Monterrey', 'Centro', 'Avenida Juárez', '456', '', 'Local ubicado en la plaza principal.', '2023-06-08 23:10:08', '2023-06-08 23:10:08', 80, '1234132434', '4356546547', ''),
-(16, 'Tamaulipas', 'Nuevo Laredo', 'centro', 'Chiltepin', '13', '', 'Local ubicado a un costado de la escuela primaria Rojas.', '2023-06-30 22:12:35', '2023-06-30 22:12:35', 83, '7384738473', '', '');
+(16, 'Tamaulipas', 'Nuevo Laredo', 'centro', 'Chiltepin', '13', '', 'Local ubicado a un costado de la escuela primaria Rojas.', '2023-06-30 22:12:35', '2023-06-30 22:12:35', 83, '7384738473', '', ''),
+(18, 'Guanajuato', '4ewrr', 'w3r', 'w3rw3rw3r', '3', '', '', '2023-10-04 20:01:58', '2023-10-04 20:04:47', 85, '4234234324', '3423423423', '');
 
 INSERT INTO `denunciabuzon_servicios` (`id`, `motivo`, `descripcion`, `revisar`, `createdAt`, `updatedAt`, `id_usuario`, `id_servicio`) VALUES
 (4, 'Vende una copia o falsificación', '.', 0, '2023-06-10 16:02:24', '2023-06-10 16:02:24', 65, 80),
-(5, 'Quiere cobrar un precio diferente o hay incoherencias con el precio y los servicios de la publicación.', 'no me parece buen servicio', 0, '2023-06-17 20:01:01', '2023-06-17 20:01:01', 99, 80),
-(6, 'Utiliza datos de contacto en las respuestas o publicaciones.', 'esa información es falsa', 0, '2023-06-17 20:01:34', '2023-06-17 20:01:34', 99, 79);
+(5, 'Quiere cobrar un precio diferente o hay incoherencias con el precio y los servicios de la publicación.', 'no me parece buen servicio', 0, '2023-06-17 20:01:01', '2023-06-17 20:01:01', 99, 80);
 
 INSERT INTO `denunciabuzons` (`id`, `motivo`, `descripcion`, `createdAt`, `updatedAt`, `id_usuario`, `id_producto`, `revisar`) VALUES
-(23, 'Vende una copia o falsificación', 'me parece muy chafa ', '2023-06-14 20:11:04', '2023-06-14 20:11:04', 96, 126, 0),
+(23, 'Vende una copia o falsificación', 'me parece muy chafa ', '2023-06-14 20:11:04', '2023-10-04 18:26:09', 96, 126, 1),
 (26, 'El producto genera dudas acerca de su legalidad o no transmite la confianza necesaria.', 'parece falso ', '2023-06-17 22:13:36', '2023-06-18 16:26:20', 65, 92, 1),
 (27, 'Vende una copia o falsificación', 'Los tenis que vende son copia de los originales.', '2023-06-30 22:29:02', '2023-07-05 19:42:21', 101, 130, 1);
 
@@ -599,7 +612,8 @@ INSERT INTO `imagenesservicios` (`id`, `url`, `es_portada`, `id_servicio`, `crea
 (79, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/servicios%2Fe89a38ab-66b9-4f0d-ac3d-e5986968f3e0_9bb83923-5a3d-42d9-934d-8dc4332e7bf5?alt=media&token=f46f44bc-92ce-4ae1-b0ae-c0013313d280', 0, 79, '2023-06-08 23:07:37', '2023-06-08 23:07:37'),
 (80, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/servicios%2Fbd957016-2605-4439-9822-ebb727fb14e1_585ba956-6358-48fe-b283-7376165bdc75?alt=media&token=61adc2af-d57f-4bda-895c-d535ee4dde09', 1, 80, '2023-06-08 23:10:19', '2023-06-08 23:10:19'),
 (81, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/servicios%2Fbd957016-2605-4439-9822-ebb727fb14e1_8e8991cd-9a53-4134-8971-ac0a3e2a87db?alt=media&token=e7567410-fc70-4c3f-bace-db51372174e2', 0, 80, '2023-06-08 23:10:19', '2023-06-08 23:10:19'),
-(86, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/servicios%2F26e133d3-2499-49b8-99e2-0fb6c67b29cf_4b3f5531-1e20-4fdb-bc89-cba2d482be81?alt=media&token=97d9c47b-51ea-4ca1-9765-258fcfdbeb20', 1, 83, '2023-06-30 22:13:56', '2023-06-30 22:13:56');
+(86, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/servicios%2F26e133d3-2499-49b8-99e2-0fb6c67b29cf_4b3f5531-1e20-4fdb-bc89-cba2d482be81?alt=media&token=97d9c47b-51ea-4ca1-9765-258fcfdbeb20', 1, 83, '2023-06-30 22:13:56', '2023-06-30 22:13:56'),
+(92, 'https://firebasestorage.googleapis.com/v0/b/grandmart-51065.appspot.com/o/servicios%2F7dc3e59d-2f61-4361-898f-9c844edaf6a5_7109cb7a-6bdd-42eb-8b35-7af261680f9f?alt=media&token=56386429-3e81-41e5-b02d-3b27f997ac44', 1, 85, '2023-10-04 20:02:07', '2023-10-04 20:02:07');
 
 INSERT INTO `orden_detalles` (`id`, `cantidad`, `precio_unitario`, `id_producto`, `id_orden`, `createdAt`, `updatedAt`) VALUES
 (78, 1, '60.00', 91, 82, '2023-06-01 22:37:18', '2023-06-01 22:37:18'),
@@ -652,8 +666,7 @@ INSERT INTO `pago` (`id`, `usuario_id`, `orden_id`, `monto`, `estado`, `id_pago_
 (51, 101, 116, '7999.00', 'Procesado', 'pi_3NOpwSIscKwQt1dm2dowNvES', '2023-06-30', '2023-06-30 22:37:30', '2023-06-30 22:37:30');
 
 INSERT INTO `preguntasproductos` (`id`, `pregunta`, `respuesta`, `createdAt`, `updatedAt`, `id_producto`, `id_usuario`) VALUES
-(30, 'Tendras una version en color blanco?', NULL, '2023-06-10 03:54:15', '2023-06-10 03:54:15', 126, 99),
-(31, 'Lo tendras en color negro?', NULL, '2023-06-30 22:26:55', '2023-06-30 22:26:55', 130, 101);
+(31, 'Lo tendras en color negro?', '    ', '2023-06-30 22:26:55', '2023-10-04 18:22:00', 130, 101);
 
 INSERT INTO `productos` (`id`, `nombre`, `precio`, `stock`, `descripcion`, `marca`, `modelo`, `color`, `estado`, `id_categoria`, `id_usuario`, `createdAt`, `updatedAt`) VALUES
 (91, 'Batidora para Smoothies Nutritivos', 60, 0, 'La Batidora para Smoothies Nutritivos es una herramienta útil para adultos mayores que desean mejorar su nutrición y salud en general. Es fácil de usar y limpiar, y cuenta con una potencia suficiente para triturar frutas y verduras. Además, incluye recetas y consejos para preparar smoothies saludables.', 'Nutribullet', 'NBR-0801', 'Gris', 1, 61, 65, '2023-04-11 15:59:01', '2023-06-08 03:49:34'),
@@ -661,7 +674,7 @@ INSERT INTO `productos` (`id`, `nombre`, `precio`, `stock`, `descripcion`, `marc
 (126, ' Teléfono móvil para adultos mayores \"SeniorPhone\"', 99.99, 40, ' El teléfono móvil para adultos mayores \"SeniorPhone\" está diseñado pensando en las necesidades específicas de las personas mayores. Cuenta con una interfaz simple y fácil de usar, grandes botones numéricos y un amplio display de alto contraste para facilitar la lectura. Además, incorpora funciones como llamadas de emergencia, linterna integrada y volumen amplificado para adaptarse a las dificultades de audición. Este teléfono es ideal para aquellos que buscan mantenerse conectados de manera sencilla y segura.', 'SeniorTech', 'SP-200', 'Negro', 1, 52, 96, '2023-06-07 16:15:27', '2023-06-14 20:35:30'),
 (128, 'Champú revitalizante para mascotas', 15, 100, 'Un champú suave y enriquecido con ingredientes naturales que promueven el crecimiento del pelaje, fortalecen la piel y dejan a tu mascota con un aspecto saludable y brillante. Ideal para perros y gatos de todas las razas y tamaños.', 'PetCare', '', '', 1, 103, 99, '2023-06-09 17:07:34', '2023-06-09 17:07:34'),
 (129, 'Barra de proteínas nutritivas', 3, 200, 'Una deliciosa barra de proteínas diseñada para proporcionar un impulso energético y satisfacer los requerimientos nutricionales después del ejercicio. Contiene una mezcla de proteínas de alta calidad y nutrientes clave para apoyar la recuperación muscular.', 'FitFuel', '', '', 1, 61, 99, '2023-06-09 17:09:20', '2023-06-09 17:09:20'),
-(130, 'Zapatos ortopédicos para adultos mayores', 79.99, 0, 'Los zapatos ortopédicos para adultos mayores son una opción ideal para aquellos que buscan comodidad y soporte en su calzado. Están diseñados pensando en las necesidades específicas de las personas de edad avanzada, brindando un ajuste adecuado y una base estable para caminar. Estos zapatos cuentan con plantillas acolchadas y contorneadas, proporcionando un excelente soporte para el arco y reduciendo la presión en los pies. Además, tienen suelas antideslizantes que garantizan una mayor seguridad al caminar. Su estilo clásico y discreto los convierte en una opción elegante y funcional para cualquier ocasión.', 'ComfortWalk', 'CW-300', 'Negro', 1, 80, 96, '2023-06-30 22:00:45', '2023-06-30 22:37:30');
+(130, 'Zapatos ortopédicos para adultos mayores', 79.99, 3, 'Los zapatos ortopédicos para adultos mayores son una opción ideal para aquellos que buscan comodidad y soporte en su calzado. Están diseñados pensando en las necesidades específicas de las personas de edad avanzada, brindando un ajuste adecuado y una base estable para caminar. Estos zapatos cuentan con plantillas acolchadas y contorneadas, proporcionando un excelente soporte para el arco y reduciendo la presión en los pies. Además, tienen suelas antideslizantes que garantizan una mayor seguridad al caminar. Su estilo clásico y discreto los convierte en una opción elegante y funcional para cualquier ocasión.', 'ComfortWalk', 'CW-300', 'Negro', 1, 80, 96, '2023-06-30 22:00:45', '2023-10-04 20:04:33');
 
 INSERT INTO `publicacionesblogs` (`id`, `titulo`, `descripcion`, `createdAt`, `updatedAt`, `id_usuario`) VALUES
 (97, 'Viajes y aventuras: ¡Nunca es tarde para explorar el mundo!', 'En esta publicación, te invitamos a compartir tus increíbles historias de viajes y aventuras. ¿Has cumplido ese sueño de visitar un lugar exótico? ¿O tal vez descubriste nuevos destinos locales? Cuéntanos cómo el viajar ha enriquecido tu vida y ha hecho que cada día sea una emocionante travesía. Inspiremos a otros adultos mayores a embarcarse en nuevas aventuras y descubrir el mundo que nos rodea.', '2023-06-01 04:55:04', '2023-06-01 04:55:04', 65),
@@ -670,16 +683,13 @@ INSERT INTO `publicacionesblogs` (`id`, `titulo`, `descripcion`, `createdAt`, `u
 (100, 'Reflexiones sobre el envejecimiento: Abrazando la sabiduría y la gratitud', ': En esta sección del blog, te invitamos a reflexionar sobre el proceso de envejecimiento y cómo has aprendido a abrazar la sabiduría y la gratitud en esta etapa de la vida. Comparte tus pensamientos sobre el paso del tiempo, la importancia de cuidar de uno mismo y las lecciones que has aprendido sobre la verdadera felicidad y el significado de la vida. Inspirémonos mutuamente para vivir una vida plena y significativa.', '2023-06-01 05:27:04', '2023-06-01 05:27:04', 65);
 
 INSERT INTO `reviewsproductos` (`id`, `titulo`, `comentario`, `calificacion`, `createdAt`, `updatedAt`, `id_producto`, `id_usuario`) VALUES
-(9, 'Muy bueno teléfono ', 'Genial a mi papá le sirvió mucho lo usa diario para hablar con sus nietos.', 4, '2023-06-10 04:10:15', '2023-06-10 04:10:15', 126, 99),
-(11, 'My buen producto.', 'Pensé que no eran tan cómodos pero me terminaron sorprendiendo.', 4, '2023-06-30 22:48:36', '2023-06-30 22:48:36', 130, 101),
-(12, 'Muy buen teléfono Me agrada ', 'Me gusto todo excelente', 4, '2023-07-31 13:17:27', '2023-07-31 13:17:27', 126, 96),
-(13, 'Muy buena batidora ', 'muy bueno solo que no tiene mucha potencia', 3, '2023-07-31 13:18:10', '2023-07-31 13:18:10', 91, 96),
 (14, 'muy malo ', 'es un collar muy malo no sirve se rompe', 2, '2023-07-31 13:19:55', '2023-07-31 13:19:55', 92, 96);
 
 INSERT INTO `servicios` (`id`, `titulo`, `descripcion`, `precio`, `id_categoria`, `id_usuario`, `createdAt`, `updatedAt`) VALUES
 (79, 'Limpieza de hogar', '$50 por hora\nDescripción del servicio: Ofrezco servicios de limpieza de hogar, incluyendo barrido, trapeado, aspirado, limpieza de baños y cocina, entre otros.', 50, 116, 65, '2023-06-08 23:04:14', '2023-06-08 23:04:14'),
 (80, 'Corte de cabello', '$20\nDescripción del servicio: Realizo cortes de cabello modernos y clásicos para hombres y mujeres. También ofrezco servicios de peinado y arreglo de barba.', 20, 118, 65, '2023-06-08 23:08:17', '2023-06-08 23:08:17'),
-(83, 'Lavado de autos', 'Lavado de autos completo a muy buen precio y de calidad.Los viernes hay dos por uno.', 250, 121, 65, '2023-06-30 22:10:17', '2023-06-30 22:15:18');
+(83, 'Lavado de autos', 'Lavado de autos completo a muy buen precio y de calidad.Los viernes hay dos por uno.', 250, 121, 65, '2023-06-30 22:10:17', '2023-06-30 22:15:18'),
+(85, '34234', '', 234234, 54, 96, '2023-10-04 20:01:41', '2023-10-04 20:01:41');
 
 INSERT INTO `usuarios` (`id`, `nombre`, `apellidoPaterno`, `apellidoMaterno`, `email`, `sexo`, `fechaNacimiento`, `telefono`, `password`, `tipoUsuario`, `createdAt`, `updatedAt`) VALUES
 (65, 'Admin2', 'Admin2', 'Admin2', 'grandmarthtd@gmail.com', 'M', '2001-09-06', '2323232323', '$2a$10$1q4V2uq94qkMG77U7BUZRe7k5plMsr2Fzqo.7Fniw/MnKyL4ZpfiK', 1, '2023-03-14 19:19:25', '2023-06-30 21:15:08'),

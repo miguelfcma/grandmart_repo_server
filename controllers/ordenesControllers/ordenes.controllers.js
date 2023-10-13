@@ -688,18 +688,20 @@ export const cambiarEstadoEnvio = async (req, res) => {
 export const cambiarEstadoOrden = async (req, res) => {
   const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
   const { nuevoEstado } = req.body; // Obtener el nuevo estado de la orden desde el cuerpo de la solicitud
-  
+
   try {
     const orden = await Orden.findByPk(id_orden);
-    
+
     if (!orden) {
-      return res.status(404).json({ error: `La orden con id ${id_orden} no existe` });
+      return res
+        .status(404)
+        .json({ error: `La orden con id ${id_orden} no existe` });
     }
-    
+
     const usuarioOrden = await Usuario.findByPk(orden.id_usuario, {
       attributes: ["id", "nombre", "email"],
     });
-    
+
     if (orden.estado_orden === "Cancelada") {
       return res.status(401).json({
         error: "La orden ya está cancelada y no se puede cambiar su estado",
@@ -709,24 +711,24 @@ export const cambiarEstadoOrden = async (req, res) => {
         error: `La orden ya tiene el estado ${nuevoEstado} y no se puede cambiar su estado nuevamente`,
       });
     }
-    
+
     const detallesOrden = await DetalleOrden.findAll({ where: { id_orden } });
-    
+
     if (nuevoEstado === "Cancelada") {
       // Restablecer el stock de los productos en los detalles de la orden
       for (const detalle of detallesOrden) {
         const producto = await Producto.findByPk(detalle.id_producto);
-        
+
         if (producto) {
           producto.stock += detalle.cantidad;
           await producto.save();
         }
       }
     }
-    
+
     orden.estado_orden = nuevoEstado;
     await orden.save();
-    
+
     // Enviar correo electrónico al usuario de la orden
     const email = usuarioOrden.email;
     const subject = "Cambio de estado de la orden";
@@ -735,16 +737,17 @@ export const cambiarEstadoOrden = async (req, res) => {
       <h2>El estado de tu orden ha cambiado</h2>
       <p>Estado actual: ${orden.estado_orden}</p>
     `;
-    
+
     await enviarCorreo(email, subject, header, contenido);
-    
+
     return res.status(200).json({ message: "Estado de la orden actualizado" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
 
 export const cancelarOrden = async (req, res) => {
   const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
@@ -803,7 +806,36 @@ export const cancelarOrden = async (req, res) => {
     return res.status(200).json({ message: "Orden cancelada" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
+
+
+export const obtenerInfoPago = async (req, res) => {
+  try {
+    const { id_orden } = req.params;
+    const pago = await Pago.findOne({
+      where: { orden_id: id_orden },
+      attributes: ["id_pago_stripe", "monto", "estado"],
+    });
+
+    if (pago) {
+      return res.status(200).json({
+        message: "Información de pago encontrada",
+        pago,
+      });
+    } else {
+      return res.status(404).json({
+        error: "No se encontró información de pago para la orden proporcionada",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
+  }
+};
