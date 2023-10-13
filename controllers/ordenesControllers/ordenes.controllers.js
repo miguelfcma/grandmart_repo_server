@@ -671,7 +671,10 @@ export const cambiarEstadoEnvio = async (req, res) => {
     const header = "Cambio de estado del envío";
     const contenido = `
       <h2>El estado de tu envío ha cambiado</h2>
-      <p>Estado actual: ${envio.estado}</p>
+      <p>ID orden: ${orden.id}</p>
+      <p>Estado actual envío: ${envio.estado}</p>
+      <p>Fecha de actualización: ${new Date(envio.createdAt).toLocaleDateString()}</p>
+     
     `;
 
     await enviarCorreo(email, subject, header, contenido);
@@ -735,7 +738,9 @@ export const cambiarEstadoOrden = async (req, res) => {
     const header = "Cambio de estado de la orden";
     const contenido = `
       <h2>El estado de tu orden ha cambiado</h2>
+      <p>ID orden: ${orden.id}</p>
       <p>Estado actual: ${orden.estado_orden}</p>
+      <p>Fecha de actualización: ${new Date(orden.createdAt).toLocaleDateString()}</p>
     `;
 
     await enviarCorreo(email, subject, header, contenido);
