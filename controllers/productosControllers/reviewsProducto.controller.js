@@ -2,10 +2,9 @@ import { ReviewProducto } from "../../models/productosModel/ReviewsProductosMode
 import { Producto } from "../../models/productosModel/ProductoModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import { enviarCorreo } from "../CorreoController/enviarCorreo.controllers.js";
-
 import sequelize from "sequelize";
 
-// Crear una nueva review de un producto
+// Función para crear una nueva revisión de un producto
 export const createReview = async (req, res) => {
   const { titulo, comentario, calificacion, id_producto, id_usuario } =
     req.body;
@@ -44,19 +43,16 @@ export const createReview = async (req, res) => {
 
     // Construir el contenido del correo en formato HTML
     const contenido = `
-     
         <h2>Se ha dejado una nueva revisión en tu producto</h2>
         <hr />
         <h3>Producto:</h3>
         <p>Descripción: ${producto.id}</p>
         <p>Nombre: ${producto.nombre}</p>
-        
         <hr />
         <h3>Opinión del usuario:</h3>
         <p>Título: ${titulo}</p>
         <p>Comentario: ${comentario}</p>
         <p>Calificación: ${calificacion}</p>
-   
     `;
 
     // Enviar el correo al vendedor del producto
@@ -76,13 +72,13 @@ export const createReview = async (req, res) => {
   }
 };
 
-// Eliminar una review de un producto por su id
+// Función para eliminar una revisión de un producto por su ID
 export const deleteReviewById = async (req, res) => {
   const { id } = req.params;
   try {
     const deletedReview = await ReviewProducto.destroy({ where: { id } });
     if (deletedReview === 0) {
-      return res.status(404).json({ message: "Review no encontrada" });
+      return res.status(404).json({ message: "Revisión no encontrada" });
     }
     res
       .status(200)
@@ -95,6 +91,7 @@ export const deleteReviewById = async (req, res) => {
   }
 };
 
+// Función para obtener revisiones por ID de producto
 export const getReviewsByProductId = async (req, res) => {
   const { id_producto } = req.params;
   try {
@@ -117,7 +114,7 @@ export const getReviewsByProductId = async (req, res) => {
   }
 };
 
-// Actualizar una review de un producto por su id
+// Función para actualizar una revisión de un producto por su ID
 export const updateReviewById = async (req, res) => {
   const { id } = req.params;
   const { titulo, comentario, calificacion } = req.body;
@@ -127,7 +124,7 @@ export const updateReviewById = async (req, res) => {
       { where: { id }, returning: true }
     );
     if (updatedRowsCount === 0) {
-      return res.status(404).json({ message: "Review no encontrada" });
+      return res.status(404).json({ message: "Revisión no encontrada" });
     }
     res.status(200).json({
       message: "La revisión ha sido actualizada correctamente",
@@ -141,7 +138,7 @@ export const updateReviewById = async (req, res) => {
   }
 };
 
-// Obtener el promedio de calificación de un producto por su id
+// Función para obtener el promedio de calificación de un producto por su ID
 export const getAvgRatingByProductId = async (req, res) => {
   const { id_producto } = req.params;
   try {
@@ -154,7 +151,7 @@ export const getAvgRatingByProductId = async (req, res) => {
     if (avgRating && avgRating.dataValues.avgRating) {
       res.json(avgRating);
     } else {
-      res.status(404).json({ message: "No hay reviews para este producto" });
+      res.status(404).json({ message: "No hay revisiones para este producto" });
     }
   } catch (error) {
     console.log(error);
@@ -164,7 +161,7 @@ export const getAvgRatingByProductId = async (req, res) => {
   }
 };
 
-// Obtener una review específica por id_usuario e id_producto
+// Función para obtener una revisión específica por ID de usuario e ID de producto
 export const getReviewByUserAndProduct = async (req, res) => {
   const { id_usuario, id_producto } = req.params;
   try {
@@ -172,9 +169,9 @@ export const getReviewByUserAndProduct = async (req, res) => {
       where: { id_usuario, id_producto },
     });
     if (review) {
-      res.status(200).json({ message: "Review encontrada", review });
+      res.status(200).json({ message: "Revisión encontrada", review });
     } else {
-      res.status(404).json({ message: "Review no encontrada" });
+      res.status(404).json({ message: "Revisión no encontrada" });
     }
   } catch (error) {
     console.log(error);
@@ -184,7 +181,7 @@ export const getReviewByUserAndProduct = async (req, res) => {
   }
 };
 
-// Obtener productos del usuario con revisiones asociadas
+// Función para obtener productos del usuario con revisiones asociadas
 export const getProductosConReviewsByUsuarioId = async (req, res) => {
   try {
     const { id_usuario } = req.params;
@@ -200,22 +197,22 @@ export const getProductosConReviewsByUsuarioId = async (req, res) => {
 
     const productosConReviews = await Promise.all(
       productos.map(async (producto) => {
-        // Buscar preguntas asociadas al producto
+        // Buscar revisiones asociadas al producto
         const reviews = await ReviewProducto.findAll({
           where: { id_producto: producto.id },
         });
 
         if (reviews.length > 0) {
-          // Si el producto tiene preguntas asociadas, agregarlas como propiedad al objeto de producto
+          // Si el producto tiene revisiones asociadas, agregarlas como propiedad al objeto de producto
           return { producto: producto.toJSON(), reviews };
         } else {
-          // Si el producto no tiene preguntas asociadas, devolver null
+          // Si el producto no tiene revisiones asociadas, devolver null
           return null;
         }
       })
     );
 
-    // Filtrar los productos nulos (que no tienen preguntas asociadas)
+    // Filtrar los productos nulos (que no tienen revisiones asociadas)
     const productosConReviewsFiltrados = productosConReviews.filter(
       (producto) => producto !== null
     );
@@ -229,9 +226,10 @@ export const getProductosConReviewsByUsuarioId = async (req, res) => {
   }
 };
 
+// Función para obtener todos los productos con revisiones
 export const getTodosProductosConReviews = async (req, res) => {
   try {
-    // Buscar productos del usuario por su ID de usuario
+    // Buscar todos los productos
     const productos = await Producto.findAll();
 
     if (productos.length === 0) {
@@ -242,22 +240,22 @@ export const getTodosProductosConReviews = async (req, res) => {
 
     const productosConReviews = await Promise.all(
       productos.map(async (producto) => {
-        // Buscar preguntas asociadas al producto
+        // Buscar revisiones asociadas al producto
         const reviews = await ReviewProducto.findAll({
           where: { id_producto: producto.id },
         });
 
         if (reviews.length > 0) {
-          // Si el producto tiene preguntas asociadas, agregarlas como propiedad al objeto de producto
+          // Si el producto tiene revisiones asociadas, agregarlas como propiedad al objeto de producto
           return { producto: producto.toJSON(), reviews };
         } else {
-          // Si el producto no tiene preguntas asociadas, devolver null
+          // Si el producto no tiene revisiones asociadas, devolver null
           return null;
         }
       })
     );
 
-    // Filtrar los productos nulos (que no tienen preguntas asociadas)
+    // Filtrar los productos nulos (que no tienen revisiones asociadas)
     const productosConReviewsFiltrados = productosConReviews.filter(
       (producto) => producto !== null
     );
@@ -271,7 +269,7 @@ export const getTodosProductosConReviews = async (req, res) => {
   }
 };
 
-// Buscar una review por id_producto e id_usuario
+// Función para buscar una revisión por ID de producto e ID de usuario
 export const getReviewByProductIdAndUserId = async (req, res) => {
   const { id_producto, id_usuario } = req.params;
   try {
@@ -279,9 +277,9 @@ export const getReviewByProductIdAndUserId = async (req, res) => {
       where: { id_producto, id_usuario },
     });
     if (review) {
-      res.status(200).json({ message: "Review encontrada", review });
+      res.status(200).json({ message: "Revisión encontrada", review });
     } else {
-      res.status(404).json({ message: "Review no encontrada" });
+      res.status(404).json({ message: "Revisión no encontrada" });
     }
   } catch (error) {
     console.log(error);

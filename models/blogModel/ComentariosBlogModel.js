@@ -1,9 +1,9 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
 
+// Definir el modelo de datos para la tabla "comentariosBlogs"
 export const ComentarioBlog = sequelizeDB.define(
-  "comentariosBlogs",
-  {
+  "comentariosBlogs", {
     id: {
       type: DataTypes.BIGINT(20).UNSIGNED,
       primaryKey: true,
@@ -27,5 +27,3 @@ export const ComentarioBlog = sequelizeDB.define(
   },
   { timestamps: true }
 );
-
-

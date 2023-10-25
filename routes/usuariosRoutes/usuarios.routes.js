@@ -12,14 +12,8 @@ import {
   actualizarContrasenaUsuario,
   eliminarCuentaUsuario,
 } from "../../controllers/usuariosControllers/usuarios.controllers.js";
-import {
-  crearCuentaBancaria,
-  obtenerCuentaBancariaPorIdUsuario,
-  actualizarCuentaBancaria,
-  eliminarCuentaBancaria,
-} from "../../controllers/usuariosControllers/cuentaBancaria.controller.js";
 
-import {informacionContada} from "../../controllers/usuariosControllers/dashInfo.controller.js";
+import { informacionContada } from "../../controllers/usuariosControllers/dashInfo.controller.js";
 // Creamos una nueva instancia del Router de Express
 const router = Router();
 
@@ -45,12 +39,6 @@ router.get("/usuario-perfil/:id", getUsuario);
 router.put("/contrasena-usuario-actualizar/:id", actualizarContrasenaUsuario);
 ////////////////////////////////////////////////////////////////////////////
 
-router.post("/cuenta-bancaria", crearCuentaBancaria);
-router.get("/cuenta-bancaria/:id_usuario", obtenerCuentaBancariaPorIdUsuario);
-router.put("/cuenta-bancaria/:id_usuario", actualizarCuentaBancaria);
-router.delete("/cuenta-bancaria/:id_usuario", eliminarCuentaBancaria);
-
-router.delete("/usuarios/:id/eliminar-cuenta", eliminarCuentaUsuario);
 ////////////////////////////////////////////////////////////////////////////
 router.get("/dashinformacion/:id_usuario", informacionContada);
 export default router;

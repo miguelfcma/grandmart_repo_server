@@ -1,5 +1,6 @@
 import { Categoria } from "../../models/categoriasModel/CategoriaModel.js";
 
+// Función para conseguir una categoría por su id
 export const getCategoria = async (req, res) => {
   try {
     const categoria = await Categoria.findByPk(req.params.id);
@@ -16,6 +17,7 @@ export const getCategoria = async (req, res) => {
   }
 };
 
+// Función para conseguir todas las categorias
 export const getCategorias = async (req, res) => {
   try {
     const categorias = await Categoria.findAll();
@@ -40,7 +42,9 @@ export const getCategorias = async (req, res) => {
   }
 };
 
+// Función para crear una nueva categoría 
 export const createCategoria = async (req, res) => {
+  // Se reciben los atributos de la nueva categoría
   const { nombre, id_parent } = req.body;
 
   try {
@@ -70,7 +74,7 @@ export const createCategoria = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para actualizar el regsitro de una categoría 
 export const updateCategoria = async (req, res) => {
   const { nombre, id_parent } = req.body;
   try {
@@ -116,6 +120,7 @@ export const updateCategoria = async (req, res) => {
   }
 };
 
+// Función para eliminar una categoría 
 export const deleteCategoria = async (req, res) => {
   const { id } = req.params;
 
@@ -148,13 +153,12 @@ export const deleteCategoria = async (req, res) => {
     res.status(204).send();
   } catch (error) {
     console.log(error);
+    // Verifica si el error es por el uso de llaves foraneas
     if (error.name === "SequelizeForeignKeyConstraintError") {
-      return res
-        .status(401)
-        .json({
-          message:
-            "No se puede eliminar la categoría porque está siendo utilizada en uno o más registros",
-        });
+      return res.status(401).json({
+        message:
+          "No se puede eliminar la categoría porque está siendo utilizada en uno o más registros",
+      });
     } else {
       return res
         .status(500)

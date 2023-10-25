@@ -2,11 +2,13 @@ import { ReviewServicio } from "../../models/serviciosModel/ReviewsServiciosMode
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import { enviarCorreo } from "../CorreoController/enviarCorreo.controllers.js";
 import { Servicio } from "../../models/serviciosModel/ServicioModel.js";
-// Crear una nueva review de un servicio
+
+// Función para crear una nueva review de un servicio
 export const createReview = async (req, res) => {
   const { titulo, comentario, calificacion, id_servicio, id_usuario } =
     req.body;
   try {
+    // Crear una nueva review de un servicio
     const newReview = await ReviewServicio.create({
       titulo,
       comentario,
@@ -23,10 +25,11 @@ export const createReview = async (req, res) => {
   }
 };
 
-// Eliminar una review de un servicio por su id
+// Función para eliminar una review de un servicio por su ID
 export const deleteReviewById = async (req, res) => {
   const { id } = req.params;
   try {
+    // Eliminar una review de un servicio por su ID
     const deletedReview = await ReviewServicio.destroy({ where: { id } });
     if (deletedReview === 0) {
       return res.status(404).json({ message: "Review no encontrada" });
@@ -40,10 +43,11 @@ export const deleteReviewById = async (req, res) => {
   }
 };
 
-// Obtener todas las reviews de un servicio por su id
+// Función para obtener todas las reviews de un servicio por su ID
 export const getReviewsByServiceId = async (req, res) => {
   const { id_servicio } = req.params;
   try {
+    // Obtener todas las reviews de un servicio por su ID de servicio
     const reviews = await ReviewServicio.findAll({ where: { id_servicio } });
     res.json(reviews);
   } catch (error) {
@@ -54,11 +58,12 @@ export const getReviewsByServiceId = async (req, res) => {
   }
 };
 
-// Actualizar una review de un servicio por su id
+// Función para actualizar una review de un servicio por su ID
 export const updateReviewById = async (req, res) => {
   const { id } = req.params;
   const { titulo, comentario, calificacion } = req.body;
   try {
+    // Actualizar una review de un servicio por su ID
     const [updatedRowsCount, updatedRows] = await ReviewServicio.update(
       { titulo, comentario, calificacion },
       { where: { id }, returning: true }
@@ -75,10 +80,11 @@ export const updateReviewById = async (req, res) => {
   }
 };
 
-// Obtener el promedio de calificación de un servicio por su id
+// Función para obtener el promedio de calificación de un servicio por su ID
 export const getAvgRatingByServiceId = async (req, res) => {
   const { id_servicio } = req.params;
   try {
+    // Calcular el promedio de calificación de un servicio por su ID de servicio
     const avgRating = await ReviewServicio.findOne({
       attributes: [
         [sequelize.fn("AVG", sequelize.col("calificacion")), "avgRating"],

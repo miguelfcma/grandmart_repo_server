@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
  
-
+// Definición del modelo de datos para la tabla "direccion_envios"
 export const DireccionEnvio = sequelizeDB.define(
   "direccion_envios",
   {

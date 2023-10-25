@@ -1,14 +1,16 @@
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
-
+// Función para generar una nueva contraseña
+// La contraseña se genera de 8 caracteres
 function generarContrasena() {
   const longitud = 8;
   const caracteres =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let contrasena = "";
-
+  // Mientras sea verdad
   while (true) {
+    // For creador de nueva contraseña
     for (let i = 0; i < longitud; i++) {
       const indiceAleatorio = Math.floor(Math.random() * caracteres.length);
       contrasena += caracteres[indiceAleatorio];
@@ -16,7 +18,7 @@ function generarContrasena() {
 
     // Verificar si la contrasena cumple con todas las condiciones
     const cumpleRequisitoLongitud = contrasena.length >= 7;
-    const tieneNumero = /\d/.test(contrasena);
+    const tieneNumero = /\d/.test(contrasena); //Tiene al menos un número
     const noContieneEspacios = !contrasena.includes(" ");
 
     if (cumpleRequisitoLongitud && tieneNumero && noContieneEspacios) {
@@ -28,23 +30,25 @@ function generarContrasena() {
 
   return contrasena;
 }
-
+// Función para enviar correos electrónicos
 export const enviarCorreo = async (req, res) => {
+  //Recibe el email
   const { email } = req.body;
   console.log("correo:", email);
   try {
-    // Buscar si el usuario ya existe
+    // Buscar si el usuario existe mediante el correo electrónico
     const existenciaUsuario = await Usuario.findOne({
       where: { email: email },
     });
-
+    // IF existenciaUsuario == NULL
     if (!existenciaUsuario) {
       res.status(404).json({ message: "Correo inexistente" });
     } else {
-      // Si el usuario existe, crear una nueva contrasena aleatoria
+      // Si el usuario existe, se genera una nueva contrasena aleatoria
       const nuevaContrasena = generarContrasena();
-      console.log("contrasena: " + nuevaContrasena);
+      // Se encripta la nueva contraseña
       const contraseñaEncriptada = bcrypt.hashSync(nuevaContrasena, 10);
+      // Se actualiza e registro del usuario con la nueva contraseña encriptada
       const actualizarUsuario = await existenciaUsuario.update({
         password: contraseñaEncriptada,
       });
@@ -59,7 +63,7 @@ export const enviarCorreo = async (req, res) => {
           pass: "vvzasstdylohpkyn",
         },
       });
-
+      //Creación de la estructura del correo electrónico
       let info = await transporter.sendMail({
         from: "Grandmart <grandmarthtd@gmail.com>",
         to: email,

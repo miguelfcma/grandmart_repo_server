@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
-
+// Definición del modelo de datos para la tabla "usuarios"
 export const Usuario = sequelizeDB.define(
   "usuarios",
   {

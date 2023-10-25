@@ -7,33 +7,33 @@ import {
   getAvgRatingByProductId,
   getProductosConReviewsByUsuarioId,
   getTodosProductosConReviews,
-  getReviewByProductIdAndUserId
+  getReviewByProductIdAndUserId,
 } from "../../controllers/productosControllers/reviewsProducto.controller.js";
 
 const router = express.Router();
-// Crear una nueva review de un producto
+
+// Ruta para crear una nueva revisión de un producto
 router.post("/producto-review/", createReview);
 
-// Eliminar una review de un producto por su id
+// Ruta para eliminar una revisión de un producto por su ID
 router.delete("/producto-review/:id", deleteReviewById);
 
-// Obtener todas las reviews de un producto por su id
+// Ruta para obtener todas las revisiones de un producto por su ID
 router.get("/producto-review/:id_producto", getReviewsByProductId);
 
-// Actualizar una review de un producto por su id
+// Ruta para actualizar una revisión de un producto por su ID
 router.put("/producto-review/:id", updateReviewById);
 
-// Obtener el promedio de calificación de un producto por su id
+// Ruta para obtener el promedio de calificación de un producto por su ID
 router.get("/producto-review/:id_producto/avg-rating", getAvgRatingByProductId);
 
-router.get(
-  "/productos-reviews/:id_usuario",
-  getProductosConReviewsByUsuarioId
-);
-router.get(
-  "/productos-reviews-todas/",
-  getTodosProductosConReviews
-);
+// Ruta para obtener todos los productos con revisiones de un usuario
+router.get("/productos-reviews/:id_usuario", getProductosConReviewsByUsuarioId);
+
+// Ruta para obtener todos los productos con revisiones
+router.get("/productos-reviews-todas/", getTodosProductosConReviews);
+
+// Ruta para obtener la revisión de un producto por ID de usuario y ID de producto
 router.get(
   "/producto-review/user/:id_usuario/product/:id_producto",
   getReviewByProductIdAndUserId

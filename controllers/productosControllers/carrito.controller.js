@@ -1,7 +1,7 @@
 import { Carrito_compra_detalles } from "../../models/productosModel/CarritoCompraDetallesModel.js";
 import { Carritos_compras } from "../../models/productosModel/CarritoComprasModel.js";
 import { Producto } from "../../models/productosModel/ProductoModel.js";
-
+// Función para agregar un producto al carrito de compras
 export const agregarProductoAlCarrito = async (req, res) => {
   try {
     const { id_producto, id_usuario } = req.body;
@@ -80,7 +80,7 @@ export const agregarProductoAlCarrito = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para actualizar la cantidad de un producto en el carrito de compras
 export const actualizarCantidadProductoEnCarrito = async (req, res) => {
   try {
     const id_producto = req.params.id_producto;
@@ -148,7 +148,7 @@ export const actualizarCantidadProductoEnCarrito = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para obtener el carrito de compras de un usuario
 export const obtenerCarritoDeCompras = async (req, res) => {
   try {
     const id_usuario = req.params.id_usuario;
@@ -189,7 +189,7 @@ export const obtenerCarritoDeCompras = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para eliminar un producto del carrito de compras
 export const eliminarProductoDelCarrito = async (req, res) => {
   try {
     const id_producto = req.params.id_producto;
@@ -245,7 +245,7 @@ export const eliminarProductoDelCarrito = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para vaciar completamente el carrito de compras de un usuario
 export const vaciarCarrito = async (req, res) => {
   try {
     const id_usuario = req.params.id_usuario; // Se asume que el usuario está autenticado y su id se encuentra en el token

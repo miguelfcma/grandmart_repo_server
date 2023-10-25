@@ -1,9 +1,9 @@
 import { Producto } from "../../models/productosModel/ProductoModel.js";
 import { Categoria } from "../../models/categoriasModel/CategoriaModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
-
 import { Op } from "sequelize";
 
+// Función para obtener un producto por su ID
 export const getProductoById = async (req, res) => {
   try {
     const { id_producto } = req.params;
@@ -28,12 +28,11 @@ export const getProductoById = async (req, res) => {
     return res.status(200).json(productoConCategoriaYUsuario);
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Ha ocurrido un error en el servidor" });
+    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
+// Función para obtener todos los productos con sus categorías y usuarios asociados
 export const getProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll({
@@ -70,14 +69,12 @@ export const getProductos = async (req, res) => {
     return res.status(200).json(productosConCategoriaYUsuario);
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Ha ocurrido un error en el servidor" });
+    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
+// Función para crear un nuevo producto
 export const createProducto = async (req, res) => {
- 
   const {
     nombre,
     precio,
@@ -120,12 +117,11 @@ export const createProducto = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Ha ocurrido un error en el servidor" });
+    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
+// Función para actualizar un producto por su ID
 export const updateProducto = async (req, res) => {
   const {
     nombre,
@@ -160,12 +156,11 @@ export const updateProducto = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Ha ocurrido un error en el servidor" });
+    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
+// Función para eliminar un producto por su ID
 export const deleteProducto = async (req, res) => {
   try {
     const producto = await Producto.findByPk(req.params.id);
@@ -178,12 +173,11 @@ export const deleteProducto = async (req, res) => {
       .json({ message: "El producto fue eliminado exitosamente." });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Ha ocurrido un error en el servidor" });
+    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
 
+// Función para obtener productos de un usuario por su ID
 export const getProductosByUser = async (req, res) => {
   try {
     const productos = await Producto.findAll({
@@ -212,8 +206,6 @@ export const getProductosByUser = async (req, res) => {
     return res.status(200).json(productos);
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Ha ocurrido un error en el servidor" });
+    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

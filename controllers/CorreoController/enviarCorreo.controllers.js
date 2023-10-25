@@ -1,5 +1,8 @@
 import nodemailer from "nodemailer";
 
+
+// Función para enviar un correo electrónico
+// Esta función es reutilizable para el envío de un correo electrónico
 export const enviarCorreo = async (email, subject, header, contenido) => {
   try {
     // Crear un transportador reutilizable usando SMTP

@@ -7,5 +7,7 @@ import {
 
 const router = Router();
 
+// Ruta para verificar un token
 router.get("/api/verificacion/token", verificarToken, tokenValido);
+
 export default router;

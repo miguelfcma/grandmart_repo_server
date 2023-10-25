@@ -1,6 +1,6 @@
-// authMiddleware.js
 import jwt from "jsonwebtoken"
 
+// Middleware para verificar el token JWT
 export const verificarToken = (req, res, next) => {
   // Verificar si el encabezado Authorization está presente
   const authHeader = req.headers.authorization;
@@ -27,6 +27,7 @@ export const verificarToken = (req, res, next) => {
   }
 };
 
+// Ruta que responde cuando el token es válido
 export function tokenValido(req, res) {
   res.status(200).json({ message: "Acceso permitido" });
 }

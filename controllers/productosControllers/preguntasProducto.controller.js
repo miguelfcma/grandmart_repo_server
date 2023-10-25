@@ -2,7 +2,7 @@ import { PreguntaProducto } from "../../models/productosModel/PreguntasProductoM
 import { Producto } from "../../models/productosModel/ProductoModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import { enviarCorreo } from "../CorreoController/enviarCorreo.controllers.js";
-// Crear una nueva pregunta
+// Función para crear una nueva pregunta
 export const crearPregunta = async (req, res) => {
   try {
     const { pregunta, id_producto, id_usuario } = req.body;
@@ -13,6 +13,7 @@ export const crearPregunta = async (req, res) => {
     });
 
     if (pregunta) {
+      // Buscar el producto relacionado a la pregunta
       const producto = await Producto.findByPk(id_producto);
       if (!producto) {
         return res.status(404).json({ message: "Producto no encontrado" });
@@ -33,7 +34,7 @@ export const crearPregunta = async (req, res) => {
           .status(404)
           .json({ message: "Usuario vendedor no encontrado" });
       }
-
+      // Buscar al usuario que hizo la pregunta
       const usuarioPregunta = await Usuario.findByPk(id_usuario, {
         attributes: [
           "id",
@@ -72,18 +73,18 @@ export const crearPregunta = async (req, res) => {
   }
 };
 
-// Crear una nueva respuesta para una pregunta
-// Crear una nueva respuesta para una pregunta
+// Función para crear una nueva respuesta para una pregunta
 export const crearRespuesta = async (req, res) => {
   try {
     const { id } = req.params;
     const { respuesta } = req.body;
+    // Buscar la pregunta por su ID
     const pregunta = await PreguntaProducto.findOne({ where: { id } });
 
     if (!pregunta) {
       return res.status(404).json({ message: "Pregunta no encontrada" });
     }
-
+    // Actualizar la respuesta de la pregunta
     pregunta.respuesta = respuesta;
     await pregunta.save();
 
@@ -118,7 +119,8 @@ export const crearRespuesta = async (req, res) => {
   }
 };
 
-// Obtener todas las preguntas asociadas a un producto
+// Función para obtener todas las preguntas asociadas a un producto
+
 export const getPreguntasByIdProducto = async (req, res) => {
   try {
     const { id_producto } = req.params;
@@ -150,7 +152,7 @@ export const getPreguntasByIdProducto = async (req, res) => {
   }
 };
 
-// Eliminar una pregunta por su ID
+// Función para eliminar una pregunta por su ID
 export const eliminarPregunta = async (req, res) => {
   try {
     const { id } = req.params;
@@ -168,11 +170,12 @@ export const eliminarPregunta = async (req, res) => {
   }
 };
 
-// Actualizar una pregunta por su ID
+// Función para actualizar una pregunta por su ID
 export const actualizarPregunta = async (req, res) => {
   try {
     const { id } = req.params;
     const { pregunta, id_producto, id_usuario } = req.body;
+    // Función para actualizar una pregunta por su ID
     const preguntaActualizada = await PreguntaProducto.update(
       { pregunta, id_producto, id_usuario },
       { where: { id } }
@@ -186,7 +189,8 @@ export const actualizarPregunta = async (req, res) => {
   }
 };
 
-// Obtener productos del usuario con preguntas asociadas
+// Función para obtener productos del usuario con preguntas asociadas
+
 export const getProductosConPreguntasByUsuarioId = async (req, res) => {
   try {
     const { id_usuario } = req.params;
@@ -230,6 +234,7 @@ export const getProductosConPreguntasByUsuarioId = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
+// Función para obtener todos los productos con preguntas asociadas
 
 export const getTodosProductosConPreguntas = async (req, res) => {
   try {

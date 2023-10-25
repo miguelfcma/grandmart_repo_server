@@ -3,7 +3,9 @@ import { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } from "../../config.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import bcrypt from "bcryptjs";
 import fs from "fs";
-
+/**
+ * Función createBackup: Crea un respaldo de la base de datos
+ */
 export async function createBackup(req, res) {
   try {
     const { email, password } = req.body;

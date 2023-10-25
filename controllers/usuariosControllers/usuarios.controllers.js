@@ -1,6 +1,7 @@
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 // Obtener todos los usuarios
 export const getUsuarios = async (req, res) => {
   try {
@@ -17,7 +18,7 @@ export const getUsuarios = async (req, res) => {
         "tipoUsuario",
       ],
     });
-    //Validación de existencia
+    // Validación de existencia
     if (usuarios.length === 0) {
       return res.status(404).json({ message: "No se encontraron usuarios" });
     }
@@ -30,7 +31,7 @@ export const getUsuarios = async (req, res) => {
   }
 };
 
-// Obtener un usuario por id
+// Obtener un usuario por ID
 export const getUsuario = async (req, res) => {
   try {
     const usuario = await Usuario.findByPk(req.params.id, {
@@ -92,10 +93,10 @@ export const createUsuario = async (req, res) => {
       });
       res.status(201).json({ message: "Usuario creado correctamente" });
     } else {
-      // Si el usuario ya existe, devolver un message de error
+      // Si el usuario ya existe, devolver un mensaje de error
       return res
         .status(400)
-        .json({ message: "El email ya ha sido vinculado a otro perfil!" });
+        .json({ message: "El email ya ha sido vinculado a otro perfil" });
     }
   } catch (error) {
     console.log(error);
@@ -111,11 +112,9 @@ export const updateUsuario = async (req, res) => {
     nombre,
     apellidoPaterno,
     apellidoMaterno,
-
     sexo,
     fechaNacimiento,
     telefono,
-
     tipoUsuario,
   } = req.body;
   try {
@@ -128,11 +127,9 @@ export const updateUsuario = async (req, res) => {
       nombre,
       apellidoPaterno,
       apellidoMaterno,
-
       sexo,
       fechaNacimiento,
       telefono,
-
       tipoUsuario,
     });
 
@@ -150,7 +147,7 @@ export const updateUsuario = async (req, res) => {
 export const deleteUsuario = async (req, res) => {
   try {
     const usuario = await Usuario.findByPk(req.params.id);
-    //Verifica existencia
+    // Verifica existencia
     if (!usuario) {
       res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -164,6 +161,7 @@ export const deleteUsuario = async (req, res) => {
   }
 };
 
+// Obtener usuario por email y contraseña para iniciar sesión
 export const getUsuarioLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -172,16 +170,17 @@ export const getUsuarioLogin = async (req, res) => {
     const usuario = await Usuario.findOne({
       where: { email },
     });
-    // IF USUARIO == NULL
+
     if (!usuario) {
       return res
         .status(400)
         .json({ message: "Credenciales de inicio de sesión incorrectas" });
     }
 
-    // Verificar la contrasena
-    // Desencripta la contrasena y compara
+    // Verificar la contraseña
+    // Desencripta la contraseña y compara
     const contrasenaValida = bcrypt.compareSync(password, usuario.password);
+
     if (!contrasenaValida) {
       return res
         .status(400)
@@ -193,7 +192,7 @@ export const getUsuarioLogin = async (req, res) => {
       expiresIn: "2h",
     });
 
-    // Si se encontró el usuario y la contrasena es válida, incluir el token y el atributo "tipoUsuario" en la respuesta
+    // Si se encontró el usuario y la contraseña es válida, incluir el token y el atributo "tipoUsuario" en la respuesta
     return res.status(200).json({
       message: "Inicio de sesión exitoso",
       token,
@@ -214,6 +213,7 @@ export const getUsuarioLogin = async (req, res) => {
   }
 };
 
+// Actualizar el perfil de un usuario
 export const actualizarPerfilUsuario = async (req, res) => {
   console.log(req.body);
   const {
@@ -251,10 +251,11 @@ export const actualizarPerfilUsuario = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
+
+// Actualizar la contraseña de un usuario
 export const actualizarContrasenaUsuario = async (req, res) => {
   console.log(req.body);
   const { contrasenaActual, nuevaContrasena } = req.body;
-
   const usuarioId = req.params.id;
 
   try {
@@ -263,7 +264,7 @@ export const actualizarContrasenaUsuario = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Verificar si la contrasena actual coincide con la almacenada en el usuario
+    // Verificar si la contraseña actual coincide con la almacenada en el usuario
     const esContrasenaValida = await bcrypt.compare(
       contrasenaActual,
       usuario.password
@@ -274,17 +275,17 @@ export const actualizarContrasenaUsuario = async (req, res) => {
         .json({ message: "La contraseña actual no es correcta" });
     }
 
-    // Encriptar la nueva contrasena
+    // Encriptar la nueva contraseña
     const nuevaContrasenaEncriptada = await bcrypt.hash(nuevaContrasena, 10);
 
-    // Actualizar la contrasena del usuario con la nueva contrasena encriptada
+    // Actualizar la contraseña del usuario con la nueva contraseña encriptada
     usuario.password = nuevaContrasenaEncriptada;
     await usuario.save();
 
     // Envía una respuesta exitosa
     return res
       .status(200)
-      .json({ message: "contraseña actualizada correctamente" });
+      .json({ message: "Contraseña actualizada correctamente" });
   } catch (error) {
     console.log(error);
     return res
@@ -293,7 +294,7 @@ export const actualizarContrasenaUsuario = async (req, res) => {
   }
 };
 
-
+// Eliminar la cuenta de un usuario
 export const eliminarCuentaUsuario = async (req, res) => {
   const idUsuario = req.params.id;
   const password = req.body.password;
@@ -313,9 +314,13 @@ export const eliminarCuentaUsuario = async (req, res) => {
     // Eliminar el usuario
     await usuario.destroy();
 
-    return res.status(200).json({ message: "Cuenta de usuario eliminada correctamente" });
+    return res
+      .status(200)
+      .json({ message: "Cuenta de usuario eliminada correctamente" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Ha ocurrido un error en el servidor" });
+    return res
+      .status(500)
+      .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };

@@ -11,21 +11,32 @@ import {
 
 // Crear una instancia de Router
 const router = Router();
+
 // Definir las rutas para las diferentes funciones del controlador de imágenes
+
+// Ruta para crear una nueva imagen relacionada con una publicación de blog
 router.post("/blog-imagenes", createImagen);
+
+// Ruta para actualizar una imagen por el ID de la publicación del blog
 router.put("/blog-imagenes/:id_publicacionBlog", updateImagenPorIdPublicacion);
-router.delete("/blog-imagenes/:id_publicacionBlog", deleteImagenPorIdPublicacion);
+
+// Ruta para eliminar una imagen por el ID de la publicación del blog
+router.delete(
+  "/blog-imagenes/:id_publicacionBlog",
+  deleteImagenPorIdPublicacion
+);
+
+// Ruta para obtener imágenes por el ID de la publicación del blog
 router.get("/blog-imagenes/:id_publicacionBlog", getImagenesPorIdPublicacion);
 
-// Nueva ruta para el registro de múltiples imágenes
+// Nueva ruta para registrar múltiples imágenes relacionadas con una publicación
 router.post("/blog-imagenes/multiple", createImagenes);
 
-// Nueva ruta para obtener la imagen de portada
+// Nueva ruta para obtener la imagen de portada por el ID de la publicación del blog
 router.get(
   "/blog-imagenes/portada/:id_publicacionBlog",
   getImagenPortadaPorIdPublicacion
 );
 
-// Exportar el router para que pueda ser utilizado
 // Exportar el router para que pueda ser utilizado por la aplicación principal
 export default router;

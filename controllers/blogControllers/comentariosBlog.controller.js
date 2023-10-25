@@ -76,7 +76,7 @@ export async function updateComentarioPorIdUsuario(req, res) {
 }
 
 // Función para eliminar un comentario por su id y el id del usuario
-// Controlador
+
 export async function deleteComentarioPorIdUsuario(req, res) {
   const { id_usuario, id } = req.params;
   console.log(id_usuario);
@@ -99,4 +99,3 @@ export async function deleteComentarioPorIdUsuario(req, res) {
   }
 }
 
-// Rut

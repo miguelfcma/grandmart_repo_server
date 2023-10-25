@@ -1,6 +1,6 @@
 import { ImagenBlog } from "../../models/blogModel/ImagenesBlogModel.js";
 
-// Función para crear una nueva imagen
+// Función para registrar los datos de una nueva imagen
 export const createImagen = async (req, res) => {
   try {
     const imagen = await ImagenBlog.create({
@@ -15,9 +15,10 @@ export const createImagen = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para registar los datos nuevas imagenes en array
 export const createImagenes = async (req, res) => {
   const id_publicacionBlog = req.body.id_publicacionBlog;
+
   const imagenes = req.body.imagenes;
   try {
     const results = await Promise.all(
@@ -44,7 +45,7 @@ export const createImagenes = async (req, res) => {
   }
 };
 
-// Función para obtener las imágenes por id de publicación
+// Función para obtener las imágenes mediante el id de la publicación a la que pertenece
 export const getImagenesPorIdPublicacion = async (req, res) => {
   try {
     const imagenes = await ImagenBlog.findAll({
@@ -61,7 +62,7 @@ export const getImagenesPorIdPublicacion = async (req, res) => {
   }
 };
 
-// Función para actualizar una imagen por su id y el id de la publicación
+// Función para actualizar una imagen por su id y el id de la publicación a la que pertenece
 export const updateImagenPorIdPublicacion = async (req, res) => {
   try {
     const [numRows, imagen] = await ImagenBlog.update(
@@ -87,7 +88,7 @@ export const updateImagenPorIdPublicacion = async (req, res) => {
   }
 };
 
-// Función para eliminar una imagen por su id y el id de la publicación
+// Función para eliminar una imagen por su id y el id de la publicación a la que pertenece
 export const deleteImagenPorIdPublicacion = async (req, res) => {
   try {
     const numRows = await ImagenBlog.destroy({

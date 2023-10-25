@@ -4,6 +4,7 @@ import { Categoria } from "../../models/categoriasModel/CategoriaModel.js";
 import { Op } from "sequelize";
 import { DatosContactoServicio } from "../../models/serviciosModel/ServicioDatosContactoModel.js";
 
+// Función para obtener un servicio por su ID
 export const getServicio = async (req, res) => {
   try {
     const servicio = await Servicio.findByPk(req.params.id);
@@ -11,6 +12,7 @@ export const getServicio = async (req, res) => {
       return res.status(404).json({ message: "Servicio no encontrado" });
     }
 
+    // Obtener detalles del servicio, incluyendo categoría y usuario
     const servicioConCategoriaYUsuario = await Promise.all(
       servicio.map(async (servicio) => {
         const categoria = await Categoria.findByPk(servicio.id_categoria, {
@@ -32,6 +34,7 @@ export const getServicio = async (req, res) => {
   }
 };
 
+// Función para obtener todos los servicios
 export const getServicios = async (req, res) => {
   try {
     const servicios = await Servicio.findAll({
@@ -48,6 +51,7 @@ export const getServicios = async (req, res) => {
       return res.status(404).json({ message: "No se encontraron servicios" });
     }
 
+    // Obtener detalles de todos los servicios, incluyendo categoría y usuario
     const serviciosConCategoriaYUsuario = await Promise.all(
       servicios.map(async (servicio) => {
         const categoria = await Categoria.findByPk(servicio.id_categoria, {
@@ -69,11 +73,12 @@ export const getServicios = async (req, res) => {
   }
 };
 
+// Función para crear un nuevo servicio
 export const createServicio = async (req, res) => {
   const { titulo, descripcion, precio, id_categoria, id_usuario } = req.body;
 
   try {
-    // validar la existencia de id_categoria
+    // Validar la existencia de id_categoria
     const categoria = await Categoria.findByPk(id_categoria);
     if (!categoria) {
       return res
@@ -81,7 +86,7 @@ export const createServicio = async (req, res) => {
         .json({ message: "La categoría especificada no existe." });
     }
 
-    // validar la existencia de id_usuario
+    // Validar la existencia de id_usuario
     const usuario = await Usuario.findByPk(id_usuario);
     if (!usuario) {
       return res
@@ -89,6 +94,7 @@ export const createServicio = async (req, res) => {
         .json({ message: "El usuario especificado no existe." });
     }
 
+    // Validar la existencia de un servicio con el mismo título y usuario
     const existenciaServicio = await Servicio.findOne({
       where: {
         [Op.and]: [{ titulo: titulo }, { id_usuario: id_usuario }],
@@ -99,6 +105,8 @@ export const createServicio = async (req, res) => {
         .status(400)
         .json({ message: "Este servicio ya está registrado en su cuenta." });
     }
+
+    // Crear un nuevo servicio
     const newServicio = await Servicio.create({
       titulo,
       descripcion,
@@ -106,6 +114,7 @@ export const createServicio = async (req, res) => {
       id_categoria,
       id_usuario,
     });
+
     return res.status(201).json({
       message: "Servicio creado exitosamente.",
       servicio: newServicio,
@@ -117,7 +126,7 @@ export const createServicio = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para actualizar un servicio por su ID
 export const updateServicio = async (req, res) => {
   const { titulo, descripcion, precio, id_categoria, id_usuario } = req.body;
   try {
@@ -125,6 +134,7 @@ export const updateServicio = async (req, res) => {
     if (!servicio) {
       return res.status(404).json({ message: "No se encontró el servicio" });
     }
+    // Actualizar el servicio con los nuevos datos
     const updateServicio = await servicio.update({
       titulo,
       descripcion,
@@ -144,12 +154,14 @@ export const updateServicio = async (req, res) => {
   }
 };
 
+// Función para eliminar un servicio por su ID
 export const deleteServicio = async (req, res) => {
   try {
     const servicio = await Servicio.findByPk(req.params.id);
     if (!servicio) {
       return res.status(404).json({ message: "No se encontró el servicio" });
     }
+    // Eliminar el servicio
     await servicio.destroy();
     return res
       .status(200)
@@ -162,6 +174,7 @@ export const deleteServicio = async (req, res) => {
   }
 };
 
+// Función para obtener todos los servicios asociados a un usuario por su ID
 export const getServiciosByUsuarioId = async (req, res) => {
   try {
     const servicios = await Servicio.findAll({
@@ -189,10 +202,10 @@ export const getServiciosByUsuarioId = async (req, res) => {
   }
 };
 
+// Función para crear datos de contacto de un servicio
 export const createDatosContactoServicio = async (req, res) => {
   try {
     const datosContacto = req.body;
-    console.log(datosContacto);
     const nuevoDatosContacto = await DatosContactoServicio.create(
       datosContacto
     );
@@ -209,6 +222,7 @@ export const createDatosContactoServicio = async (req, res) => {
   }
 };
 
+// Función para obtener datos de contacto de un servicio por su ID
 export const obtenerDatosContactoServicio = async (req, res) => {
   try {
     const id = req.params.id;
@@ -230,6 +244,7 @@ export const obtenerDatosContactoServicio = async (req, res) => {
   }
 };
 
+// Función para actualizar datos de contacto de un servicio por su ID
 export const updateDatosContactoServicio = async (req, res) => {
   const {
     telefono1,
@@ -253,6 +268,7 @@ export const updateDatosContactoServicio = async (req, res) => {
         message: "No se encontraron los datos de contacto del servicio",
       });
     }
+    // Actualizar los datos de contacto del servicio con los nuevos datos
     const updatedDatosContacto = await datosContacto.update({
       telefono1,
       telefono2,

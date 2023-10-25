@@ -1,5 +1,6 @@
 import { DomicilioUsuario } from "../../models/usuariosModel/DomicilioUsuarioModel.js";
 
+// Esta función crea una nueva dirección de usuario.
 export const createDomicilioUsuario = async (req, res) => {
   try {
     const data = req.body;
@@ -17,12 +18,10 @@ export const createDomicilioUsuario = async (req, res) => {
 
     // Crear una nueva dirección
     const domicilioUsuario = await DomicilioUsuario.create(data);
-    res
-      .status(201)
-      .json({
-        message: "Dirección de usuario creada exitosamente.",
-        data: domicilioUsuario,
-      });
+    res.status(201).json({
+      message: "Dirección de usuario creada exitosamente.",
+      data: domicilioUsuario,
+    });
   } catch (error) {
     console.log(error);
     return res
@@ -31,6 +30,7 @@ export const createDomicilioUsuario = async (req, res) => {
   }
 };
 
+// Esta función elimina la dirección de un usuario por su ID.
 export const deleteDomicilioUsuarioByUserId = async (req, res) => {
   try {
     const { id_usuario } = req.params;
@@ -46,6 +46,7 @@ export const deleteDomicilioUsuarioByUserId = async (req, res) => {
   }
 };
 
+// Esta función actualiza la dirección de un usuario por su ID.
 export const updateDomicilioUsuarioByUserId = async (req, res) => {
   try {
     const { id_usuario } = req.params;
@@ -54,12 +55,10 @@ export const updateDomicilioUsuarioByUserId = async (req, res) => {
     const updatedDomicilioUsuario = await DomicilioUsuario.findOne({
       where: { id_usuario },
     });
-    res
-      .status(200)
-      .json({
-        message: "Dirección de usuario actualizada exitosamente.",
-        data: updatedDomicilioUsuario,
-      });
+    res.status(200).json({
+      message: "Dirección de usuario actualizada exitosamente.",
+      data: updatedDomicilioUsuario,
+    });
   } catch (error) {
     console.log(error);
     return res
@@ -68,6 +67,7 @@ export const updateDomicilioUsuarioByUserId = async (req, res) => {
   }
 };
 
+// Esta función obtiene la dirección de un usuario por su ID.
 export const getDomicilioUsuarioByUserId = async (req, res) => {
   try {
     const { id_usuario } = req.params;
@@ -76,12 +76,10 @@ export const getDomicilioUsuarioByUserId = async (req, res) => {
     });
 
     if (domicilioUsuario) {
-      res
-        .status(200)
-        .json({
-          message: "Dirección de usuario obtenida exitosamente.",
-          data: domicilioUsuario,
-        });
+      res.status(200).json({
+        message: "Dirección de usuario obtenida exitosamente.",
+        data: domicilioUsuario,
+      });
     } else {
       res
         .status(404)

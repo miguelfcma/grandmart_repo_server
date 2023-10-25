@@ -23,6 +23,7 @@ router.get(
   getPreguntasByIdProducto
 );
 
+// Ruta para obtener todos los productos con preguntas por parte de un usuario
 router.get(
   "/producto-preguntas/productos-preguntas/:id_usuario",
   getProductosConPreguntasByUsuarioId
@@ -34,6 +35,7 @@ router.delete("/producto-preguntas/:id", eliminarPregunta);
 // Ruta para actualizar una pregunta por su ID
 router.put("/producto-preguntas/:id", actualizarPregunta);
 
+// Ruta para obtener todas las preguntas de todos los productos
 router.get("/producto-preguntas-all/", getTodosProductosConPreguntas);
 
 export default router;

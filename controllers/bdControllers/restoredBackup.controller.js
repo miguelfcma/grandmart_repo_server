@@ -5,7 +5,10 @@ import bcrypt from "bcryptjs";
 import fs from "fs";
 
 import path from "path";
-// Listar los nombres de los archivos SQL en la carpeta de backups
+
+/**
+ * Función listBackups: Lista los nombres de los archivos SQL en la carpeta de backups
+ */
 export function listBackupFiles(req, res) {
   try {
     const backupDir = path.join(process.cwd(), "backups-database");
@@ -29,12 +32,15 @@ export function listBackupFiles(req, res) {
   }
 }
 
-// Eliminar un archivo SQL en la carpeta de backups
+/**
+ * Función deleteBackupFile: Elimina un archivo SQL en la carpeta de backups
+ */
 export async function deleteBackupFile(req, res) {
   try {
+    // Recibe email y password del usuario administrador
     const { email, password } = req.body;
 
-    // Buscar un usuario con el email recibido
+    // Buscar  la existencia un usuario con el email recibido
     const usuario = await Usuario.findOne({
       where: { email },
     });
@@ -79,7 +85,10 @@ export async function deleteBackupFile(req, res) {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 }
-
+/**
+ *
+ * Función restoreBackup: Ejecuta el proceso de restauración de un archivo SQL en la carpeta de backups
+ */
 export async function restoreBackup(req, res) {
   try {
     const { email, password } = req.body;
@@ -105,7 +114,9 @@ export async function restoreBackup(req, res) {
     }
 
     console.log("Iniciando ejecución de archivo SQL...");
+    // Recibe el nombre del archivo a restaurar
     const filename = req.params.filename;
+    //Conexión a la base de datos
     const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
       host: DB_HOST,
       dialect: "mysql",
@@ -162,6 +173,10 @@ export async function restoreBackup(req, res) {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 }
+
+/**
+ * Función downloadBackupFIle: Envia el archivo SQL seleccionado para su descarga.
+ */
 export async function downloadBackupFile(req, res) {
   const { email, password } = req.body;
   console.log(email, password, "...............................");

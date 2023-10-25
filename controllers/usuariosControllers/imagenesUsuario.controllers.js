@@ -1,5 +1,6 @@
 import { ImagenUsuario } from "../../models/usuariosModel/ImagenesUsuarios.js";
 
+// Esta función crea un nuevo avatar de usuario.
 export const createImgUsuario = async (req, res) => {
   const { url, id_usuario } = req.body;
 
@@ -15,6 +16,7 @@ export const createImgUsuario = async (req, res) => {
   }
 };
 
+// Esta función obtiene el avatar de un usuario por su ID.
 export const getImgUsuarioByUserId = async (req, res) => {
   const { id_usuario } = req.params;
 
@@ -36,6 +38,7 @@ export const getImgUsuarioByUserId = async (req, res) => {
   }
 };
 
+// Esta función elimina el avatar de un usuario por su ID.
 export const deleteImgUsuarioByUserId = async (req, res) => {
   const { id_usuario } = req.params;
 
@@ -60,6 +63,7 @@ export const deleteImgUsuarioByUserId = async (req, res) => {
   }
 };
 
+// Esta función actualiza el avatar de un usuario por su ID.
 export const updateImgUsuarioByUserId = async (req, res) => {
   const { id_usuario } = req.params;
   const { url } = req.body;

@@ -1,9 +1,11 @@
 import { PublicacionBlog } from "../../models/blogModel/PublicacionesBlogModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import { ComentarioBlog } from "../../models/blogModel/ComentariosBlogModel.js";
+
 // Función para crear una nueva publicación
 export const createPublicacion = async (req, res) => {
   try {
+    // Recibe los atributos de la nueva publicación
     const { titulo, descripcion, id_usuario } = req.body;
     const publicacion = await PublicacionBlog.create({
       titulo,
@@ -95,7 +97,7 @@ export const deletePublicacionPorIdUsuario = async (req, res) => {
     const publicacion = await PublicacionBlog.findOne({
       where: { id: id_publicacionBlog, id_usuario: id_usuario },
     });
-
+    // Si la publicación existe , busca los comentarios para eliminarlos
     if (publicacion) {
       const comentarios = await ComentarioBlog.findAll({
         where: { id_publicacionBlog: id_publicacionBlog },

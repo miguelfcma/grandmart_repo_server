@@ -4,7 +4,9 @@ import { Producto } from "../../models/productosModel/ProductoModel.js";
 import { Servicio } from "../../models/serviciosModel/ServicioModel.js";
 import { Usuario } from "../../models/usuariosModel/UsuarioModel.js";
 import { enviarCorreo } from "../CorreoController/enviarCorreo.controllers.js";
-// Crear una nueva denuncia para producto
+
+
+// Función para rear una nueva denuncia para producto
 export const createDenuncia = async (req, res) => {
   try {
     const { motivo, descripcion, id_usuario, id_producto } = req.body;
@@ -32,6 +34,7 @@ export const createDenuncia = async (req, res) => {
       attributes: ["id", "nombre"],
     });
 
+// Elementos de correo electrónico 
     const email = "grandmarthtd@gmail.com";
     const subject = "GrandMart Marketplace - Nueva Denuncia";
     const header = "Nueva denuncia recibida";
@@ -42,7 +45,7 @@ export const createDenuncia = async (req, res) => {
       <p>Motivo de la denuncia: ${motivo}</p>
       <p>Descripción: ${descripcion}</p>
     `;
-
+//Uso de la función de envío de correos electrónicos 
     await enviarCorreo(email, subject, header, contenido);
 
     res.status(201).json(denuncia);
@@ -54,7 +57,7 @@ export const createDenuncia = async (req, res) => {
   }
 };
 
-// Crear una nueva denuncia para servicio
+// Función para crear una nueva denuncia para servicio
 export const createDenunciaServicio = async (req, res) => {
   try {
     const { motivo, descripcion, id_usuario, id_servicio } = req.body;
@@ -97,24 +100,27 @@ export const createDenunciaServicio = async (req, res) => {
 };
 
 
-// Obtener todas las denuncias asociadas a un producto
+// Función para obtener todas las denuncias asociadas a un solo producto
 export const getDenunciasByIdProducto = async (req, res) => {
   try {
     const { id_producto } = req.params;
+    //Obtiene las denuncias 
     const denuncias = await DenunciaBuzon.findAll({ where: { id_producto } });
 
     if (denuncias.length === 0) {
       return res.status(404).json({ message: "No se encontraron denuncias" });
     }
+    // Obtiene los datos de producto denunciado y el usuario dueño del producto
     const denunciasConUsuarioYProducto = await Promise.all(
-      denuncias.map(async (motivo) => {
-        const producto = await Producto.findByPk(motivo.id_producto, {
+      denuncias.map(async (denuncia) => {
+        const producto = await Producto.findByPk(denuncia.id_producto, {
           attributes: ["id", "nombre"],
         });
-        const usuario = await Usuario.findByPk(motivo.id_usuario, {
+        const usuario = await Usuario.findByPk(denuncia.id_usuario, {
           attributes: ["id", "nombre"],
         });
-        return { ...motivo.toJSON(), producto, usuario };
+        /// Añade al json de la denuncia la información de producto y usuario
+        return { ...denuncia.toJSON(), producto, usuario };
       })
     );
 
@@ -127,10 +133,11 @@ export const getDenunciasByIdProducto = async (req, res) => {
   }
 };
 
-// Obtener todas las denuncias asociadas a un servicio
+// Función para obtener todas las denuncias asociadas a un servicio
 export const getDenunciasByIdServicio = async (req, res) => {
   try {
     const { id_servicio } = req.params;
+    // Obtiene las denuncias del sevicio
     const denuncias = await DenunciaBuzonServicio.findAll({
       where: { id_servicio },
     });
@@ -159,7 +166,7 @@ export const getDenunciasByIdServicio = async (req, res) => {
   }
 };
 
-// Obtener todas las denuncias por usser ID
+// Función para obtener todas las denuncias asociadas a un usuario 
 export const getDenunciasByUserId = async (req, res) => {
   try {
     const denuncias = await DenunciaBuzon.findAll({
@@ -174,7 +181,7 @@ export const getDenunciasByUserId = async (req, res) => {
   }
 };
 
-// Obtener productos del usuario con denuncias asociadas
+// Función para obtener productos con denuncias asociadas de un usuario en específico 
 export const getProductosConDenunciasByUsuarioId = async (req, res) => {
   try {
     const { id_usuario } = req.params;
@@ -219,12 +226,12 @@ export const getProductosConDenunciasByUsuarioId = async (req, res) => {
   }
 };
 
-// Obtener productos del usuario con denuncias asociadas
+// Función para obtener servicios con denuncias asociadas de un usuario en específico 
 export const getServiciosConDenunciasByUsuarioId = async (req, res) => {
   try {
     const { id_usuario } = req.params;
 
-    // Buscar productos del usuario por su ID de usuario
+    // Buscar servicios del usuario por su ID de usuario
     const servicios = await Servicio.findAll({ where: { id_usuario } });
 
     if (servicios.length === 0) {
@@ -264,7 +271,7 @@ export const getServiciosConDenunciasByUsuarioId = async (req, res) => {
   }
 };
 
-//  Eliminar una denuncia por su ID
+// Función para eliminar una denuncia de producto por su ID
 export const eliminarDenuncia = async (req, res) => {
   const { id_denuncia } = req.params;
 
@@ -285,7 +292,7 @@ export const eliminarDenuncia = async (req, res) => {
   }
 };
 
-//  Eliminar una denuncia por su ID
+// Función para eliminar una denuncia de servicio por su ID
 export const eliminarDenunciaServicio = async (req, res) => {
   const { id_denuncia } = req.params;
 
@@ -306,7 +313,7 @@ export const eliminarDenunciaServicio = async (req, res) => {
   }
 };
 
-// Obtener todas las denuncias
+// Función para obtener todas las denuncias de productos
 export const getAllDenuncias = async (req, res) => {
   try {
     const denuncias = await DenunciaBuzon.findAll();
@@ -336,7 +343,7 @@ export const getAllDenuncias = async (req, res) => {
   }
 };
 
-// Obtener todas las denuncias
+// Función para obtener todas las denuncias de servicios
 export const getAllDenunciasServicio = async (req, res) => {
   try {
     const denuncias = await DenunciaBuzonServicio.findAll();
@@ -365,7 +372,7 @@ export const getAllDenunciasServicio = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para actualizar la denuncia de un prodcuto a revisada
 export const actualizarDenunciaARevisada = async (req, res) => {
   const { id_denuncia } = req.params;
 
@@ -395,7 +402,7 @@ export const actualizarDenunciaARevisada = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para actualizar la denuncia de un servicio a revisada
 export const actualizarDenunciaARevisadaServicio = async (req, res) => {
   const { id_denuncia } = req.params;
 

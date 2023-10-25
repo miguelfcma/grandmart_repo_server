@@ -1,10 +1,9 @@
 import { Router } from "express";
-
 import {
   createDomicilioUsuario,
   deleteDomicilioUsuarioByUserId,
   updateDomicilioUsuarioByUserId,
-  getDomicilioUsuarioByUserId
+  getDomicilioUsuarioByUserId,
 } from "../../controllers/usuariosControllers/domicilioUsuario.controllers.js";
 
 // Creamos una nueva instancia del Router de Express

@@ -3,7 +3,7 @@ import cors from "cors";
 
 // Rutas de usuarios
 import usuariosRoutes from "./routes/usuariosRoutes/usuarios.routes.js";
-import imagenUsuariosRoutes from "./routes/usuariosRoutes/imagenUsuario.routes.js";
+
 import domicilioUsuarioRoutes from "./routes/usuariosRoutes/domicilioUsuario.routes.js";
 
 // Rutas de categorias
@@ -19,7 +19,7 @@ import reviewsProductoRoutes from "./routes/productosRoutes/reviewsProducto.rout
 import serviciosRoutes from "./routes/serviciosRoutes/servicios.routes.js";
 import imagenesServiciosRoutes from "./routes/serviciosRoutes/imgServicios.routes.js";
 import preguntasServiciosRoutes from "./routes/serviciosRoutes/preguntasServicios.routes.js";
-import reviewsServiciosRoutes from "./routes/serviciosRoutes/reviewsServicio.routes.js";
+
 
 // Rutas de blog
 import publicacionBlogRoutes from "./routes/blogRoutes/publicacionBlog.routes.js";
@@ -76,7 +76,7 @@ app.use(morgan("dev"));
 
 //Rutas de usuarios
 app.use(usuariosRoutes);
-app.use(imagenUsuariosRoutes);
+
 app.use(domicilioUsuarioRoutes);
 
 //Rutas de categorias
@@ -92,7 +92,7 @@ app.use(reviewsProductoRoutes);
 app.use(serviciosRoutes);
 app.use(imagenesServiciosRoutes);
 app.use(preguntasServiciosRoutes);
-app.use(reviewsServiciosRoutes);
+
 
 //Rutas de blog
 app.use(publicacionBlogRoutes);
@@ -126,7 +126,6 @@ app.use(comprasRoutes);
 //pagos
 app.use(pagosRoutes);
 app.use(tokenRoutes);
-//  STATIC FILES
 
 //  EXPORT THE APP
 export default app;

@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelizeDB } from "../../database/db.js";
-
+// Definir el modelo de datos para la tabla "imagenesBlogs"
 export const ImagenBlog = sequelizeDB.define(
   "imagenesBlogs",
 

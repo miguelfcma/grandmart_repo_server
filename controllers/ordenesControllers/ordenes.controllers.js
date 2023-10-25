@@ -12,8 +12,7 @@ import { checkout } from "../stripeController/pagosStripe.controller.js";
 import { Pago } from "../../models/ordenesModel/PagosModel.js";
 
 import { enviarCorreo } from "../CorreoController/enviarCorreo.controllers.js";
-//Funciones de ordenes
-
+// Esta función obtiene todas las órdenes existentes
 export const obtenerTodasLasOrdenes = async (req, res) => {
   try {
     // Buscar todas las órdenes
@@ -28,11 +27,12 @@ export const obtenerTodasLasOrdenes = async (req, res) => {
   }
 };
 
-// Función para crear una nueva orden
+// Función para crear crea una nueva orden a partir de los datos proporcionados en la solicitud. Primero, se verifica si el usuario tiene una dirección de envío registrada y un carrito de compra. Luego, se verifica la existencia de productos y la disponibilidad de stock. Si todo está en orden, se procede a crear la orden, actualizar el stock, procesar el pago, enviar correos electrónicos y guardar detalles de la orden.
 export const crearOrden = async (req, res) => {
   const { id_usuario, id_card, amount, description } = req.body; // Obtener el
 
   try {
+    // Obtener la dirección de envío del usuario
     const direccion_envio = await DomicilioUsuario.findOne({
       where: { id_usuario },
       attributes: [
@@ -270,6 +270,7 @@ export const crearOrden = async (req, res) => {
       direccion_envio_id: nuevaDireccionEnvio.id,
     });
     await nuevaOrden.save();
+    // Enviar correo de confirmación de compra al cliente
 
     const emailClienteCompra = usuario.email;
     const subjectClienteCompra = "GrandMart Marketplace";
@@ -281,7 +282,7 @@ export const crearOrden = async (req, res) => {
       headerClienteCompra,
       contenidoClienteCompra
     );
-    //--------------------------------------------------------
+    // Enviar notificación al administrador
     const emailAdmin = "grandmarthtd@gmail.com";
     const subjectAdmin = "GrandMart Marketplace";
     const headerAdmin = "Notificación de nueva orden de compra";
@@ -297,7 +298,7 @@ export const crearOrden = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Esta función elimina una orden existente basada en su ID.
 export const eliminarOrden = async (req, res) => {
   const { id_orden } = req.params;
 
@@ -347,7 +348,7 @@ export const eliminarOrden = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Esta función obtiene detalles específicos de una orden, incluyendo los productos que contiene.
 export const obtenerDetalleOrden = async (req, res) => {
   const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
 
@@ -385,7 +386,7 @@ export const obtenerDetalleOrden = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-//Compras funciones
+//Esta función devuelve todas las órdenes asociadas a un usuario en particular.
 export const obtenerComprasUsuario = async (req, res) => {
   const { id_usuario } = req.params; // Obtener el id de usuario desde los parámetros de la URL
 
@@ -404,8 +405,7 @@ export const obtenerComprasUsuario = async (req, res) => {
   }
 };
 
-////Ventas funciones
-
+//Esta función muestra todas las órdenes en las que el usuario ha vendido productos. También proporciona detalles sobre los productos y las cantidades vendidas.
 export const obtenerVentasPorUsuario = async (req, res) => {
   const { id_usuario } = req.params;
 
@@ -466,8 +466,7 @@ export const obtenerVentasPorUsuario = async (req, res) => {
   }
 };
 
-///Funciones de envio
-
+//Esta función obtiene la dirección de envío relacionada con una orden específica.
 export const obtenerDireccionEnvioOrden = async (req, res) => {
   const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
   try {
@@ -499,6 +498,7 @@ export const obtenerDireccionEnvioOrden = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
+// Esta función obtiene información detallada sobre el envío relacionado con una orden.
 export const obtenerInformacionEnvio = async (req, res) => {
   const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
   try {
@@ -537,7 +537,7 @@ export const obtenerInformacionEnvio = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Esta función verifica si un usuario tiene una dirección de envío registrada.
 export const verificacionDireccionEnvio = async (req, res) => {
   const { id_usuario } = req.params;
 
@@ -563,9 +563,7 @@ export const verificacionDireccionEnvio = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
-////Funciones de pagos
-
+// Esta función Obtiene todos los registros de pago en la base de datos.
 export const obtenerTodosLosPagos = async (req, res) => {
   try {
     const pagos = await Pago.findAll();
@@ -583,7 +581,7 @@ export const obtenerTodosLosPagos = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Esta función obtiene información de pago basada en el ID de la orden.
 export const obtenerPagoPorIdOrden = async (req, res) => {
   const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
   try {
@@ -605,7 +603,7 @@ export const obtenerPagoPorIdOrden = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Esta función devuelve todos los pagos realizados por un usuario en particular.
 export const obtenerPagosPorIdUsuario = async (req, res) => {
   const { id_usuario } = req.params; // Obtener el id de la orden desde los parámetros de la URL
   try {
@@ -624,7 +622,7 @@ export const obtenerPagosPorIdUsuario = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-///cambiar los estados
+// Esta función cambia el estado de un envío y notifica al usuario por correo electrónico.
 export const cambiarEstadoEnvio = async (req, res) => {
   const { id_envio } = req.params; // Obtener el id del envío desde los parámetros de la URL
   const { nuevoEstado } = req.body; // Obtener el nuevo estado del envío desde el cuerpo de la solicitud
@@ -673,7 +671,9 @@ export const cambiarEstadoEnvio = async (req, res) => {
       <h2>El estado de tu envío ha cambiado</h2>
       <p>ID orden: ${orden.id}</p>
       <p>Estado actual envío: ${envio.estado}</p>
-      <p>Fecha de actualización: ${new Date(envio.createdAt).toLocaleDateString()}</p>
+      <p>Fecha de actualización: ${new Date(
+        envio.createdAt
+      ).toLocaleDateString()}</p>
      
     `;
 
@@ -687,7 +687,7 @@ export const cambiarEstadoEnvio = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Esta función cambia el estado de una orden y notifica al usuario por correo electrónico.
 export const cambiarEstadoOrden = async (req, res) => {
   const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
   const { nuevoEstado } = req.body; // Obtener el nuevo estado de la orden desde el cuerpo de la solicitud
@@ -740,7 +740,9 @@ export const cambiarEstadoOrden = async (req, res) => {
       <h2>El estado de tu orden ha cambiado</h2>
       <p>ID orden: ${orden.id}</p>
       <p>Estado actual: ${orden.estado_orden}</p>
-      <p>Fecha de actualización: ${new Date(orden.createdAt).toLocaleDateString()}</p>
+      <p>Fecha de actualización: ${new Date(
+        orden.createdAt
+      ).toLocaleDateString()}</p>
     `;
 
     await enviarCorreo(email, subject, header, contenido);
@@ -753,7 +755,7 @@ export const cambiarEstadoOrden = async (req, res) => {
       .json({ message: "Ha ocurrido un error en el servidor" });
   }
 };
-
+// Función para cancelar una orden y notificar al administrador.
 export const cancelarOrden = async (req, res) => {
   const { id_orden } = req.params; // Obtener el id de la orden desde los parámetros de la URL
 
@@ -817,8 +819,7 @@ export const cancelarOrden = async (req, res) => {
   }
 };
 
-
-
+// Función para obtener información de pago basada en el ID de la orden.
 export const obtenerInfoPago = async (req, res) => {
   try {
     const { id_orden } = req.params;
