@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-//importamos la conexiion con la base de datos
+//importamos la conexión la base de datos
 import { sequelizeDB } from "../../database/db.js";
 // Definición del modelo de datos para la tabla "productos"
 export const Producto = sequelizeDB.define(
