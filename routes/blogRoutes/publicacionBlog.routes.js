@@ -18,7 +18,7 @@ router.post("/blog-publicaciones", createPublicacion);
 
 // Ruta para eliminar una publicación por el ID de usuario
 router.post(
-  "/blog-publicaciones/elminar/:id_usuario",
+  "/blog-publicaciones/eliminar/:id_usuario",
   deletePublicacionPorIdUsuario
 );
 
