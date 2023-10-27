@@ -296,7 +296,7 @@ export const actualizarContrasenaUsuario = async (req, res) => {
 
 // Eliminar la cuenta de un usuario
 export const eliminarCuentaUsuario = async (req, res) => {
-  const idUsuario = req.params.id;
+  const idUsuario = req.params.id_usuario;
   const password = req.body.password;
 
   try {
